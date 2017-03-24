@@ -1,0 +1,373 @@
+html,a{
+    color:#000;
+    font-size:100%;
+    background:#FFF;
+    word-break: break-all;
+    word-wrap:break-word;
+}
+div,dl,dt,dd,ul,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{
+    margin:0;
+    padding:0;
+}
+ul {list-style:none;}
+.ibox{
+    height:30px !important;
+    line-height:30px !important;
+    border-radius:5px !important;
+    width:160px !important;
+    padding-top:0px !important;
+    padding-bottom:0px !important;
+    border: #e0f0ca solid 1px;
+}
+.ibox-md{
+    width:200px !important;
+}
+.ibox-lg{
+    width:230px !important;
+}
+.ibox-label{
+    height:26px;
+    line-height:26px;
+    font-size:11px;
+    font-weight: 600;
+    float:left;
+    width: 90px;
+    margin-left:20px;
+}
+/*
+* 背景色
+*/
+.theme-bg-color{
+    background-color: #009966;
+}
+.theme-bg-cyan{
+    background-color: #3b565d;
+}
+/*
+* 弹出框header css样式
+*/
+.h-modal-header{
+    padding:0px;
+    margin:0px;
+    height:30px;
+    line-height:30px;
+    background-color:#009966;
+    position: relative;
+    z-index: 999;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none
+}
+.h-modal-content{
+    border:#009966 solid 2px;
+    border-radius:5px;
+}
+.h-modal-title{
+    text-overflow:ellipsis;
+    color: #ffffff;
+    font-weight:bold;
+}
+.h-modal-footer{
+    position: absolute;
+    height: 40px;
+    line-height: 40px;
+    right: 15px;
+    left: 15px;
+    background-color: inherit;
+}
+
+
+.tile,
+.tile-small,
+.tile-sqaure,
+.tile-wide,
+.tile-large,
+.tile-big,
+.tile-super {
+    opacity: 0;
+    -webkit-transform: scale(.8);
+    transform: scale(.8);
+}
+
+@media only screen and (max-width: 1440px) {
+    .tile{
+        width: 130px;
+        height: 130px;
+    }
+    .tile-wide{
+        width:270px;
+        height: 130px;
+    }
+    .tile-large{
+        width:270px;
+        height: 270px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .tile{
+        width: 100px;
+        height: 100px;
+    }
+    .tile-wide{
+        width:210px;
+        height: 100px;
+    }
+    .tile-large{
+        width:210px;
+        height: 210px;
+    }
+}
+
+/*开始左侧菜单栏样式*/
+/*
+* 左侧菜单栏样式
+*/
+.navbar-static-side {
+    float: left;
+    display: block;
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    margin-left: -15px;
+    user-select:none;
+    position: fixed;
+    transition:width 0.4s;
+    -webkit-transition:width 0.4s;
+    z-index: 1024;
+}
+
+.H-logo-area{
+    text-align:left;
+    height: 60px;
+    line-height: 60px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #FFFFFF;
+}
+
+
+/*
+* 右侧主题背景样式
+*/
+.gray-bg{
+    display: block;
+    background-color: #f3f3f4;
+    overflow: hidden;
+    position: fixed;
+    margin-left: 50px;
+    transition: transform 2s;
+}
+
+
+/*开始tab样式编辑*/
+/*
+* 右侧标签页样式
+*/
+.H-content-tab{
+    height: 36px;
+    line-height: 36px;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    z-index: 1024;
+}
+/*
+* tab上图标
+*/
+.H-tab-bar{
+    height: 35px;
+    line-height: 35px;
+    padding: 0px;
+    margin: 0px;
+}
+/*
+* 新增的tab页面
+*/
+.H-tabs-index{
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    overflow: hidden;
+}
+/*
+* 靠左现实的tab页面
+*/
+.H-left-tab{
+    float: left;
+    padding: 0px 12px;
+    cursor: pointer;
+    border: none;
+    height: 36px;
+    line-height: 36px;
+    outline: none;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.H-left-tab:hover{
+    background-color: #cccccd;
+}
+/*
+* 靠右显示的tab页面
+*/
+.H-right-tab{
+    float: right;
+    padding: 0px 12px;
+    cursor: pointer;
+    border: none;
+    height: 36px;
+    line-height: 36px;
+    outline: none;
+    font-size: 10px;
+    font-weight: 300;
+}
+.H-right-tab:hover{
+    background-color: #cccccd;
+}
+
+.H-gray-close {
+    margin-left: 8px;
+    height: 36px;
+    line-height: 36px;
+    color: rgba(0, 0, 0, 0.4);
+}
+.H-gray-close:hover{
+    color: firebrick;
+}
+
+.active-tab{
+    background-color: #314b5c;
+    color: #e1e4e9;
+}
+.active-tab:hover{
+    background-color: #314b5c;
+    color: #ffffff;
+}
+/*结束tab标签样式*/
+
+/*
+* 右侧内容栏目
+*/
+.H-main-content{
+    display: block;
+    position: relative;
+    overflow: auto;
+}
+
+.active{
+    display: block;
+}
+.none{
+    display: none;
+}
+
+.subsystem-header{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: solid #598f56 1px;
+    vertical-align: middle;
+    margin: auto 0px;
+}
+
+.subsystem-toolbar{
+    height: 44px;
+    line-height: 44px;
+    vertical-align: middle;
+}
+
+.h-td-btn {
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+    text-align: center;
+    border: none;
+    outline: none;
+}
+.h-td-btn:hover{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 26px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+th{
+    font-size: 12px;
+}
+.th-inner{
+    height:30px;
+    line-height: 16px !important;
+}
+td{
+    height: 30px !important;
+    font-size: 12px;
+    line-height: 15px !important;
+}
+
+.h-btn-sm{
+    height:26px;
+    line-height: 26px;
+    padding:0px 8px;
+    min-width: 42px;
+}
+
+.h-label{
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#wrapper {
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-delay: 0.1s;
+    -moz-animation-duration: 0.5s;
+    -moz-animation-delay: 0.1s;
+    -ms-animation-duration: 0.5s;
+    -ms-animation-delay: 0.1s;
+    -webkit-animation-iteration-count: 1;
+    -moz-animation-iteration-count: 1;
+    -ms-animation-iteration-count: 1;
+}
+
+#h-main-content {
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-delay: 0.1s;
+    -moz-animation-duration: 0.5s;
+    -moz-animation-delay: 0.1s;
+    -ms-animation-duration: 0.5s;
+    -ms-animation-delay: 0.1s;
+    -webkit-animation-iteration-count: 1;
+    -moz-animation-iteration-count: 1;
+    -ms-animation-iteration-count: 1;
+}
+
+/*
+* 模态框默header样式
+*/
+.h-modal-header{
+    background-color: #ffffff;
+    height: 40px;
+    line-height:40px;
+    padding: 0px;
+}
