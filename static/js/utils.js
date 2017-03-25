@@ -76,8 +76,7 @@ var Hutils = {
                             window.location.href="/"}
                     })
                 },
-                header:"用户注销确认框",
-                body:"<span style='font-size: 15px; font-weight: 500; height: 90px; line-height: 90px;padding-left: 90px;'>是否确认退出登录？</span>"
+                body:"点击确定退出系统"
             })
         },
         // 用户信息管理
@@ -1558,14 +1557,15 @@ var Hutils = {
                 width:"420px",
                 height:"240px ",
 
-                header:"弹框信息",
-                headerHeight:"40px",
+                header:"",
+                headerHeight:"30px",
                 headerColor :"white",
                 headerFontSize:"14px",
                 headerFontColor:"#0c0c0c",
 
                 body:"",
                 footer:"",
+                iconClass:"icon-3x icon-question-sign",
                 cancelBtn:true,
                 submitBtn:true,
             }
@@ -1575,14 +1575,14 @@ var Hutils = {
             function init(){
                 var mframe='<div class="modal-dialog">'+
                     '<div class="modal-content" style="border: '+__DEFAULT.headerColor+' solid 2px; width: '+__DEFAULT.width+'; height: '+__DEFAULT.height+';">'+
-                    '<div class="modal-header h-modal-header" style="background-color: '+__DEFAULT.headerColor+'; height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+';">'+
-                    '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; width: 30px; padding-top: 2px;">×</button>'+
+                    '<div class="modal-header h-modal-header" style="border: none !important;background-color: '+__DEFAULT.headerColor+'; height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+';">'+
                     '<h4 class="modal-title" style="margin-left: 15px;height: '+__DEFAULT.headerFontSize+';color: '+__DEFAULT.headerFontColor+'; line-height: '+__DEFAULT.headerHeight+';font-weight: 600; font-size: '+__DEFAULT.headerFontSize+'; margin-right: 30px;">'+__DEFAULT.header+'</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="width: 30px;">×</button>'+
                     '</div>'+
-                    '<div class="modal-body" style="width: '+__DEFAULT.width+'; overflow-y: auto">'+__DEFAULT.body+'</div>'+
-                    '<div class="modal-footer btn-group-sm">'+
-                    '<button type="button" class="btn btn-danger cancel" data-dismiss="modal"><i class="icon-remove"></i>&nbsp;取消</button>'+
-                    '<button type="button" class="btn btn-primary submit"><i class="icon-ok"></i>&nbsp;确定</button>'+
+                    '<div class="modal-body" style="width: '+__DEFAULT.width+'; overflow-y: auto;text-align: center"><i style="color: red;" class="'+__DEFAULT.iconClass+'"></i><br/><span style="font-size: 16px;display: block; font-weight: 600; margin-top: 15px;">'+__DEFAULT.body+'</span></div>'+
+                    '<div class="modal-footer btn-group-sm" style="text-align: center; border: none;">'+
+                    '<button type="button" class="btn btn-danger cancel" style="width: 120px;" data-dismiss="modal"><i class="icon-remove"></i>&nbsp;&nbsp;&nbsp;&nbsp;取消</button>'+
+                    '<button type="button" class="btn btn-primary submit" style="width: 120px;margin-left: 50px;"><i class="icon-ok"></i>&nbsp;&nbsp;&nbsp;&nbsp;确定</button>'+
                     '</div>' +
                     '</div>' +
                     '</div>';
@@ -1637,8 +1637,11 @@ var Hutils = {
                 var wh = document.documentElement.clientHeight;
                 var mw = $(getObj(mod,"modal-content")).width()
                 var mh = $(getObj(mod,"modal-content")).height()
-                var modifyY = (wh - mh)/2
+                var modifyY = (wh - 1.5*mh)/2
                 var modifyX = (ww - mw)/2
+                if (modifyY < 0){
+                    modifyY = 0
+                }
                 $(getObj(mod,"modal-content")).offset({
                     left:modifyX,
                     top:modifyY

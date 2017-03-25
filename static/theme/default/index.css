@@ -361,13 +361,3 @@ td{
     -moz-animation-iteration-count: 1;
     -ms-animation-iteration-count: 1;
 }
-
-/*
-* 模态框默header样式
-*/
-.h-modal-header{
-    background-color: #ffffff;
-    height: 40px;
-    line-height:40px;
-    padding: 0px;
-}
