@@ -182,7 +182,6 @@
                return
            }else{
                $.Hconfirm({
-                   header:"删除角色信息提示框",
                    callback:function () {
                        $.HAjaxRequest({
                            url:"/v1/auth/role/delete",
@@ -198,7 +197,7 @@
                            },
                        })
                    },
-                   body:"<span style='height: 90px; line-height: 90px;padding-left: 60px;font-size: 16px;font-weight: 600;'>确认要删除选中的角色吗？</span>"
+                   body:"确认要删除选中的角色吗"
                })
            }
         },

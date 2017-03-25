@@ -124,19 +124,24 @@
 
     var ResObj = {
         delete:function () {
-          $.HAjaxRequest({
-              url:"/v1/auth/resource/delete",
-              type:"post",
-              data:{res_id:$("#h-resource-show-id").html()},
-              success:function () {
-                  $.Notify({
-                      title:"操作成功",
-                      message:"删除菜单资源成功",
-                      type:"success",
-                  });
-                  ResObj.tree()
-              },
-          })
+            $.Hconfirm({
+                body:"点击确定删除菜单资源信息",
+                callback:function () {
+                    $.HAjaxRequest({
+                        url:"/v1/auth/resource/delete",
+                        type:"post",
+                        data:{res_id:$("#h-resource-show-id").html()},
+                        success:function () {
+                            $.Notify({
+                                title:"操作成功",
+                                message:"删除菜单资源成功",
+                                type:"success",
+                            });
+                            ResObj.tree()
+                        },
+                    })
+                }
+            })
         },
         add:function () {
             $.Hmodal({

@@ -136,32 +136,38 @@
             })
         },
         revoke:function () {
-           var res_id = $("#h-role-res-owner-resource").attr("data-selected");
-           var role_id = $("#h-role-resource-rel-role-id").html();
+            var res_id = $("#h-role-res-owner-resource").attr("data-selected");
+            var role_id = $("#h-role-resource-rel-role-id").html();
 
-           if (res_id ==undefined){
-               $.Notify({
-                   title:"温馨提示：",
-                   message:"请在下列树形结构中选择需要撤销的资源",
-                   type:"info",
-               })
-               return
-           }
-           $.HAjaxRequest({
-               url:"/v1/auth/role/resource/rights",
-               type:"post",
-               dataType:"json",
-               data:{role_id:role_id,res_id:res_id,type_id:"0"},
-               success:function () {
-                    $.Notify({
-                        title:"操作成功",
-                        message:"撤销资源权限成功",
-                        type:"success",
+            if (res_id ==undefined){
+                $.Notify({
+                    title:"温馨提示：",
+                    message:"请在下列树形结构中选择需要撤销的资源",
+                    type:"info",
+                })
+                return
+            }
+            $.Hconfirm({
+                body:"点击确定删除角色拥有的资源",
+                callback:function () {
+                    $.HAjaxRequest({
+                        url:"/v1/auth/role/resource/rights",
+                        type:"post",
+                        dataType:"json",
+                        data:{role_id:role_id,res_id:res_id,type_id:"0"},
+                        success:function () {
+                            $.Notify({
+                                title:"操作成功",
+                                message:"撤销资源权限成功",
+                                type:"success",
+                            })
+                            RoleResObj.resource_self()
+                            RoleResObj.resource_other()
+                        },
                     })
-                   RoleResObj.resource_self()
-                   RoleResObj.resource_other()
-               },
-           })
+                }
+            })
+
         },
         auth:function () {
             var res_id = $("#h-role-res-other-resource").attr("data-selected");
@@ -175,21 +181,26 @@
                 })
                 return
             }
-            $.HAjaxRequest({
-                url:"/v1/auth/role/resource/rights",
-                type:"post",
-                dataType:"json",
-                data:{role_id:role_id,res_id:res_id,type_id:"1"},
-                success:function () {
-                    $.Notify({
-                        title:"操作成功",
-                        message:"授权资源成功",
-                        type:"success",
-                    })
-                    RoleResObj.resource_self()
-                    RoleResObj.resource_other()
-                },
-            });
+            $.Hconfirm({
+                body:"点击确定给角色授予菜单资源",
+                callback:function () {
+                    $.HAjaxRequest({
+                        url:"/v1/auth/role/resource/rights",
+                        type:"post",
+                        dataType:"json",
+                        data:{role_id:role_id,res_id:res_id,type_id:"1"},
+                        success:function () {
+                            $.Notify({
+                                title:"操作成功",
+                                message:"授权资源成功",
+                                type:"success",
+                            })
+                            RoleResObj.resource_self()
+                            RoleResObj.resource_other()
+                        },
+                    });
+                }
+            })
         },
     }
 

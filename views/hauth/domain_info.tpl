@@ -212,8 +212,7 @@
                             }
                         });
                     },
-                    header:"删除确认框",
-                    body:"<span style='height: 96px; line-height: 96px; padding-left: 36px;font-weight: 600;'>确定删除这个域，删除后将无法恢复？</span>",
+                    body:"确定删除这个域，删除后将无法恢复",
                 });
             }else{
                 $.Notify({

@@ -334,8 +334,7 @@
                             },
                         })
                     },
-                    header:"删除机构信息",
-                    body:"<div style='height: 90px; line-height: 90px; font-size: 16px;font-weight: 500;width: 340px; text-align: center;'>确认要删除选中的机构信息吗？</div>"
+                    body:"确认要删除选中的机构信息吗"
                 })
             }
         },

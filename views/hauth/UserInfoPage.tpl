@@ -377,8 +377,7 @@
                 return
             } else {
                 $.Hconfirm({
-                    header:"确认删除框",
-                    body:"<span style='height: 90px; width: 230px;padding-left: 80px; line-height: 90px;font-weight: 500; font-size: 16px;'>确定要删除选中的用户吗？</span>",
+                    body:"点击确定删除选中的用户",
                     callback:function () {
                         $.HAjaxRequest({
                             url:"/v1/auth/user/delete",

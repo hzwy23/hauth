@@ -169,8 +169,7 @@
         },
         revoke:function (user_id,role_id) {
             $.Hconfirm({
-                header:"撤销用户角色授权",
-                body:"<div style='height: 90px;line-height: 90px;font-size: 20px;font-weight:600; width: 340px;text-align: center;display: block'>Are you sure ?</div>",
+                body:"点击确定移除权限",
                 callback:function () {
                     $.HAjaxRequest({
                         url:"/v1/auth/user/roles/revoke",

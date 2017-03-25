@@ -200,27 +200,32 @@
             }
         },
         delete:function () {
-           var sel = $('#h-domain-share-info-table').bootstrapTable('getSelections');
-           $.HAjaxRequest({
-               url:"/v1/auth/domain/share/delete",
-               type:"post",
-               data:{JSON:JSON.stringify(sel),domain_id:$("#h-domain-share-did").html()},
-               success:function () {
-                    $.Notify({
-                        title:"操作成功",
-                        message:"删除信息成功",
-                        type:"success",
+            $.Hconfirm({
+                body:"点击确定删除域共享",
+                callback:function () {
+                    var sel = $('#h-domain-share-info-table').bootstrapTable('getSelections');
+                    $.HAjaxRequest({
+                        url:"/v1/auth/domain/share/delete",
+                        type:"post",
+                        data:{JSON:JSON.stringify(sel),domain_id:$("#h-domain-share-did").html()},
+                        success:function () {
+                            $.Notify({
+                                title:"操作成功",
+                                message:"删除信息成功",
+                                type:"success",
+                            })
+                            $('#h-domain-share-info-table').bootstrapTable('refresh')
+                        },
+                        error:function (m) {
+                            $.Notify({
+                                title:"操作失败",
+                                message:m.responseText,
+                                type:"danger"
+                            })
+                        },
                     })
-                   $('#h-domain-share-info-table').bootstrapTable('refresh')
-               },
-               error:function (m) {
-                    $.Notify({
-                        title:"操作失败",
-                        message:m.responseText,
-                        type:"danger"
-                    })
-               },
-           })
+                }
+            })
         },
         authformatter:function (val, row, index) {
             if (val==1){
