@@ -61,9 +61,6 @@ var (
 func initDefaultDB() string {
 
 	HOME := os.Getenv("HBIGDATA_HOME")
-	if HOME == "" {
-		HOME = "./"
-	}
 
 	filedir := path.Join(HOME, "conf", "system.properties")
 

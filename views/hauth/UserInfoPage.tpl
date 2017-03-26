@@ -249,7 +249,7 @@
                 $.Hmodal({
                     header:"修改用户信息",
                     body:$("#modify-user-info").html(),
-                    height:"320px",
+                    height:"360px",
                     preprocess:function () {
                         var domain_id = $("#h-user-domain-list").val()
                         $.getJSON("/v1/auth/resource/org/get",{domain_id:domain_id},function(data){

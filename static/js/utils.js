@@ -1382,6 +1382,10 @@ var Hutils = {
                 footer:"",
 
                 footerBtnStatus:true,
+
+                submitDesc:"提交",
+
+                cancelDesc:"取消",
             }
             $.extend(true,__DEFAULT,param)
 
@@ -1395,8 +1399,8 @@ var Hutils = {
                     '</div>'+
                     '<div class="modal-body" style="width: '+__DEFAULT.width+'; overflow-y: auto">'+__DEFAULT.body+'</div>'+
                     '<div class="modal-footer btn-group-sm">'+
-                    '<button type="button" class="btn btn-danger cancel" data-dismiss="modal"><i class="icon-remove"></i>&nbsp;关闭</button>'+
-                    '<button type="button" class="btn btn-primary submit"><i class="icon-ok"></i>&nbsp;提交</button>'+
+                    '<button type="button" class="btn btn-danger cancel" data-dismiss="modal"><i class="icon-remove"></i>&nbsp;'+__DEFAULT.cancelDesc+'</button>'+
+                    '<button type="button" class="btn btn-primary submit"><i class="icon-ok"></i>&nbsp;'+__DEFAULT.submitDesc+'</button>'+
                     '</div>' +
                     '</div>' +
                     '</div>';
