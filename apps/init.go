@@ -1,10 +1,10 @@
 package apps
-
-import (
-	"github.com/hzwy23/asofdate/apps/mas/ftp"
-	"github.com/hzwy23/asofdate/apps/mas/ca"
-	"github.com/hzwy23/asofdate/apps/mas/common"
-)
+//
+//import (
+//	"github.com/hzwy23/asofdate/apps/mas/ftp"
+//	"github.com/hzwy23/asofdate/apps/mas/ca"
+//	"github.com/hzwy23/asofdate/apps/mas/common"
+//)
 
 // 在init中注册自己应用的路由
 func init(){
