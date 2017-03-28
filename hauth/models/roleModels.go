@@ -5,6 +5,8 @@ import (
 
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"time"
 )
 
 type RoleModel struct {
@@ -24,6 +26,7 @@ type RoleInfo struct {
 	Role_id             string `json:"role_id"`
 }
 
+// 查询某一个角色的具体信息
 func (RoleModel) GetRow(role_id string) ([]RoleInfo, error) {
 	var rst []RoleInfo
 	rows, err := dbobj.Query(sys_rdbms_091, role_id)
@@ -36,6 +39,12 @@ func (RoleModel) GetRow(role_id string) ([]RoleInfo, error) {
 }
 
 func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
+	key := hcache.GenKey("ROLEMODELS",domain_id)
+	if hcache.IsExist(key){
+		logs.Debug("get data from cache.")
+		rst , _ := hcache.Get(key).([]RoleInfo)
+		return rst,nil
+	}
 	rows, err := dbobj.Query(sys_rdbms_028, domain_id)
 	defer rows.Close()
 	if err != nil {
@@ -45,14 +54,17 @@ func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
 
 	var rst []RoleInfo
 	err = dbobj.Scan(rows, &rst)
+	hcache.Put(key,rst,720*time.Minute)
 	return rst, err
 }
 
 func (RoleModel) Post(id, rolename, user_id, rolestatus, domainid, roleid string) error {
+	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domainid))
 	return dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
 }
 
 func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
+
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -68,7 +80,7 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 				return errors.New("您没有权限删除这个域中的角色信息")
 			}
 		}
-
+		hcache.Delete(hcache.GenKey("ROLEMODELS",val.Domain_id))
 		_, err := tx.Exec(sys_rdbms_027, val.Role_id)
 		if err != nil {
 			logs.Error(err)
@@ -80,6 +92,7 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 	return tx.Commit()
 }
 
-func (RoleModel) Update(Role_name, Role_status, Role_id, User_id string) error {
+func (RoleModel) Update(Role_name, Role_status, Role_id, User_id,domain_id string) error {
+	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domain_id))
 	return dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
 }

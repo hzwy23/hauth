@@ -36,6 +36,7 @@
         <table id="h-user-info-table-details"
                class="table"
                data-toggle="table"
+               data-unique-id="user_id"
                data-toolbar="#h-user-toolbar-list"
                data-side-pagination="client"
                data-pagination="true"
@@ -389,8 +390,12 @@
                                     title:"操作成功",
                                     message:"删除用户信息成功",
                                     type:"success",
+                                });
+                                // delete user info by user_id
+                                // user_id is primary key.
+                                $(obj).each(function (index, element) {
+                                    $table.bootstrapTable("removeByUniqueId",element.user_id)
                                 })
-                                $table.bootstrapTable("refresh")
                             },
                         })
                     }
@@ -411,109 +416,106 @@
             })
         },
         formatter:function(value,rows,index){
-            return '<span class="h-td-btn" onclick="UserObj.modifyPasswd(\''+rows.user_id+'\')">改密</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="h-td-btn" onclick="UserObj.modifyStatus(\''+rows.user_id+'\',\''+ rows.status_cd+'\',\''+ rows.user_name+'\')">解锁</span>'
+            return '<span class="h-td-btn btn-primary btn-xs" onclick="UserObj.modifyPasswd(\''+rows.user_id+'\')">改密</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="h-td-btn btn-success btn-xs" onclick="UserObj.modifyStatus(\''+rows.user_id+'\',\''+ rows.status_cd+'\',\''+ rows.user_name+'\')">解锁</span>'
         },
     }
 </script>
 
+
+<!--新增用户信息表格框-->
 <script type="text/html" id="user_input_form">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <form class="form-inline" id="h-user-add-info">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width:100%;">账　号：</label>
-                    <input placeholder="3至30位字母，数字组成" name="userId" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">名　称：</label>
-                    <input placeholder="2至30位汉字，字母，数字组成" type="text" class="form-control" name="userDesc" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
+    <form class="row" id="h-user-add-info">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width:100%;">账　号：</label>
+                <input placeholder="3至30位字母，数字组成" name="userId" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">密　码：</label>
-                    <input placeholder="用户登录系统用到的密码" type="password" class="form-control" name="userPasswd" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">确认密码：</label>
-                    <input placeholder="确认登录密码" type="password" class="form-control" name="userPasswdConfirm" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">名　称：</label>
+                <input placeholder="2至30位汉字，字母，数字组成" type="text" class="form-control" name="userDesc" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">邮　箱：</label>
-                    <input placeholder="yourid@domain.com" name="userEmail" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">手机号：</label>
-                    <input placeholder="11位手机号码" name="userPhone" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">密　码：</label>
+                <input placeholder="用户登录系统用到的密码" type="password" class="form-control" name="userPasswd" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">所属域：</label>
-                    <select id="h-domain-up-id" name="domainId" style="width: 100%;height: 30px;line-height: 30px;">
-                    </select>
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">机　构：</label>
-                    <select  id="h-add-org-unit-list"  name="userOrgUnitId" style="width: 100%;height: 30px;line-height: 30px;">
-                    </select>
-                </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">确认密码：</label>
+                <input placeholder="确认登录密码" type="password" class="form-control" name="userPasswdConfirm" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px; display: none;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">状　态：</label>
-                    <select name="userStatus" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                        <option value="0" selected="selected">正常</option>
-                        <option value="1">锁定</option>
-                    </select>
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">邮　箱：</label>
+                <input placeholder="yourid@domain.com" name="userEmail" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-        </form>
-    </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">手机号：</label>
+                <input placeholder="11位手机号码" name="userPhone" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">所属域：</label>
+                <select id="h-domain-up-id" name="domainId" style="width: 100%;height: 30px;line-height: 30px;">
+                </select>
+            </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">机　构：</label>
+                <select  id="h-add-org-unit-list"  name="userOrgUnitId" style="width: 100%;height: 30px;line-height: 30px;">
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px; display: none;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">状　态：</label>
+                <select name="userStatus" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+                    <option value="0" selected="selected">正常</option>
+                    <option value="1">锁定</option>
+                </select>
+            </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+            </div>
+        </div>
+    </form>
 </script>
 
-
+<!--修改用户信息框-->
 <script type="text/html" id="modify-user-info">
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px">
-        <form class="form-horizontal" id="h-user-modify-info">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width:100%;">账　号：</label>
-                    <input placeholder="user id" name="userId" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px; background-color: #f5f5f5;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">名　称：</label>
-                    <input placeholder="user name" type="text" class="form-control" name="userDesc" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
+    <form class="row" id="h-user-modify-info">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width:100%;">账　号：</label>
+                <input placeholder="user id" name="userId" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px; background-color: #f5f5f5;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">邮　箱：</label>
-                    <input placeholder="user email" name="userEmail" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">手机号：</label>
-                    <input placeholder="user phone number" name="userPhone" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">名　称：</label>
+                <input placeholder="user name" type="text" class="form-control" name="userDesc" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">机　构：</label>
-                    <select id="h-modify-org-id" name="orgId" style="width: 100%;height: 30px;line-height: 30px;padding: 0px;">
-                    </select>
-                </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">邮　箱：</label>
+                <input placeholder="user email" name="userEmail" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
             </div>
-        </form>
-    </div>
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">手机号：</label>
+                <input placeholder="user phone number" name="userPhone" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
+                <label class="h-label" style="width: 100%;">机　构：</label>
+                <select id="h-modify-org-id" name="orgId" style="width: 100%;height: 30px;line-height: 30px;padding: 0px;">
+                </select>
+            </div>
+        </div>
+    </form>
 </script>
-
 
 <script type="text/html" id="modify-user-status">
-    <form class="col-sm-12 col-md-12 col-lg-12" id="h-user-modify-info-status">
+    <form id="h-user-modify-info-status">
         <div class="form-group col-sm-12 col-md-12 col-lg-12">
             <label class="h-label" style="width: 100%;">账　　号：</label>
             <input id="h-modify-user-status-user-id" readonly="readonly" title="不可编辑" name="userId" type="text" class="form-control" style="height: 30px; line-height: 30px;">
@@ -533,7 +535,7 @@
 </script>
 
 <script id="h-modify-password" type="text/html">
-    <form id="plat-change-userpasswd" class="col-sm-12 col-md-12 col-lg-12">
+    <form id="plat-change-userpasswd">
         <div class="form-group col-sm-12 col-md-12 col-lg-12">
             <label class="h-label" style="width: 100%;">账　号：</label>
             <input id="h-modify-user-password" readonly="readonly" class="form-control" style="width: 100%;height: 30px; line-height: 30px;" type="text" name="userid"/>

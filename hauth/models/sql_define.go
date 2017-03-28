@@ -172,4 +172,5 @@ var (
 							)`
 	sys_rdbms_096 = `insert into sys_role_user_relation(uuid,role_id,user_id,maintance_date,maintance_user) values(uuid(),?,?,now(),?)`
 	sys_rdbms_097 = `delete from sys_role_user_relation where user_id = ? and role_id = ?`
+
 )

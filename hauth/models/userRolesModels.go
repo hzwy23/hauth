@@ -7,6 +7,7 @@ import (
 
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
+
 )
 
 const (
@@ -29,7 +30,6 @@ type userRoleData struct {
 }
 
 func (UserRolesModel) GetRolesByUser(user_id string) ([]userRoleData, error) {
-
 	rows, err := dbobj.Query(sys_rdbms_094, user_id)
 	if err != nil {
 		logs.Error(err)

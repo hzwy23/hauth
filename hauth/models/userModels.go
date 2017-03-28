@@ -6,6 +6,8 @@ import (
 
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"time"
 )
 
 const (
@@ -43,14 +45,13 @@ type userInfo struct {
 
 // 查询用户自己的详细信息
 func (UserModel) GetOwnerDetails(user_id string) ([]userInfo, error) {
+	var rst []userInfo
 	row, err := dbobj.Query(sys_rdbms_023, user_id)
 	defer row.Close()
 	if err != nil {
 		logs.Error(err)
 		return nil, err
 	}
-
-	var rst []userInfo
 	err = dbobj.Scan(row, &rst)
 	return rst, err
 }
@@ -58,6 +59,14 @@ func (UserModel) GetOwnerDetails(user_id string) ([]userInfo, error) {
 // 查询怒
 func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 
+	key:=hcache.GenKey("USERMODELS",domain_id)
+	if hcache.IsExist(key) {
+		logs.Debug("get data from cache.")
+		rst,_ := hcache.Get(key).([]userInfo)
+		return rst,nil
+	}
+
+	logs.Debug("get data from database.")
 	row, err := dbobj.Query(sys_rdbms_017, domain_id)
 	defer row.Close()
 	if err != nil {
@@ -67,11 +76,14 @@ func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 
 	var rst []userInfo
 	err = dbobj.Scan(row, &rst)
+	hcache.Put(key,rst,720*time.Minute)
 	return rst, err
 }
 
 // 新增用户信息
-func (UserModel) Post(userId, userPasswd, userDesc, userStatus, id, userEmail, userPhone, userOrgUnitId string) error {
+func (UserModel) Post(userId, userPasswd, userDesc, userStatus, id, userEmail, userPhone, userOrgUnitId,domain_id string) error {
+	hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
+
 	tx, err := dbobj.Begin()
 	// insert user details
 	//
@@ -108,6 +120,8 @@ func (UserModel) Post(userId, userPasswd, userDesc, userStatus, id, userEmail, u
 
 // 删除用户信息
 func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
+	defer hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
+
 	var js []userInfo
 	err := json.Unmarshal(ijs, &js)
 	if err != nil {
@@ -216,7 +230,8 @@ func (this UserModel) ModifyPasswd(passwd, user_id string) (string, error) {
 }
 
 // 修改用户信息
-func (this UserModel) Put(user_name, org_id, phone, email, uid, user_id string) (string, error) {
+func (this UserModel) Put(user_name, org_id, phone, email, uid, user_id,domain_id string) (string, error) {
+	defer hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
 	err := dbobj.Exec(sys_rdbms_021, user_name, phone, email, uid, org_id, user_id)
 	return error_user_modify_info, err
 }

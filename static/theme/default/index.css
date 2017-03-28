@@ -281,16 +281,15 @@ ul {list-style:none;}
 }
 
 .h-td-btn {
-    height: 16px;
-    line-height: 16px;
+    height: 14px;
+    line-height: 14px;
     vertical-align: middle;
     text-align: center;
     border: none;
     outline: none;
 }
 .h-td-btn:hover{
-    text-decoration: underline;
-    color: blue;
+    /*text-decoration: underline;*/
     cursor: pointer;
 }
 

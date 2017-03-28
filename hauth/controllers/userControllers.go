@@ -165,7 +165,7 @@ func (this UserController) Post(ctx *context.Context) {
 		return
 	}
 
-	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId)
+	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId,domain_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_post, err)
@@ -262,7 +262,7 @@ func (this UserController) Put(ctx *context.Context) {
 		}
 	}
 
-	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id)
+	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id,did)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)

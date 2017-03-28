@@ -62,15 +62,17 @@ func registerRouter() {
 	beego.Get("/v1/auth/resource/query", controllers.ResourceCtl.Query)
 
 	//role_resource_info
-	beego.Get("/v1/auth/role/resource/get", controllers.RoleCtl.GetResource)
-	beego.Post("/v1/auth/role/resource/rights", controllers.RoleCtl.HandleResource)
+	beego.Get("/v1/auth/role/resource/get", controllers.RoleAndResourceCtl.GetResource)
+	beego.Post("/v1/auth/role/resource/rights", controllers.RoleAndResourceCtl.HandleResource)
 
 	//role_info
-	beego.Get("/v1/auth/role/get", controllers.RoleCtl.GetRoleInfo)
-	beego.Get("/v1/auth/role/resource/details", controllers.RoleCtl.ResourcePage)
-	beego.Post("/v1/auth/role/post", controllers.RoleCtl.PostRoleInfo)
-	beego.Put("/v1/auth/role/update", controllers.RoleCtl.UpdateRoleInfo)
-	beego.Post("/v1/auth/role/delete", controllers.RoleCtl.DeleteRoleInfo)
+	beego.Get("/v1/auth/role/get", controllers.RoleCtl.Get)
+	beego.Post("/v1/auth/role/post", controllers.RoleCtl.Post)
+	beego.Put("/v1/auth/role/update", controllers.RoleCtl.Update)
+	beego.Post("/v1/auth/role/delete", controllers.RoleCtl.Delete)
+
+	// role and resource relation
+	beego.Get("/v1/auth/role/resource/details", controllers.RoleAndResourceCtl.ResourcePage)
 
 	//sys_batch_info
 	beego.Get("/v1/auth/user/roles/get", controllers.UserRolesController.GetRolesByUserId)

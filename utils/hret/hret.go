@@ -47,19 +47,20 @@ func WriteHttpErrMsg(w http.ResponseWriter, herr HttpErrMsg) {
 	w.Write(ijs)
 }
 
-func WriteJson(w http.ResponseWriter, data interface{}) {
+func WriteJson(w http.ResponseWriter, data interface{})([]byte,error) {
 	ijs, err := json.Marshal(data)
 	if err != nil {
 		logs.Error(err)
 		w.WriteHeader(http.StatusExpectationFailed)
 		w.Write([]byte(`{error_code:765,error_msg:"` + err.Error() + `",error_details:"format json type info failed."}`))
-		return
+		return ijs, err
 	}
 	if string(ijs) == "null" {
 		w.Write([]byte("[]"))
-		return
+		return ijs,nil
 	}
-	w.Write(ijs)
+	_,err = w.Write(ijs)
+	return ijs,err
 }
 
 func WriteHttpErrMsgs(w http.ResponseWriter, code int, msg string, details ...interface{}) {

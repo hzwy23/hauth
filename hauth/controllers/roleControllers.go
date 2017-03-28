@@ -17,11 +17,13 @@ import (
 type RoleController struct {
 	models    models.RoleModel
 	resModels models.ResourceModel
+	roleResModels models.RoleAndResourceModel
 }
 
 var RoleCtl = &RoleController{
 	models.RoleModel{},
 	models.ResourceModel{},
+	models.RoleAndResourceModel{},
 }
 
 func (RoleController) Page(ctx *context.Context) {
@@ -35,27 +37,7 @@ func (RoleController) Page(ctx *context.Context) {
 	hz.Execute(ctx.ResponseWriter, nil)
 }
 
-func (this RoleController) ResourcePage(ctx *context.Context) {
-	defer hret.HttpPanic()
-	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
-		return
-	}
-
-	var role_id = ctx.Request.FormValue("role_id")
-	rst, err := this.models.GetRow(role_id)
-	if err != nil || len(rst) == 0 {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色资源信息失败")
-		return
-	}
-	file, _ := template.ParseFiles("./views/hauth/res_role_rel_page.tpl")
-
-	file.Execute(ctx.ResponseWriter, rst[0])
-}
-
-func (this RoleController) GetRoleInfo(ctx *context.Context) {
+func (this RoleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -86,7 +68,7 @@ func (this RoleController) GetRoleInfo(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this RoleController) PostRoleInfo(ctx *context.Context) {
+func (this RoleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
@@ -142,7 +124,7 @@ func (this RoleController) PostRoleInfo(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new role info successfully.")
 }
 
-func (this RoleController) DeleteRoleInfo(ctx *context.Context) {
+func (this RoleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
@@ -176,7 +158,7 @@ func (this RoleController) DeleteRoleInfo(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除角色信息成功。")
 }
 
-func (this RoleController) UpdateRoleInfo(ctx *context.Context) {
+func (this RoleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -210,77 +192,11 @@ func (this RoleController) UpdateRoleInfo(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id)
+	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id,did)
 	if err != nil {
 		logs.Error(err.Error())
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "update role info failed.", err)
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "update role info successfully.")
-}
-
-func (this RoleController) GetResource(ctx *context.Context) {
-	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
-		return
-	}
-
-	role_id := ctx.Request.FormValue("role_id")
-	type_id := ctx.Request.FormValue("type_id")
-
-	if type_id == "0" {
-		rst, err := this.resModels.GetByRoleId(role_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
-			return
-		}
-		hret.WriteJson(ctx.ResponseWriter, rst)
-	} else if type_id == "1" {
-		rst, err := this.resModels.UnGetted(role_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
-			return
-		}
-		hret.WriteJson(ctx.ResponseWriter, rst)
-	}
-}
-
-func (this RoleController) HandleResource(ctx *context.Context) {
-	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
-		return
-	}
-
-	res_id := ctx.Request.FormValue("res_id")
-	role_id := ctx.Request.FormValue("role_id")
-	type_id := ctx.Request.FormValue("type_id")
-	logs.Debug(res_id, type_id, role_id)
-
-	// 撤销权限操作
-	if type_id == "0" {
-		err := this.resModels.Revoke(role_id, res_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")
-			return
-		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, "撤销资源权限成功")
-			return
-		}
-	} else {
-		//授权操作
-		err := this.resModels.Auth(role_id, res_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")
-			return
-		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, "撤销资源权限成功")
-			return
-		}
-	}
 }

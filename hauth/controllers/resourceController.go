@@ -69,7 +69,6 @@ func (this ResourceController) QueryTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")
 	theme_id := ctx.Request.FormValue("theme_id")
-	logs.Debug(res_id, theme_id)
 	rst, err := this.models.QueryTheme(res_id, theme_id)
 	if err != nil {
 		logs.Error(err)
