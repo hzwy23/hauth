@@ -7,14 +7,14 @@ var Hutils = {
         // 隐藏子菜单系统，切换具体页面内容
         hideWrapper:function(){
             $("#wrapper").removeClass("animated slideInUp slideOutDown");
-            $("#wrapper").addClass("animated slideOutDown")
-            $("#h-main-content").removeClass("animated slideInDown slideOutUp")
-            $("#h-main-content").addClass("animated slideInDown")
+            $("#wrapper").addClass("animated slideOutDown");
+            $("#h-main-content").removeClass("animated slideInDown slideOutUp");
+            $("#h-main-content").addClass("animated slideInDown");
         },
         // 隐藏内容显示部分，切换到子菜单系统
         showWrapper:function() {
-            $("#h-main-content").removeClass("animated slideInDown slideOutUp")
-            $("#h-main-content").addClass("animated slideOutUp")
+            $("#h-main-content").removeClass("animated slideInDown slideOutUp");
+            $("#h-main-content").addClass("animated slideOutUp");
             $("#wrapper").removeClass("animated slideInUp slideOutDown");
             $("#wrapper").addClass("animated slideInUp")
         },
@@ -156,6 +156,16 @@ var Hutils = {
                     cache:false,
                     async:true,
                     dataType:"text",
+                    error:function (msg) {
+                        NProgress.done();
+                        var m = JSON.parse(msg);
+                        $.Notify({
+                            title:"温馨提示:",
+                            message:m.error_msg,
+                            type:"danger",
+                        });
+                        return
+                    },
                     success: function(data){
 
                         // 隐藏内容显示区域
@@ -197,8 +207,8 @@ var Hutils = {
         },
         // 打开指定资源按钮
         openTab:function(param){
-            // 隐藏子菜单页面
-            Hutils.hideWrapper();
+
+            NProgress.start();
 
             // 判断子元素会否已经被打开，默认设置为未打开
             var flag = false;
@@ -211,9 +221,6 @@ var Hutils = {
 
             // 资源名称
             var name = param.title;
-
-            // 获取tab模板
-            var optHtml = Hutils.__genTabUI(data_id,name);
 
             $(".H-tabs-index").find("span").each(function(index,element){
                 if (data_id == $(element).attr("data-id")){
@@ -239,6 +246,7 @@ var Hutils = {
                     return false;
                 }
             });
+
             if (flag == false){
                 $.HAjaxRequest({
                     type:"get",
@@ -246,15 +254,20 @@ var Hutils = {
                     cache:false,
                     async:true,
                     dataType:"text",
+                    error:function (msg) {
+                        var m = JSON.parse(msg.responseText);
+                        $.Notify({
+                            title:"温馨提示:",
+                            message:m.error_msg,
+                            type:"danger",
+                        });
+                        NProgress.done();
+                    },
                     success: function(data){
-                        // 清楚所有的tab选中状态
-                        $(".active-tab").removeClass("active-tab");
-
-                        // 在tab栏目列表中添加新的tab
-                        $(".H-tabs-index").append(optHtml);
 
                         // 隐藏内容显示区域
-                        $("#h-main-content").find("div.active").removeClass("active").addClass("none");
+                        $("#h-main-content").find("div.active")
+                            .removeClass("active").addClass("none");
 
                         var newContent = document.createElement("div")
                         $(newContent).attr({
@@ -263,10 +276,27 @@ var Hutils = {
                         }).css({
                             "padding":"0px",
                             "margin":"0px",
-                        }).addClass("active").html(data)
-                        $("#h-main-content").append(newContent);
-                    },
+                        }).addClass("active").html(data);
+
+                        $("#h-main-content").append(newContent).hide().fadeIn();
+
+                        // 生成标签页
+                        {
+                            // 清楚所有的tab选中状态
+                            $(".active-tab").removeClass("active-tab");
+
+                            // 获取新tab模板内容
+                            var optHtml = Hutils.__genTabUI(data_id,name)
+
+                            // 在tab栏目列表中添加新的tab
+                            $(".H-tabs-index").append(optHtml);
+                        }
+                        NProgress.done();
+                    }
                 });
+            } else {
+                NProgress.done();
+                return
             }
         },
 

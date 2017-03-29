@@ -147,7 +147,7 @@
             $.Hmodal({
                 header:"新增资源",
                 body:$("#res_input_form").html(),
-                height:"480px",
+                height:"460px",
                 callback:function (hmode) {
                     $.HAjaxRequest({
                         url:"/v1/auth/resource/post",
@@ -436,9 +436,16 @@
                     var res_group_id = $("#h-resource-show-res-group-id").html()
                     var res_sort_id = $("#h-resource-show-res-sort-id").html()
 
-                    $("#h-res-modify-theme-id").val(theme_id)
+                    $("#h-res-modify-theme-id").Hselect({
+                        height:"30px",
+                        value:theme_id,
+                    });
+                    $("#h-res-modify-res-class").Hselect({
+                        height:"30px",
+                        value:res_class,
+                    });
+
                     $("#h-res-modify-res-url").val(res_url)
-                    $("#h-res-modify-res-class").val(res_class)
                     $("#h-res-modify-res-img").val(res_img)
                     $("#h-res-modify-res-bg-color").val(res_by_color)
                     $("#h-res-modify-group-id").val(res_group_id)
@@ -464,169 +471,162 @@
 </script>
 
 <script type="text/html" id="res_input_form">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <form class="row form-horizontal" id="h-res-add-info">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-add-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
-                        <option value="1001">青春风格</option>
-                        <option value="1002">稳重风格</option>
-                        <option value="1003">粉色风格</option>
-                        <option value="1004">中国风</option>
-                    </select>
-                </div>
+    <form class="row" id="h-res-add-info">
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
+            <div class="col-sm-12">
+                <select id="h-res-add-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="1001">青春风格</option>
+                    <option value="1002">稳重风格</option>
+                    <option value="1003">粉色风格</option>
+                    <option value="1004">中国风</option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">菜单类别：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-add-type-id" onchange="ResObj.selectType(this)" name="res_type" class="form-control" style="height: 30px; line-height: 30px;">
-                        <option value="0">首页系统</option>
-                        <option value="1">子页系统</option>
-                        <option value="2">功能按钮</option>
-                        <option value="4">虚拟节点</option>
-                    </select>
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">菜单类别：</label>
+            <div class="col-sm-12">
+                <select id="h-res-add-type-id" onchange="ResObj.selectType(this)" name="res_type" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="0">首页系统</option>
+                    <option value="1">子页系统</option>
+                    <option value="2">功能按钮</option>
+                    <option value="4">虚拟节点</option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源编码：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-res-id" placeholder="1-30位字母、数字组成" name="res_id" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源编码：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-res-id" placeholder="1-30位字母、数字组成" name="res_id" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源名称：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-res-name" placeholder="1-30位汉字、字母组成" type="text" class="form-control" name="res_name" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源名称：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-res-name" placeholder="1-30位汉字、字母组成" type="text" class="form-control" name="res_name" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6" style="display: none;">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">上级资源编码：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-add-up-res-id" name="res_up_id" type="text" class="form-control" style="height: 30px; line-height: 30px;padding: 0px; display: block">
-                    </select>
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="display: none;margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">上级资源编码：</label>
+            <div class="col-sm-12">
+                <select id="h-res-add-up-res-id" name="res_up_id" type="text" class="form-control" style="height: 30px; line-height: 30px;padding: 0px; display: block">
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">路由信息：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-res-url" placeholder="如：/v1/auth/help" type="url" class="form-control" name="res_url" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">路由信息：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-res-url" placeholder="如：/v1/auth/help" type="url" class="form-control" name="res_url" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">样式属性：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-add-res-class" name="res_class" class="form-control" style="height: 30px; line-height: 30px;">
-                        <option value="tile">小方块图形</option>
-                        <option value="tile tile-wide">长方形图形</option>
-                        <option value="tile tile-large">大方块图形</option>
-                    </select>
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">样式属性：</label>
+            <div class="col-sm-12">
+                <select id="h-res-add-res-class" name="res_class" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="tile">小方块图形</option>
+                    <option value="tile tile-wide">长方形图形</option>
+                    <option value="tile tile-large">大方块图形</option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标路径：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-res-img" placeholder="如：/static/images/example.png" name="res_img" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标路径：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-res-img" placeholder="如：/static/images/example.png" name="res_img" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标色彩：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-res-bg-color" placeholder="#339999" name="res_bg_color" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标色彩：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-res-bg-color" placeholder="#339999" name="res_bg_color" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">分组编号：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-group-id" placeholder="菜单所属分组，请用数字表示" type="number" class="form-control" name="group_id" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">分组编号：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-group-id" placeholder="菜单所属分组，请用数字表示" type="number" class="form-control" name="group_id" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">排序号：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-add-sort-id" placeholder="所在分组的排序号，请用数字表示" name="sort_id" type="number" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">排序号：</label>
+            <div class="col-sm-12">
+                <input id="h-res-add-sort-id" placeholder="所在分组的排序号，请用数字表示" name="sort_id" type="number" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </script>
 
 
 <script type="text/html" id="res_input_form_modify">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <form class="row form-horizontal" id="h-res-modify-info">
-
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源编码：</label>
-                <div class="col-sm-12">
-                    <input readonly="readonly" id="h-res-modify-res-id" placeholder="1-30位字母、数字组成" name="res_id" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+    <form class="row form-horizontal" id="h-res-modify-info">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源编码：</label>
+            <div class="col-sm-12">
+                <input readonly="readonly" id="h-res-modify-res-id" placeholder="1-30位字母、数字组成" name="res_id" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源名称：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-res-name" placeholder="1-30位汉字、字母组成" type="text" class="form-control" name="res_name" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源名称：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-res-name" placeholder="1-30位汉字、字母组成" type="text" class="form-control" name="res_name" style="height: 30px; line-height: 30px;">
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </script>
 
 
 <script type="text/html" id="res_modify_theme_form">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <form class="row form-horizontal" id="h-res-modify-theme-info">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-modify-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
-                        <option value="1001">青春风格</option>
-                        <option value="1002">稳重风格</option>
-                        <option value="1003">粉色风格</option>
-                        <option value="1004">中国风</option>
-                    </select>
-                </div>
+    <form class="row" id="h-res-modify-theme-info">
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
+            <div class="col-sm-12">
+                <select id="h-res-modify-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="1001">青春风格</option>
+                    <option value="1002">稳重风格</option>
+                    <option value="1003">粉色风格</option>
+                    <option value="1004">中国风</option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">样式属性：</label>
-                <div class="col-sm-12">
-                    <select id="h-res-modify-res-class" name="res_class" class="form-control" style="height: 30px; line-height: 30px;">
-                        <option value="tile">小方块图形</option>
-                        <option value="tile tile-wide">长方形图形</option>
-                        <option value="tile tile-large">大方块图形</option>
-                    </select>
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">样式属性：</label>
+            <div class="col-sm-12">
+                <select id="h-res-modify-res-class" name="res_class" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="tile">小方块图形</option>
+                    <option value="tile tile-wide">长方形图形</option>
+                    <option value="tile tile-large">大方块图形</option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标路径：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-res-img" placeholder="如：/static/images/example.png" name="res_img" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标路径：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-res-img" placeholder="如：/static/images/example.png" name="res_img" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标色彩：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-res-bg-color" placeholder="#339999" name="res_bg_color" type="text" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">图标色彩：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-res-bg-color" placeholder="#339999" name="res_bg_color" type="text" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">路由信息：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-res-url" placeholder="如：/v1/auth/help" type="url" class="form-control" name="res_url" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">路由信息：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-res-url" placeholder="如：/v1/auth/help" type="url" class="form-control" name="res_url" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">分组编号：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-group-id" placeholder="菜单所属分组，请用数字表示" type="number" class="form-control" name="group_id" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">分组编号：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-group-id" placeholder="菜单所属分组，请用数字表示" type="number" class="form-control" name="group_id" style="height: 30px; line-height: 30px;">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">排序号：</label>
-                <div class="col-sm-12">
-                    <input id="h-res-modify-sort-id" placeholder="所在分组的排序号，请用数字表示" name="sort_id" type="number" class="form-control" style="height: 30px; line-height: 30px;">
-                </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">排序号：</label>
+            <div class="col-sm-12">
+                <input id="h-res-modify-sort-id" placeholder="所在分组的排序号，请用数字表示" name="sort_id" type="number" class="form-control" style="height: 30px; line-height: 30px;">
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </script>

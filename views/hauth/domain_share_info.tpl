@@ -66,6 +66,7 @@
                        data-toggle="table"
                        data-side-pagination="client"
                        data-pagination="true"
+                       data-striped="true"
                        data-url="/v1/auth/domain/share/get"
                        data-page-list="[20, 50, 100, 200]"
                        data-toolbar="#h-domain-share-toolbar-info"
@@ -302,7 +303,7 @@
 </script>
 
 <script id="domain-share-input-form" type="text/html">
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px">
+    <div class="col-sm-12 col-md-12 col-lg-12">
         <form class="form-horizontal" id="h-domain-share-add-tpl">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="form-group-sm col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
@@ -325,7 +326,7 @@
 </script>
 
 <script id="domain-share-modify-form" type="text/html">
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px">
+    <div class="col-sm-12 col-md-12 col-lg-12">
         <form class="form-horizontal" id="h-domain-share-modify-tpl">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="form-group-sm col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">

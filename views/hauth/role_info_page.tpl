@@ -31,6 +31,7 @@
     <div id="h-role-table-info" class="col-sm-12 col-md-12 col-lg-12">
         <table id="h-role-info-table-details"
                data-toggle="table"
+               data-striped="true"
                data-toolbar="#h-role-details-toolbar"
                data-side-pagination="client"
                data-pagination="true"
@@ -74,13 +75,15 @@
             })
         },
         formatter:function(value,rows,index){
-            return '<span class="h-td-btn" onclick="RoleObj.getResourcePage(\''+rows.role_id+'\',\''+ rows.role_name+'\')">资源管理</span>'
+            return '<span class="h-td-btn btn-primary btn-xs" onclick="RoleObj.getResourcePage(\''+rows.role_id+'\',\''+ rows.role_name+'\')">资源管理</span>'
         },
         add:function () {
+            var domain_id = $("#h-role-domain-list").val();
+
             $.Hmodal({
                 header:"新增角色",
                 body:$("#role_input_form").html(),
-                height:"360px",
+                height:"300px",
                 preprocess:function () {
                     $.getJSON("/v1/auth/domain/owner",function(data) {
                         var arr = new Array()
@@ -94,6 +97,7 @@
                         $("#h-role-domain-id").Hselect({
                             data: arr,
                             height: "30px",
+                            value:domain_id,
                         });
                     });
                     $("#h-role-add-status").Hselect({height:"30px"})
@@ -135,7 +139,7 @@
                 $.Hmodal({
                     header:"编辑角色信息",
                     body:$("#role_modify_form").html(),
-                    height:"360px",
+                    height:"320px",
                     preprocess:function () {
                         $("#h-role-modify-role-code-number").val(code_number)
                         $("#h-role-modify-role-name").val(role_name)
@@ -208,7 +212,7 @@
 
         // 初始化右上角域选择框
         $("#h-role-info-table-details").bootstrapTable({
-            height:hwindow-170,
+            height:hwindow-130,
             url:"/v1/auth/role/get",
             queryParams:function (params) {
                 params.domain_id = $("#h-role-domain-list").val();
@@ -243,59 +247,47 @@
 </script>
 
 <script type="text/html" id="role_input_form">
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px; padding-top: 10px;">
-        <form class="form-horizontal"  id="h-role-add-info">
-
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width:100%;">角色编码：</label>
-                    <input placeholder="1..30位数字，字母组成" name="role_id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">角色名称：</label>
-                    <input placeholder="1..30位汉字，字母，数字组成" type="text" class="form-control" name="role_name" style="width: 100%;height: 30px;line-height: 30px;">
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">状　态：</label>
-                    <select id="h-role-add-status" name="role_status"  class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                        <option value="0">正常</option>
-                        <option value="1">失效</option>
-                    </select>
-                </div>
-                <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                    <label class="h-label" style="width: 100%;">所属域：</label>
-                    <select id="h-role-domain-id" name="domain_id" style="width: 100%;height: 30px;line-height: 30px;">
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
+    <form id="h-role-add-info">
+        <div class="form-group-sm col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="h-label" style="width:100%;">角色编码：</label>
+            <input placeholder="1..30位数字，字母组成" name="role_id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+        </div>
+        <div class="form-group-sm col-sm-6 col-md-6 col-lg-6" style="margin-top: 2px;">
+            <label class="h-label" style="width: 100%;">角色名称：</label>
+            <input placeholder="1..30位汉字，字母，数字组成" type="text" class="form-control" name="role_name" style="width: 100%;height: 30px;line-height: 30px;">
+        </div>
+        <div class="form-group-sm col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
+            <label class="h-label" style="width: 100%;">状　态：</label>
+            <select id="h-role-add-status" name="role_status"  class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+                <option value="0">正常</option>
+                <option value="1">失效</option>
+            </select>
+        </div>
+        <div class="form-group-sm col-sm-6 col-md-6 col-lg-6" style="margin-top: 15px;">
+            <label class="h-label" style="width: 100%;">所属域：</label>
+            <select id="h-role-domain-id" name="domain_id" style="width: 100%;height: 30px;line-height: 30px;">
+            </select>
+        </div>
+    </form>
 </script>
 
-
 <script type="text/html" id="role_modify_form">
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px; padding-top: 10px;">
-        <form class="form-horizontal" novalidate="novalidate" id="h-role-modify-info">
+    <form novalidate="novalidate" id="h-role-modify-info">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <label class="h-label" style="width:100%;">角色编码：</label>
+            <input id="h-role-modify-role-code-number" readonly="readonly" name="code_number" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <label class="h-label" style="width: 100%;">角色名称：</label>
+            <input id="h-role-modify-role-name" placeholder="" type="text" class="form-control" name="role_name" style="width: 100%;height: 30px;line-height: 30px;">
 
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <label class="h-label" style="width:100%;">角色编码：</label>
-                <input id="h-role-modify-role-code-number" readonly="readonly" name="code_number" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-            </div>
-
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <label class="h-label" style="width: 100%;">角色名称：</label>
-                <input id="h-role-modify-role-name" placeholder="" type="text" class="form-control" name="role_name" style="width: 100%;height: 30px;line-height: 30px;">
-
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-                <label class="h-label" style="width: 100%;">状　态：</label>
-                <select id="h-role-modify-role-status-cd" name="role_status"  class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
-                    <option value="0">正常</option>
-                    <option value="1">失效</option>
-                </select>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
+            <label class="h-label" style="width: 100%;">状　态：</label>
+            <select id="h-role-modify-role-status-cd" name="role_status"  class="form-control" style="width: 100%;height: 30px;line-height: 30px;">
+                <option value="0">正常</option>
+                <option value="1">失效</option>
+            </select>
+        </div>
+    </form>
 </script>

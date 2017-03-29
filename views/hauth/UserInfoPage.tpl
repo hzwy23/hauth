@@ -40,6 +40,7 @@
                data-toolbar="#h-user-toolbar-list"
                data-side-pagination="client"
                data-pagination="true"
+               data-striped="true"
                data-page-list="[20, 50, 100, 200]"
                data-search="true">
             <thead>

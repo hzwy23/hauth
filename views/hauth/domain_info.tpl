@@ -150,7 +150,7 @@
 
                     formatter:function(value,rows,index){
 
-                        return '<span class="h-td-btn" onclick="DomainObj.getSharePage(\''+rows.domain_id+'\',\''+ rows.domain_desc+'\')">共享管理</span>'
+                        return '<span class="h-td-btn btn-primary btn-xs" onclick="DomainObj.getSharePage(\''+rows.domain_id+'\',\''+ rows.domain_desc+'\')">共享管理</span>'
 
                     }
                 }]

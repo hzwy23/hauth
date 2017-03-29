@@ -33,6 +33,7 @@
             <div id="h-grant-table-info" class="col-sm-12 col-md-12 col-lg-12">
                 <table id="h-grant-info-table-details"
                        data-toggle="table"
+                       data-striped="true"
                        data-url="/v1/auth/user/get"
                        data-toolbar="#h-grant-toolbar-list"
                        data-side-pagination="client"
@@ -68,6 +69,7 @@
                 </div>
                 <table id="h-grant-user-role-table-details"
                        data-toggle="table"
+                       data-striped="true"
                        data-url="/v1/auth/user/roles/get"
                        data-side-pagination="client"
                        data-pagination="true"
@@ -125,11 +127,15 @@
                     $.Hmodal({
                         header:"授权管理",
                         body:$("#h-other-user-role-table-details-html").html(),
-                        height:"420px",
+                        height:"360px",
+                        submitDesc:"授权",
+                        cancelDesc:"关闭",
                         preprocess:function () {
                             var $table =  $("#h-other-user-role-table-details");
                             $table.bootstrapTable({
-                                height:292,
+                                paginationLoop:false,
+                                height:222,
+                                striped:true,
                             });
                             $table.bootstrapTable('load',data)
                         },
