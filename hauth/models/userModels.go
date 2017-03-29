@@ -66,7 +66,6 @@ func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 		return rst,nil
 	}
 
-	logs.Debug("get data from database.")
 	row, err := dbobj.Query(sys_rdbms_017, domain_id)
 	defer row.Close()
 	if err != nil {

@@ -32,7 +32,6 @@
         <table id="h-role-info-table-details"
                data-toggle="table"
                data-toolbar="#h-role-details-toolbar"
-               data-url="/v1/auth/role/get"
                data-side-pagination="client"
                data-pagination="true"
                data-page-list="[20, 50, 100, 200]"
@@ -204,40 +203,42 @@
     };
 
     $(document).ready(function(obj){
-        var hwindow=document.documentElement.clientHeight;
-        $("#h-role-info").height(hwindow-130)
 
-        $.getJSON("/v1/auth/domain/owner",function(data) {
-            var arr = new Array()
-            $(data).each(function (index, element) {
-                var ijs = {}
-                ijs.id = element.domain_id
-                ijs.text = element.domain_desc
-                ijs.upId = "####hzwy23###"
-                arr.push(ijs)
-            });
-            $("#h-role-domain-list").Hselect({
-                data: arr,
-                height: "24px",
-                width: "180px",
-                onChange: function () {
-                    $("#h-role-info-table-details").bootstrapTable('refresh');
-                },
-            });
-            $.getJSON("/v1/auth/domain/id",function (data){
-                $("#h-role-domain-list").val(data).trigger("change")
-            })
-        });
+        var hwindow=document.documentElement.clientHeight;
 
         // 初始化右上角域选择框
         $("#h-role-info-table-details").bootstrapTable({
             height:hwindow-170,
+            url:"/v1/auth/role/get",
             queryParams:function (params) {
                 params.domain_id = $("#h-role-domain-list").val();
                 return params
             }
         });
 
+        $("#h-role-info").height(hwindow-130);
+
+        $.getJSON("/v1/auth/domain/self/owner",function(data) {
+
+            var arr = new Array()
+            $(data.owner_list).each(function (index, element) {
+                var ijs = {}
+                ijs.id = element.domain_id
+                ijs.text = element.domain_desc
+                ijs.upId = "####hzwy23###"
+                arr.push(ijs)
+            });
+
+            $("#h-role-domain-list").Hselect({
+                data: arr,
+                height: "24px",
+                width: "180px",
+                value:data.domain_id,
+                onChange: function () {
+                    $("#h-role-info-table-details").bootstrapTable('refresh');
+                },
+            });
+        });
     });
 </script>
 
