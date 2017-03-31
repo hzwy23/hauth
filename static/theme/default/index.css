@@ -360,3 +360,7 @@ td{
     -moz-animation-iteration-count: 1;
     -ms-animation-iteration-count: 1;
 }
+
+/*::-webkit-scrollbar{*/
+    /*width: 8px;*/
+/*}*/

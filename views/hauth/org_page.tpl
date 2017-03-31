@@ -34,7 +34,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-12 col-md-5 col-md-3">
+    <div class="col-sm-12 col-md-5 col-lg-3">
         <div id="h-org-tree-info" style="border: #598f56 solid 1px;">
             <div class="col-ms-12 col-md-12 col-lg-12">
                 <div style="border-bottom: #598f56 solid 1px;height: 44px; line-height: 44px;">

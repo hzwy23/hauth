@@ -614,6 +614,7 @@ var Hutils = {
         // 6. 删除节点
         // 7. 新增节点
         // 8. 更新节点
+        // attr 为0 表示叶子,为1 表示节点
 
         // 保留节点索引
         var $this = this;
@@ -627,6 +628,8 @@ var Hutils = {
             showLiHeight:"30px",
             showFontSize:"14px",
             iconColor:"#030202",
+
+            attr:false,
 
             onChange:function (obj) {
                 console.log("没有注册点击函数")
@@ -723,7 +726,6 @@ var Hutils = {
 
             return list
         }
-
         // 2. set data-*
         // 3. genUI
         function genTreeUI(a){
@@ -734,12 +736,22 @@ var Hutils = {
                 if (isNaN(pd)){
                     pd = 10
                 }
-                var li = '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                    '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: crosshair ;display: inline-block">' +
-                    '<i style="border-color:'+__DEFAULT.iconColor+' transparent transparent transparent;border-style: solid;border-width: 6px 5px 0px 5px;height: 0;margin-left: 1px;margin-top: -5px;position: absolute;top: 50%;width: 0;"></i>' +
-                    '</hzw>' +
-                    '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                opt+=li;
+                if (a[i].attr == "0") {
+                    // 叶子信息
+                    opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                        '<hzw style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: pointer ;display: inline-block">' +
+                        '<i class="icon-leaf" style="color: green;"></i>' +
+                        '</hzw>' +
+                        '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+
+                } else {
+                    // 节点信息
+                    opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                        '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell ;display: inline-block">' +
+                        '<i style="color: #ccb008;" class="icon-folder-open"> </i>' +
+                        '</hzw>' +
+                        '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                }
             }
             opt +='</ul>'
             return opt;
@@ -747,33 +759,28 @@ var Hutils = {
 
         // 绑定伸缩按钮
         function showOrHide(e){
-
-            var topBorderColor = __DEFAULT.iconColor+' transparent transparent transparent'
-            var leftBorderColor = 'transparent transparent transparent '+__DEFAULT.iconColor
+            $.notifyClose()
             var dept = $(e).attr("data-dept")
             var nextObj = $(e).next()
             var nextDept = $(nextObj).attr("data-dept")
             var nextDisplay = $(nextObj).css("display")
+
             if (nextDisplay == "none" && parseInt(nextDept)>parseInt(dept)){
-                $(e).find("i").css({
-                    "border-color":topBorderColor,
-                    "border-width":"6px 5px 0px 5px"
-                })
+
+                $(e).find("i").removeClass("icon-folder-close").addClass("icon-folder-open")
 
                 $(e).nextAll().each(function(index,element){
                     if (parseInt(dept)+1==parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        });
-
+                        // 显示
+                        if ($(element).find("i").hasClass("icon-folder-open")) {
+                            $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open")
+                        }
                         $(element).fadeIn(400);
                     }else if (parseInt(dept)+1 < parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        })
-
+                        // 隐藏
+                        if ($(element).find("i").hasClass("icon-folder-open")) {
+                            $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open")
+                        }
                         $(element).fadeOut(200);
                     }else{
                         return false
@@ -783,24 +790,31 @@ var Hutils = {
                 return
             }else if (nextDisplay != "none" && parseInt(nextDept)>parseInt(dept)){
 
-                $(e).find("i").css({
-                    "border-color":leftBorderColor,
-                    "border-width":"5px 0px 5px 6px",
-                })
+                $(e).find("i").removeClass("icon-folder-open").addClass("icon-folder-close")
 
                 $(e).nextAll().each(function(index,element){
                     if (parseInt(dept)<parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        })
-
+                        if ($(element).find("i").hasClass("icon-folder-open")) {
+                            $(element).find("i").addClass("icon-folder-open").removeClass("icon-folder-close")
+                        }
                         $(element).fadeOut(200);
                     }else if (parseInt(dept)>=parseInt($(element).attr("data-dept"))){
                         return false
                     }
                 })
             }else {
+                $.Notify({
+                    title:"温馨提示:",
+                    message:"这个节点下边没有叶子信息",
+                    type:"info",
+                });
+
+                if ($(e).find("i").hasClass("icon-folder-open")) {
+                    $(e).find("i").removeClass("icon-folder-open").addClass("icon-folder-close")
+                } else if ($(e).find("i").hasClass("icon-folder-close")) {
+                    $(e).find("i").removeClass("icon-folder-close").addClass("icon-folder-open")
+                }
+
                 return
             }
         }
@@ -813,22 +827,37 @@ var Hutils = {
         /*
         * 如果这个节点没有下层信息，则将这个层级的伸缩按钮去掉。
         * */
-        $this.find("ul li").each(function(index,element){
-            var curDept = parseInt($(element).attr("data-dept"));
-            var nextDept = parseInt($(element).next().attr("data-dept"));
-            if (curDept>=nextDept || isNaN(nextDept)){
-                $(element).find("hzw").remove()
-            }
-        });
+        if (__DEFAULT.attr == false){
+            $this.find("ul li").each(function(index,element){
+                var curDept = parseInt($(element).attr("data-dept"));
+                var nextDept = parseInt($(element).next().attr("data-dept"));
+                if (curDept>=nextDept || isNaN(nextDept)){
+                    $(element).find("hzw").html("<i class='icon-leaf' style='color: green;'></i>").removeClass("HTreeshowOrHideIconHzw").css("cursor","pointer");
+                }
+            });
+        }
 
         /*
         * 给ul中每一行li绑定点击事件
         * */
         $this.find("ul li").on("click",function(){
+            $.notifyClose()
             $this.find(".HTreeLi").css("color","")
             $(this).find("span").css("color","red")
             $this.attr("data-selected",$(this).attr("data-id"))
             __DEFAULT.onChange(this)
+        });
+
+        $this.find("ul li").on("mouseover",function () {
+            $(this).css({
+                "background-color":"#cccccc",
+            })
+        });
+
+        $this.find("ul li").on("mouseout",function () {
+            $(this).css({
+                "background-color":"",
+            })
         });
 
         /*

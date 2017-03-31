@@ -72,8 +72,7 @@
                        data-striped="true"
                        data-url="/v1/auth/user/roles/get"
                        data-side-pagination="client"
-                       data-pagination="true"
-                       data-page-list="[20, 50, 100, 200]"
+                       data-pagination="false"
                        data-click-to-select="true"
                        data-search="false">
                     <thead>
@@ -257,11 +256,10 @@
                     $("#h-grant-user-role-table-details").bootstrapTable('load',[])
                 }
             });
-
         });
 
         $("#h-grant-user-role-table-details").bootstrapTable({
-            height:hwindow-174,
+            height:hwindow-180,
         })
     });
 </script>
@@ -270,7 +268,7 @@
     <table id="h-other-user-role-table-details"
            data-toggle="table"
            data-side-pagination="client"
-           data-pagination="true"
+           data-pagination="false"
            data-page-list="[20, 50, 100, 200]"
            data-click-to-select="true"
            data-search="false">

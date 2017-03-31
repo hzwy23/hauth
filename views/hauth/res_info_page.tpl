@@ -32,7 +32,7 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-12 col-md-6 col-md-4">
+    <div class="col-sm-12 col-md-6 col-lg-4">
         <div id="h-resource-tree-info" style="border: #598f56 solid 1px;height: 300px;">
             <div class="col-ms-12 col-md-12 col-lg-12">
                 <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">

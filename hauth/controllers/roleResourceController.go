@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/models"
+	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"html/template"
 )
 
 type roleAndResourceController struct {
-	model *models.RoleModel
+	model        *models.RoleModel
 	resRoleModel *models.RoleAndResourceModel
-	resModel *models.ResourceModel
+	resModel     *models.ResourceModel
 }
 
 var RoleAndResourceCtl = &roleAndResourceController{
@@ -19,7 +19,6 @@ var RoleAndResourceCtl = &roleAndResourceController{
 	new(models.RoleAndResourceModel),
 	new(models.ResourceModel),
 }
-
 
 func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	defer hret.HttpPanic()
@@ -40,7 +39,6 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 
 	file.Execute(ctx.ResponseWriter, rst[0])
 }
-
 
 // 查询指定角色的资源信息
 func (this roleAndResourceController) GetResource(ctx *context.Context) {
@@ -73,6 +71,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 		hret.WriteJson(ctx.ResponseWriter, rst)
 	}
 }
+
 // 授权与撤权操作
 func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
@@ -83,7 +82,6 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	res_id := ctx.Request.FormValue("res_id")
 	role_id := ctx.Request.FormValue("role_id")
 	type_id := ctx.Request.FormValue("type_id")
-	logs.Debug(res_id, type_id, role_id)
 
 	// 撤销权限操作
 	if type_id == "0" {
