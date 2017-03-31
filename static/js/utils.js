@@ -1703,7 +1703,7 @@ var Hutils = {
                 var modifyY = (wh - 1.5*mh)/2
                 var modifyX = (ww - mw)/2
                 if (modifyY < 0){
-                    modifyY = 0
+                    modifyY = 20
                 }
                 $(getObj(mod,"modal-content")).offset({
                     left:modifyX,
