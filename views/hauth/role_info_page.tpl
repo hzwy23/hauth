@@ -42,13 +42,19 @@
                 <th data-field="state" data-checkbox="true"></th>
                 <th data-field="code_number">角色编码</th>
                 <th data-field="role_name">角色名称</th>
-                <th data-field="role_status_desc">状态</th>
+                <th data-align="center"
+                    data-field="role_status_desc">状态</th>
                 <th data-field="domain_desc">所属域</th>
-                <th data-field="create_user">创建人</th>
-                <th data-field="create_date">创建时间</th>
-                <th data-field="modify_user">修改人</th>
-                <th data-field="modify_date">修改时间</th>
+                <th data-align="center"
+                    data-field="create_user">创建人</th>
+                <th data-align="center"
+                    data-field="create_date">创建时间</th>
+                <th data-align="center"
+                    data-field="modify_user">修改人</th>
+                <th data-align="center"
+                    data-field="modify_date">修改时间</th>
                 <th data-field="state-handle"
+                    data-align="center"
                     data-formatter="RoleObj.formatter">资源操作</th>
             </tr>
             </thead>
