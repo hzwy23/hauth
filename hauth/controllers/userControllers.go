@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	"text/template"
-
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/utils/hret"
 
 	"strings"
 
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/logs"
@@ -46,8 +45,14 @@ func (UserController) Page(ctx *context.Context) {
 		return
 	}
 
-	hz, _ := template.ParseFiles("./views/hauth/UserInfoPage.tpl")
-	hz.Execute(ctx.ResponseWriter, nil)
+	rst, err := hcache.GetStaticFile("AsofdasteUserPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+
+	ctx.ResponseWriter.Write(rst)
+
 }
 
 // 获取指定域中用户信息
@@ -165,7 +170,7 @@ func (this UserController) Post(ctx *context.Context) {
 		return
 	}
 
-	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId,domain_id)
+	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId, domain_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_post, err)
@@ -262,7 +267,7 @@ func (this UserController) Put(ctx *context.Context) {
 		}
 	}
 
-	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id,did)
+	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id, did)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)
@@ -405,4 +410,8 @@ func (this UserController) GetUserDetails(ctx *context.Context) {
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
+}
+
+func init() {
+	hcache.Register("AsofdasteUserPage", "./views/hauth/UserInfoPage.tpl")
 }

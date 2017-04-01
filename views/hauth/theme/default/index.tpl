@@ -28,7 +28,7 @@
 	<script src="/static/nprogress/nprogress.js"></script>
 
 	<script type="text/javascript" src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/static/js/utils.js"></script>
+	<script type="text/javascript" src="/static/js/utils.min.js"></script>
 
 
 	<!--bootstrap-table表格-->

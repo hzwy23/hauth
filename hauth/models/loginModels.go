@@ -13,8 +13,8 @@ func (this LoginModels) GetDefaultPage(user_id string) string {
 	var url = "./views/hauth/theme/default/index.tpl"
 	err := row.Scan(&url)
 	if err != nil {
-		url = "./views/hauth/theme/default/index.tpl"
 		logs.Debug("get default theme.")
+		url = "./views/hauth/theme/default/index.tpl"
 	}
 	return url
 }

@@ -94,6 +94,7 @@
 
     var AuthObj = {
         search:function(){
+            $.notifyClose();
             var org_id = $("#h-auth-org-list").val();
             var did = $("#h-auth-domain-list").val();
             $.HAjaxRequest({
@@ -194,16 +195,17 @@
                 }
             })
         },
-    }
+    };
+
     $(document).ready(function(){
         var hwindow = document.documentElement.clientHeight;
         $("#h-grant-user-table-show").height(hwindow-130);
         $("#h-grant-user-show-box").height(hwindow-130);
 
         //初始化域信息
-        $.getJSON("/v1/auth/domain/owner",function(data){
+        $.getJSON("/v1/auth/domain/self/owner",function(data){
             var arr = new Array()
-            $(data).each(function(index,element){
+            $(data.owner_list).each(function(index,element){
                 var ijs = {}
                 ijs.id=element.domain_id
                 ijs.text=element.domain_desc
@@ -211,29 +213,27 @@
                 arr.push(ijs)
             });
 
-            $.getJSON("/v1/auth/domain/id",function (domain_id) {
-                $("#h-auth-domain-list").val(domain_id).trigger("change")
-                $("#h-grant-info-table-details").bootstrapTable({
-                    height:hwindow-130,
-                    onClickRow:function (row, $element) {
-                        var user_id = row.user_id
-                        $.getJSON("/v1/auth/user/roles/get",{user_id:user_id},function (dt) {
-                            $("#h-grant-user-role-table-details").bootstrapTable('load',dt)
-                        })
-                    },
-                    queryParams:function (params) {
-                        params.domain_id = $("#h-auth-domain-list").val();
-                        return params
-                    },
-                });
+            $("#h-grant-info-table-details").bootstrapTable({
+                height:hwindow-130,
+                onClickRow:function (row, $element) {
+                    var user_id = row.user_id
+                    $.getJSON("/v1/auth/user/roles/get",{user_id:user_id},function (dt) {
+                        $("#h-grant-user-role-table-details").bootstrapTable('load',dt)
+                    })
+                },
+                queryParams:function (params) {
+                    params.domain_id = $("#h-auth-domain-list").val();
+                    return params
+                },
             });
 
             $("#h-auth-domain-list").Hselect({
                 data:arr,
                 height:"24px",
                 width:"180px",
+                value:data.domain_id,
                 onChange:function () {
-                    var did = $("#h-auth-domain-list").val()
+                    var did = $("#h-auth-domain-list").val();
                     $.getJSON("/v1/auth/resource/org/get",{domain_id:did},function(data){
                         var arr = new Array()
                         $(data).each(function(index,element){
@@ -243,6 +243,7 @@
                             ijs.upId=element.up_org_id;
                             arr.push(ijs)
                         });
+
                         $("#h-auth-org-list").Hselect({
                             data:arr,
                             height:"24px",
@@ -255,6 +256,26 @@
                     });
                     $("#h-grant-user-role-table-details").bootstrapTable('load',[])
                 }
+            });
+
+            $.getJSON("/v1/auth/resource/org/get",{domain_id:data.domain_id},function(data){
+                var arr = new Array()
+                $(data).each(function(index,element){
+                    var ijs = {}
+                    ijs.id=element.org_id;
+                    ijs.text=element.org_desc;
+                    ijs.upId=element.up_org_id;
+                    arr.push(ijs)
+                });
+
+                $("#h-auth-org-list").Hselect({
+                    data:arr,
+                    height:"24px",
+                    width:"180px",
+                    onChange:function () {
+                        AuthObj.search()
+                    },
+                });
             });
         });
 

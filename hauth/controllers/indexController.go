@@ -1,12 +1,20 @@
 package controllers
 
 import (
-	"html/template"
-
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/utils/hret"
 )
 
 func IndexPage(ctx *context.Context) {
-	huang, _ := template.ParseFiles("./views/login.tpl")
-	huang.Execute(ctx.ResponseWriter, nil)
+	rst, err := hcache.GetStaticFile("AsofdateIndexPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+	ctx.ResponseWriter.Write(rst)
+}
+
+func init() {
+	hcache.Register("AsofdateIndexPage", "./views/login.tpl")
 }

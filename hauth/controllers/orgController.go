@@ -2,17 +2,16 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/astaxie/beego/context"
 	"net/http"
 	"strconv"
-	"text/template"
-
-	"github.com/astaxie/beego/context"
 
 	"github.com/hzwy23/asofdate/hauth/models"
 
 	"fmt"
 	"strings"
 
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
@@ -34,8 +33,12 @@ func (OrgController) GetOrgPage(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
-	hz, _ := template.ParseFiles("./views/hauth/org_page.tpl")
-	hz.Execute(ctx.ResponseWriter, nil)
+	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+	ctx.ResponseWriter.Write(rst)
 }
 
 func (this OrgController) GetSysOrgInfo(ctx *context.Context) {
@@ -354,4 +357,8 @@ func (this OrgController) Download(ctx *context.Context) {
 		cell9.Value = v.Domain_desc
 	}
 	file.Write(ctx.ResponseWriter)
+}
+
+func init() {
+	hcache.Register("AsofdateOrgPage", "./views/hauth/org_page.tpl")
 }

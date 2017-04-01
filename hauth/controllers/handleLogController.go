@@ -3,10 +3,9 @@ package controllers
 import (
 	"fmt"
 
-	"text/template"
-
 	"github.com/astaxie/beego/context"
 
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -30,16 +29,22 @@ type handleLogs struct {
 	Data        string `json:"data"`
 }
 
-var HandleLogsCtl = new(HandleLogsController)
+var HandleLogsCtl = &HandleLogsController{}
 
-func (HandleLogsController) GetHandleLogPage(ctx *context.Context) {
+func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.Request.ParseForm()
+
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
-	hz, _ := template.ParseFiles("./views/hauth/handle_logs_page.tpl")
-	hz.Execute(ctx.ResponseWriter, nil)
+
+	rst, err := hcache.GetStaticFile("AsofdateHandleLogPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+	ctx.ResponseWriter.Write(rst)
 }
 
 func (HandleLogsController) Download(ctx *context.Context) {
@@ -328,4 +333,8 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 	}
 
 	hret.WriteJson(ctx.ResponseWriter, rst)
+}
+
+func init() {
+	hcache.Register("AsofdateHandleLogPage", "./views/hauth/handle_logs_page.tpl")
 }

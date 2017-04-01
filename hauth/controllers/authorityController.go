@@ -8,10 +8,10 @@
 package controllers
 
 import (
-	"html/template"
-
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
+	"github.com/hzwy23/asofdate/utils/hret"
 )
 
 // Controller
@@ -26,7 +26,21 @@ var AuthroityCtl = &AuthorityController{
 }
 
 // Get authorization page
-func (AuthorityController) GetBatchPage(ctx *context.Context) {
-	hz, _ := template.ParseFiles("./views/hauth/sys_batch_page.tpl")
-	hz.Execute(ctx.ResponseWriter, nil)
+func (this *AuthorityController) GetBatchPage(ctx *context.Context) {
+	if !models.BasicAuth(ctx) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
+		return
+	}
+
+	rst, err := hcache.GetStaticFile("AuthorityPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+
+	ctx.ResponseWriter.Write(rst)
+}
+
+func init() {
+	hcache.Register("AuthorityPage", "./views/hauth/sys_batch_page.tpl")
 }

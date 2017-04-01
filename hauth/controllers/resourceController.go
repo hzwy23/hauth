@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"io/ioutil"
 	"strings"
 
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -35,8 +35,13 @@ func (ResourceController) Page(ctx *context.Context) {
 		return
 	}
 
-	hz, _ := ioutil.ReadFile("./views/hauth/res_info_page.tpl")
-	ctx.ResponseWriter.Write(hz)
+	rst, err := hcache.GetStaticFile("AsofdateResourcePage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+
+	ctx.ResponseWriter.Write(rst)
 }
 
 func (this ResourceController) Get(ctx *context.Context) {
@@ -333,4 +338,8 @@ func (this ResourceController) ConfigTheme(ctx *context.Context) {
 		}
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 	}
+}
+
+func init() {
+	hcache.Register("AsofdateResourcePage", "./views/hauth/res_info_page.tpl")
 }

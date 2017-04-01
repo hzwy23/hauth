@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"strings"
 
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -14,14 +14,14 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 )
 
-type DomainController struct {
+type domainController struct {
 	models *models.ProjectMgr
 }
 
-var DomainCtl = &DomainController{models: &models.ProjectMgr{}}
+var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 
 // 获取domain_info配置页面
-func (DomainController) GetDomainInfoPage(ctx *context.Context) {
+func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !models.BasicAuth(ctx) {
@@ -29,12 +29,17 @@ func (DomainController) GetDomainInfoPage(ctx *context.Context) {
 		return
 	}
 
-	file, _ := ioutil.ReadFile("./views/hauth/domain_info.tpl")
-	ctx.ResponseWriter.Write(file)
+	rst, err := hcache.GetStaticFile("DomainPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+
+	ctx.ResponseWriter.Write(rst)
 }
 
 // 查询域信息
-func (this DomainController) GetDomainInfo(ctx *context.Context) {
+func (this *domainController) GetDomainInfo(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 
@@ -56,7 +61,7 @@ func (this DomainController) GetDomainInfo(ctx *context.Context) {
 }
 
 // 新增域信息
-func (this DomainController) PostDomainInfo(ctx *context.Context) {
+func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
@@ -103,7 +108,7 @@ func (this DomainController) PostDomainInfo(ctx *context.Context) {
 }
 
 // 删除域信息
-func (this DomainController) DeleteDomainInfo(ctx *context.Context) {
+func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -137,7 +142,7 @@ func (this DomainController) DeleteDomainInfo(ctx *context.Context) {
 }
 
 // 更新域信息
-func (this DomainController) UpdateDomainInfo(ctx *context.Context) {
+func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
@@ -175,7 +180,7 @@ func (this DomainController) UpdateDomainInfo(ctx *context.Context) {
 	}
 }
 
-func (this DomainController) GetOwner(ctx *context.Context) {
+func (this *domainController) GetOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -195,7 +200,7 @@ func (this DomainController) GetOwner(ctx *context.Context) {
 }
 
 // 获取用户自身能够访问到的域信息
-func (this DomainController) GetDomainOwner(ctx *context.Context) {
+func (this *domainController) GetDomainOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -215,7 +220,7 @@ func (this DomainController) GetDomainOwner(ctx *context.Context) {
 }
 
 // 获取指定域详细信息
-func (this DomainController) GetDetails(ctx *context.Context) {
+func (this *domainController) GetDetails(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	var domain_id = ctx.Request.FormValue("domain_id")
 
@@ -229,7 +234,7 @@ func (this DomainController) GetDetails(ctx *context.Context) {
 }
 
 // 获取用户自己所属域的编码
-func (this DomainController) GetDomainId(ctx *context.Context) {
+func (this *domainController) GetDomainId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -242,4 +247,8 @@ func (this DomainController) GetDomainId(ctx *context.Context) {
 	var domain_id = jclaim.Domain_id
 
 	hret.WriteJson(ctx.ResponseWriter, domain_id)
+}
+
+func init() {
+	hcache.Register("DomainPage", "./views/hauth/domain_info.tpl")
 }

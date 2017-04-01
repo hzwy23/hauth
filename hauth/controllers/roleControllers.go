@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
-	"text/template"
 
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -15,8 +15,8 @@ import (
 )
 
 type RoleController struct {
-	models    models.RoleModel
-	resModels models.ResourceModel
+	models        models.RoleModel
+	resModels     models.ResourceModel
 	roleResModels models.RoleAndResourceModel
 }
 
@@ -32,9 +32,12 @@ func (RoleController) Page(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
-
-	hz, _ := template.ParseFiles("./views/hauth/role_info_page.tpl")
-	hz.Execute(ctx.ResponseWriter, nil)
+	rst, err := hcache.GetStaticFile("AsofdateRolePage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		return
+	}
+	ctx.ResponseWriter.Write(rst)
 }
 
 func (this RoleController) Get(ctx *context.Context) {
@@ -192,11 +195,15 @@ func (this RoleController) Update(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id,did)
+	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id, did)
 	if err != nil {
 		logs.Error(err.Error())
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "update role info failed.", err)
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "update role info successfully.")
+}
+
+func init() {
+	hcache.Register("AsofdateRolePage", "./views/hauth/role_info_page.tpl")
 }
