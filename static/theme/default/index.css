@@ -275,7 +275,7 @@ ul {list-style:none;}
 }
 
 .subsystem-toolbar{
-    height: 44px;
+    min-height: 44px;
     line-height: 44px;
     vertical-align: middle;
 }
