@@ -128,7 +128,7 @@ var (
 							   and i.domain_id = ?
 							)`
 	sys_rdbms_086 = `insert into sys_domain_share_info(uuid,domain_id,target_domain_id,authorization_level,create_user,create_date,modify_date,modify_user) values(uuid(),?,?,?,?,now(),now(),?)`
-	sys_rdbms_087 = `delete from sys_domain_share_info where uuid = ?`
+	sys_rdbms_087 = `delete from sys_domain_share_info where uuid = ? and domain_id = ?`
 	sys_rdbms_088 = `update sys_domain_share_info set authorization_level = ?,modify_user = ? , modify_date = now() where uuid = ?`
 	sys_rdbms_089 = `select t.res_id,t.res_name,t.res_attr, a.res_attr_desc,t.res_up_id,t.res_type,r.res_type_desc from sys_resource_info t inner join sys_resource_info_attr a on t.res_attr = a.res_attr inner join sys_resource_type_attr r on t.res_type = r.res_type where res_id = ?`
 	sys_rdbms_090 = `select t.user_id,t.user_name,a.status_desc,t.user_create_date,

@@ -29,7 +29,7 @@ var UserRolesController = &userRolesController{
 func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	user_id := ctx.Request.FormValue("user_id")
-	logs.Debug(user_id)
+
 	rst, err := this.models.GetRolesByUser(user_id)
 	if err != nil {
 		logs.Error(err)

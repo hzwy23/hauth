@@ -7,12 +7,13 @@ import (
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils"
+
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
 	"github.com/tealeg/xlsx"
+	"github.com/asaskevich/govalidator"
 )
 
 type HandleLogsController struct {
@@ -184,7 +185,9 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 		return
 	}
 	var rst []handleLogs
-	if userid != "" && utils.ValidDate(start) && utils.ValidDate(end) {
+	fmt.Println(govalidator.IsDate(start),start)
+	fmt.Println(govalidator.IsDate(end),end)
+	if userid != "" && govalidator.IsDate(start) && govalidator.IsDate(end) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
 			and handle_time < str_to_date(?,'%Y-%m-%d')
@@ -203,7 +206,7 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 			return
 		}
-	} else if userid != "" && utils.ValidDate(start) {
+	} else if userid != "" && govalidator.IsDate(start) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
 			order by handle_time desc`
@@ -221,7 +224,7 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 			return
 		}
-	} else if userid != "" && utils.ValidDate(end) {
+	} else if userid != "" && govalidator.IsDate(end) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
 			and handle_time < str_to_date(?,'%Y-%m-%d')
@@ -240,7 +243,7 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 			return
 		}
-	} else if utils.ValidDate(start) && utils.ValidDate(end) {
+	} else if govalidator.IsDate(start) && govalidator.IsDate(end) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
 			and handle_time < str_to_date(?,'%Y-%m-%d')
@@ -259,7 +262,7 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 			return
 		}
-	} else if utils.ValidDate(start) {
+	} else if govalidator.IsDate(start) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
 			order by handle_time desc`
@@ -277,7 +280,7 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 			return
 		}
-	} else if utils.ValidDate(end) {
+	} else if govalidator.IsDate(end) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and handle_time < str_to_date(?,'%Y-%m-%d')
 			order by handle_time desc`

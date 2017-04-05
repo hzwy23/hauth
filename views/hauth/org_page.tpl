@@ -81,7 +81,6 @@
                         <th data-field="create_user">创建人</th>
                         <th data-field="modify_date">修改日期</th>
                         <th data-field="modify_user">修改人</th>
-                        <!--<th data-field="domain_desc">所属域</th>-->
                     </tr>
                     </thead>
                 </table>
@@ -153,6 +152,7 @@
                                     $("#h-org-up-id").Hselect({
                                         data:arr,
                                         height:"30px",
+                                        value:$("#h-org-tree-info-list").attr("data-selected"),
                                     })
                                 })
                             },

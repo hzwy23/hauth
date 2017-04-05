@@ -138,13 +138,6 @@
                            })
                            $('#h-domain-share-info-table').bootstrapTable('refresh')
                        },
-                       error:function (m) {
-                            $.Notify({
-                                title:"操作错误",
-                                message:"共享域信息失败"+m.responseText,
-                                type:"danger",
-                            })
-                       }
                    })
                }
            })
@@ -216,13 +209,6 @@
                                 type:"success",
                             })
                             $('#h-domain-share-info-table').bootstrapTable('refresh')
-                        },
-                        error:function (m) {
-                            $.Notify({
-                                title:"操作失败",
-                                message:m.responseText,
-                                type:"danger"
-                            })
                         },
                     })
                 }

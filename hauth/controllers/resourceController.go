@@ -1,14 +1,15 @@
 package controllers
 
 import (
-	"strings"
+
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils"
+
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/asaskevich/govalidator"
 )
 
 const (
@@ -19,16 +20,16 @@ const (
 	error_resource_update      = "更新菜单资源名称失败"
 )
 
-type ResourceController struct {
+type resourceController struct {
 	models *models.ResourceModel
 }
 
-var ResourceCtl = &ResourceController{
+var ResourceCtl = &resourceController{
 	new(models.ResourceModel),
 }
 
 // 菜单资源子页面路由
-func (ResourceController) Page(ctx *context.Context) {
+func (resourceController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -44,7 +45,7 @@ func (ResourceController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-func (this ResourceController) Get(ctx *context.Context) {
+func (this resourceController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -59,7 +60,7 @@ func (this ResourceController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this ResourceController) Query(ctx *context.Context) {
+func (this resourceController) Query(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")
 	rst, err := this.models.Query(res_id)
@@ -70,7 +71,7 @@ func (this ResourceController) Query(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this ResourceController) QueryTheme(ctx *context.Context) {
+func (this resourceController) QueryTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")
 	theme_id := ctx.Request.FormValue("theme_id")
@@ -83,7 +84,7 @@ func (this ResourceController) QueryTheme(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this ResourceController) Post(ctx *context.Context) {
+func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -109,19 +110,19 @@ func (this ResourceController) Post(ctx *context.Context) {
 		res_up_id = "-1"
 	}
 
-	if !utils.ValidAlphaNumber(res_id, 1, 30) {
+	if !govalidator.IsWord(res_id) {
 		logs.Error("资源编码必须由1,30位字母或数字组成")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "资源编码必须由1,30位字母或数字组成")
 		return
 	}
 
-	if strings.TrimSpace(res_name) == "" {
+	if govalidator.IsEmpty(res_name) {
 		logs.Error("菜单名称不能为空")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单名称不能为空")
 		return
 	}
 
-	if strings.TrimSpace(res_type) == "" {
+	if govalidator.IsEmpty(res_type) {
 		logs.Error("菜单类别不能为空")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单类别不能为空")
 		return
@@ -130,37 +131,31 @@ func (this ResourceController) Post(ctx *context.Context) {
 	switch res_type {
 	case "0":
 		// 首页主菜单信息
-		if strings.TrimSpace(res_url) == "" {
+		if !govalidator.IsURI(res_url){
 			logs.Error("菜单路由地址不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单路由地址不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_up_id) == "" {
-			logs.Error("菜单上级编码不能为空")
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单上级编码不能为空")
-			return
-		}
-
-		if strings.TrimSpace(res_class) == "" {
+		if govalidator.IsEmpty(res_class) {
 			logs.Error("菜单样式类型不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单样式类型不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_img) == "" {
+		if !govalidator.IsURI(res_img) {
 			logs.Error("菜单图标不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单图标不能为空")
 			return
 		}
 
-		if !utils.ValidNumber(group_id, 1, 2) {
+		if !govalidator.IsNumeric(group_id) {
 			logs.Error("菜单分组信息必须是数字")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单分组信息必须是数字")
 			return
 		}
 
-		if !utils.ValidNumber(sort_id, 1, 2) {
+		if !govalidator.IsNumeric(sort_id) {
 			logs.Error("菜单排序号必须是数字")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单排序号必须是数字")
 			return
@@ -173,37 +168,37 @@ func (this ResourceController) Post(ctx *context.Context) {
 		}
 	case "1":
 		// 子系统菜单信息
-		if strings.TrimSpace(res_url) == "" {
+		if !govalidator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单路由地址不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_up_id) == "" {
+		if !govalidator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单上级编码不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_class) == "" {
+		if govalidator.IsEmpty(res_class) {
 			logs.Error("菜单样式类型不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单样式类型不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_img) == "" {
+		if !govalidator.IsURI(res_img) {
 			logs.Error("菜单图标不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单图标不能为空")
 			return
 		}
 
-		if !utils.ValidNumber(group_id, 1, 2) {
+		if !govalidator.IsNumeric(group_id) {
 			logs.Error("菜单分组信息必须是数字")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单分组信息必须是数字")
 			return
 		}
 
-		if !utils.ValidNumber(sort_id, 1, 2) {
+		if !govalidator.IsNumeric(sort_id) {
 			logs.Error("菜单排序号必须是数字")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单排序号必须是数字")
 			return
@@ -218,13 +213,13 @@ func (this ResourceController) Post(ctx *context.Context) {
 
 	case "2":
 		// 功能按钮信息
-		if strings.TrimSpace(res_up_id) == "" {
+		if !govalidator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单上级编码不能为空")
 			return
 		}
 
-		if strings.TrimSpace(res_url) == "" {
+		if !govalidator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单路由地址不能为空")
 			return
@@ -244,7 +239,7 @@ func (this ResourceController) Post(ctx *context.Context) {
 	case "4":
 		// 虚拟节点信息
 		// 功能按钮信息
-		if strings.TrimSpace(res_up_id) == "" {
+		if !govalidator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单上级编码不能为空")
 			return
@@ -264,7 +259,7 @@ func (this ResourceController) Post(ctx *context.Context) {
 
 }
 
-func (this ResourceController) Delete(ctx *context.Context) {
+func (this resourceController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -284,7 +279,7 @@ func (this ResourceController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "remove resource successfully.")
 }
 
-func (this ResourceController) Update(ctx *context.Context) {
+func (this resourceController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -293,6 +288,12 @@ func (this ResourceController) Update(ctx *context.Context) {
 
 	res_id := ctx.Request.FormValue("res_id")
 	res_name := ctx.Request.FormValue("res_name")
+
+	if govalidator.IsEmpty(res_name){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"资源描述不能为空.")
+		return
+	}
+
 	err := this.models.Update(res_id, res_name)
 	if err != nil {
 		logs.Error(err)
@@ -302,7 +303,7 @@ func (this ResourceController) Update(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
-func (this ResourceController) ConfigTheme(ctx *context.Context) {
+func (this resourceController) ConfigTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")

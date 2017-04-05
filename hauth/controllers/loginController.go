@@ -81,7 +81,7 @@ func LoginSystem(ctx *context.Context) {
 }
 
 func LogoutSystem(ctx *context.Context) {
-	cookie := http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: 30}
+	cookie := http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: -1}
 	http.SetCookie(ctx.ResponseWriter, &cookie)
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "logout system safely.")
 }

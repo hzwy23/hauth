@@ -6,6 +6,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"html/template"
+	"github.com/asaskevich/govalidator"
 )
 
 type roleAndResourceController struct {
@@ -82,6 +83,16 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	res_id := ctx.Request.FormValue("res_id")
 	role_id := ctx.Request.FormValue("role_id")
 	type_id := ctx.Request.FormValue("type_id")
+
+	if !govalidator.IsWord(res_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"资源编码不正确.")
+		return
+	}
+
+	if !govalidator.IsWord(role_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色编码不正确.")
+		return
+	}
 
 	// 撤销权限操作
 	if type_id == "0" {

@@ -3,15 +3,16 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
+
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils"
+
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/asaskevich/govalidator"
 )
 
 type domainController struct {
@@ -61,6 +62,10 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 }
 
 // 新增域信息
+// http请求参数
+// domainId     域编码,必须由数字,字母组成
+// domainDesc   域名称,不能为空
+// domainStatus 域状态,必须是0或者1中的一个
 func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -73,18 +78,18 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	domainDesc := ctx.Request.FormValue("domainDesc")
 	domainStatus := ctx.Request.FormValue("domainStatus")
 	//校验
-	if !utils.ValidAlnumAndSymbol(domainId, 1, 30) {
+	if !govalidator.IsWord(domainId) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "域名编码格式错误,应为字母或数字组合，不为空")
 		return
 	}
 
 	//
-	if !utils.ValidBool(domainStatus) {
+	if !govalidator.IsIn(domainStatus,"0","1") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "域状态不能为空")
 		return
 	}
 
-	if strings.TrimSpace(domainDesc) == "" {
+	if govalidator.IsNull(domainDesc) {
 		logs.Error("域名信息为空")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "所属域描述信息为空，请填写域描述信息")
 		return
@@ -153,6 +158,18 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	domainId := ctx.Request.FormValue("domainId")
 	domainDesc := ctx.Request.FormValue("domainDesc")
 	domainStatus := ctx.Request.FormValue("domainStatus")
+
+	// 校验域名称,不能为空
+	if govalidator.IsNull(domainDesc) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"域名称不能为空.")
+		return
+	}
+
+	// 校验域状态编码,必须是0或者1
+	if !govalidator.IsIn(domainStatus,"0","1"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"域状态编码不正确")
+		return
+	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)

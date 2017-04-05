@@ -81,7 +81,7 @@ func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 
 // 新增用户信息
 func (UserModel) Post(userId, userPasswd, userDesc, userStatus, id, userEmail, userPhone, userOrgUnitId,domain_id string) error {
-	hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
+	defer hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
 
 	tx, err := dbobj.Begin()
 	// insert user details
@@ -219,6 +219,8 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 }
 
 func (this UserModel) ModifyStatus(status_id, user_id string) (string, error) {
+	did,_:=CheckDomainByUserId(user_id)
+	defer hcache.Delete(hcache.GenKey("USERMODELS",did))
 	err := dbobj.Exec(sys_rdbms_016, status_id, user_id)
 	return error_user_modify_status, err
 }

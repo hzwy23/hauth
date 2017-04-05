@@ -60,7 +60,7 @@ func (DomainShareModel) Update(uuid, user_id, auth_level string) error {
 	return dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
 }
 
-func (DomainShareModel) Delete(js string) error {
+func (DomainShareModel) Delete(js string,domain_id string) error {
 	var rst []dsModel
 
 	err := json.Unmarshal([]byte(js), &rst)
@@ -75,7 +75,7 @@ func (DomainShareModel) Delete(js string) error {
 	}
 
 	for _, val := range rst {
-		err := dbobj.Exec(sys_rdbms_087, val.Uuid)
+		err := dbobj.Exec(sys_rdbms_087, val.Uuid,domain_id)
 		if err != nil {
 			tx.Rollback()
 			logs.Error(err)

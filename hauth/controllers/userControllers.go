@@ -11,6 +11,7 @@ import (
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/asaskevich/govalidator"
 )
 
 const (
@@ -27,16 +28,16 @@ const (
 	error_user_modify_passwd  = "您没有权限修改这个域中的用户信息"
 )
 
-type UserController struct {
+type userController struct {
 	models *models.UserModel
 }
 
-var UserCtl = &UserController{
+var UserCtl = &userController{
 	new(models.UserModel),
 }
 
 // 获取用户管理子页面
-func (UserController) Page(ctx *context.Context) {
+func (userController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	ctx.Request.ParseForm()
@@ -57,7 +58,7 @@ func (UserController) Page(ctx *context.Context) {
 
 // 获取指定域中用户信息
 // @(http request param) domain_id
-func (this UserController) Get(ctx *context.Context) {
+func (this userController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -81,14 +82,9 @@ func (this UserController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if jclaim.Domain_id != domain_id && jclaim.User_id != "admin" {
-		// check domain rights.
-		level := models.CheckDomainRights(jclaim.User_id, domain_id)
-		logs.Debug(level)
-		if level != 1 && level != 2 {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, error_user_no_auth)
-			return
-		}
+	if !models.CheckDomain(ctx,domain_id,"r"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, error_user_no_auth)
+		return
 	}
 
 	// query domain info.
@@ -101,7 +97,7 @@ func (this UserController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this UserController) Post(ctx *context.Context) {
+func (this userController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -120,30 +116,42 @@ func (this UserController) Post(ctx *context.Context) {
 		return
 	}
 
-	level := models.CheckDomainRights(jclaim.User_id, domain_id)
-	if level != 2 && domain_id != jclaim.Domain_id && jclaim.User_id != "admin" {
-		if level == 1 {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, error_user_read_only)
-			return
-		}
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_no_auth)
+	if !models.CheckDomain(ctx,domain_id,"w"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, error_user_no_auth)
 		return
 	}
 
-	if !utils.ValidAlnumAndSymbol(userId) {
+
+	if !govalidator.IsWord(userId) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_id_check)
 		return
 	}
 	//
 
-	if !utils.ValidHanWord(userDesc) {
+	if govalidator.IsEmpty(userDesc) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_name_check)
 		return
 	}
 	//
 	password := ctx.Request.FormValue("userPasswd")
-	if !utils.ValidAlphaNumber(password, 6, 12) {
+	if govalidator.IsEmpty(password) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_passwd_check)
+		return
+	}
+
+	surepassword := ctx.Request.FormValue("userPasswdConfirm")
+	if govalidator.IsEmpty(surepassword) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请确认密码.")
+		return
+	}
+
+	if password != surepassword{
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,419,"两次输入密码不一致.")
+		return
+	}
+
+	if len(strings.TrimSpace(password)) < 6 {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"密码长度不能小于6位.")
 		return
 	}
 
@@ -160,12 +168,18 @@ func (this UserController) Post(ctx *context.Context) {
 	userOrgUnitId := ctx.Request.FormValue("userOrgUnitId")
 
 	//
-	if !utils.ValidEmail(userEmail) {
+	if !govalidator.IsEmail(userEmail) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_email_check)
 		return
 	}
+
+	if !govalidator.IsWord(userOrgUnitId){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择机构信息.")
+		return
+	}
+
 	//
-	if !utils.ValidMobile(userPhone) {
+	if !govalidator.IsNumeric(userPhone) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_phone_check)
 		return
 	}
@@ -179,7 +193,7 @@ func (this UserController) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
-func (this UserController) Delete(ctx *context.Context) {
+func (this userController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -205,7 +219,7 @@ func (this UserController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
-func (this UserController) Search(ctx *context.Context) {
+func (this userController) Search(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	var org_id = ctx.Request.FormValue("org_id")
 	var status_id = ctx.Request.FormValue("status_id")
@@ -231,7 +245,7 @@ func (this UserController) Search(ctx *context.Context) {
 }
 
 // 修改用户信息
-func (this UserController) Put(ctx *context.Context) {
+func (this userController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -258,13 +272,36 @@ func (this UserController) Put(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
 		return
 	}
-	if did != jclaim.Domain_id && jclaim.User_id != "admin" {
-		level := models.CheckDomainRights(jclaim.User_id, did)
-		if level != 2 {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, error_user_modify_passwd)
-			return
-		}
+
+	if !models.CheckDomain(ctx,did,"w"){
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, error_user_modify_passwd)
+		return
+	}
+
+	if !govalidator.IsWord(user_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"用户账号不正确.")
+		return
+	}
+
+	if govalidator.IsEmpty(user_name){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"用户名不能为空")
+		return
+	}
+
+	if !govalidator.IsEmail(email){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"邮箱格式不正确.")
+		return
+	}
+
+	if !govalidator.IsWord(org_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择机构号")
+		return
+	}
+
+	if !govalidator.IsNumeric(phone){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请填写手机号")
+		return
 	}
 
 	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id, did)
@@ -277,12 +314,12 @@ func (this UserController) Put(ctx *context.Context) {
 }
 
 // 导出用户信息
-func (this UserController) Download(ctx *context.Context) {
+func (this userController) Download(ctx *context.Context) {
 
 }
 
 // 修改用户密码
-func (this UserController) ModifyPasswd(ctx *context.Context) {
+func (this userController) ModifyPasswd(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -345,7 +382,7 @@ func (this UserController) ModifyPasswd(ctx *context.Context) {
 }
 
 // 修改用户锁状态
-func (this UserController) ModifyStatus(ctx *context.Context) {
+func (this userController) ModifyStatus(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -375,13 +412,15 @@ func (this UserController) ModifyStatus(ctx *context.Context) {
 		return
 	}
 
-	if did != jclaim.Domain_id && "admin" != jclaim.User_id {
-		level := models.CheckDomainRights(jclaim.User_id, did)
-		if level != 2 {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, error_user_modify_passwd)
-			return
-		}
+	if !models.CheckDomain(ctx,did,"w"){
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, error_user_modify_passwd)
+		return
+	}
+
+	if !govalidator.IsIn(status_id,"0","1"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择用户状态.")
+		return
 	}
 
 	msg, err := this.models.ModifyStatus(status_id, user_id)
@@ -394,7 +433,7 @@ func (this UserController) ModifyStatus(ctx *context.Context) {
 }
 
 // 查询用户自身信息
-func (this UserController) GetUserDetails(ctx *context.Context) {
+func (this userController) GetUserDetails(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)

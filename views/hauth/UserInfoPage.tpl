@@ -227,13 +227,6 @@
                             $(hmode).remove()
                             $("#h-user-info-table-details").bootstrapTable('refresh');
                         },
-                        error:function(m){
-                            $.Notify({
-                                title:"操作失败",
-                                message:"新增用户失败:"+m.responseText,
-                                type:"danger",
-                            })
-                        }
                     })
                 }
             })

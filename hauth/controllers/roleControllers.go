@@ -3,30 +3,30 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils"
+
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/asaskevich/govalidator"
 )
 
-type RoleController struct {
+type roleController struct {
 	models        models.RoleModel
 	resModels     models.ResourceModel
 	roleResModels models.RoleAndResourceModel
 }
 
-var RoleCtl = &RoleController{
+var RoleCtl = &roleController{
 	models.RoleModel{},
 	models.ResourceModel{},
 	models.RoleAndResourceModel{},
 }
 
-func (RoleController) Page(ctx *context.Context) {
+func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -40,7 +40,7 @@ func (RoleController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-func (this RoleController) Get(ctx *context.Context) {
+func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -60,6 +60,11 @@ func (this RoleController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
+	if !models.CheckDomain(ctx,domain_id,"r"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"您没有权限访问这个域中的角色信息.")
+		return
+	}
+
 	rst, err := this.models.Get(domain_id)
 
 	if err != nil {
@@ -71,7 +76,7 @@ func (this RoleController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this RoleController) Post(ctx *context.Context) {
+func (this roleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
@@ -93,28 +98,30 @@ func (this RoleController) Post(ctx *context.Context) {
 		return
 	}
 
-	if domainid != jclaim.Domain_id && jclaim.User_id != "admin" {
-		level := models.CheckDomainRights(jclaim.User_id, domainid)
-		if level != 2 {
-			logs.Error("没有权限在这个域中新增角色信息")
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限在这个域中新增角色信息")
-			return
-		}
+	if !models.CheckDomain(ctx,domainid,"w"){
+		logs.Error("没有权限在这个域中新增角色信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限在这个域中新增角色信息")
+		return
 	}
 
 	//校验
-	if !utils.ValidWord(roleid, 1, 30) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "please input role id number.")
+	if !govalidator.IsWord(roleid) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请输入由1-30位字母,数字组的角色编码")
 		return
 	}
 	//
-	if !utils.ValidHanAndWord(rolename, 1, 30) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "角色名称必须是汉字,字母,或者下划线的组合,并且长度不能小于30")
+	if govalidator.IsEmpty(rolename) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "角色名称必须是汉字,字母,或者下划线的组合,并且长度不能小于30")
 		return
 	}
 
-	if strings.TrimSpace(domainid) == "" {
+	if !govalidator.IsWord(domainid) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请选择域信息")
+		return
+	}
+
+	if !govalidator.IsIn(rolestatus,"0","1"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请选择角色状态.")
 		return
 	}
 
@@ -127,7 +134,7 @@ func (this RoleController) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new role info successfully.")
 }
 
-func (this RoleController) Delete(ctx *context.Context) {
+func (this roleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
@@ -161,7 +168,7 @@ func (this RoleController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除角色信息成功。")
 }
 
-func (this RoleController) Update(ctx *context.Context) {
+func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
@@ -187,12 +194,25 @@ func (this RoleController) Update(ctx *context.Context) {
 		return
 	}
 
-	if jclaim.Domain_id != did && jclaim.User_id != "admin" {
-		level := models.CheckDomainRights(jclaim.User_id, did)
-		if level != 2 {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限编辑这个域中的角色信息")
-			return
-		}
+	if !models.CheckDomain(ctx,did,"w"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限编辑这个域中的角色信息")
+		return
+	}
+
+
+	if !govalidator.IsWord(Role_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色编码不正确")
+		return
+	}
+
+	if govalidator.IsEmpty(Role_name){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色名称不正确.")
+		return
+	}
+
+	if !govalidator.IsIn(Role_status,"0","1"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择角色状态")
+		return
 	}
 
 	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id, did)

@@ -76,7 +76,7 @@ func (this passwdController) PostModifyPasswd(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 312, err.Error())
 		return
 	}
-	http.SetCookie(ctx.ResponseWriter, &http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: 3600})
+	http.SetCookie(ctx.ResponseWriter, &http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: -1})
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "modify user password successfully.")
 }
 

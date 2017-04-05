@@ -220,7 +220,7 @@ func FormatStringToDate(date string) (string, error) {
 			for len(d) < 2 {
 				d = "0" + d
 			}
-			if newD := y + "-" + m + "-" + d; ValidDate(newD) {
+			if newD := y + "-" + m + "-" + d; validdate(newD) {
 				return newD, nil
 			} else {
 				return "", errors.New("输入内容不合理，无法转换成正确的日期")
@@ -246,7 +246,7 @@ func FormatStringToDate(date string) (string, error) {
 				for len(d) < 2 {
 					d = "0" + d
 				}
-				if newD := y + "-" + m + "-" + d; ValidDate(newD) {
+				if newD := y + "-" + m + "-" + d; validdate(newD) {
 					return newD, nil
 				} else {
 					return "", errors.New("输入内容不合理，无法转换成正确的日期")
@@ -298,5 +298,84 @@ func CompareDate(start string, end string) int {
 		}
 	} else {
 		return -1
+	}
+}
+
+//日期校验
+func validdate(date string) bool {
+	r, err := regexp.Compile(`^[\d]{4}/[\d]{1,2}/[\d]{1,2}$`)
+	if err != nil {
+		fmt.Errorf("%v", err)
+		return false
+	}
+
+	if r.MatchString(date) {
+		d := strings.Split(date, "/")
+		if len(d) != 3 {
+			fmt.Errorf("日期格式错误")
+			return false
+		}
+		year, err := strconv.Atoi(d[0])
+		if err != nil {
+			fmt.Errorf("%v", err)
+			return false
+		}
+		mths := [13]int{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+		if (year%4 == 0 && year%100 != 0) || year%400 == 0 {
+			mths[2] = 29
+		}
+		month, err := strconv.Atoi(d[1])
+		if err != nil {
+			fmt.Errorf("%v", err)
+			return false
+		}
+		day, err := strconv.Atoi(d[2])
+		if err != nil {
+			fmt.Errorf("%v", err)
+			return false
+		}
+		if month > 12 || month < 0 || mths[month] < day {
+			return false
+		}
+		return true
+	} else {
+
+		rc, err := regexp.Compile(`^[\d]{4}-[\d]{1,2}-[\d]{1,2}$`)
+		if err != nil {
+			fmt.Errorf("%v", err)
+			return false
+		}
+		if rc.MatchString(date) {
+			d := strings.Split(date, "-")
+			if len(d) != 3 {
+				fmt.Errorf("日期格式错误")
+				return false
+			}
+			year, err := strconv.Atoi(d[0])
+			if err != nil {
+				fmt.Errorf("%v", err)
+				return false
+			}
+			mths := [13]int{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+			if (year%4 == 0 && year%100 != 0) || year%400 == 0 {
+				mths[2] = 29
+			}
+			month, err := strconv.Atoi(d[1])
+			if err != nil {
+				fmt.Errorf("%v", err)
+				return false
+			}
+			day, err := strconv.Atoi(d[2])
+			if err != nil {
+				fmt.Errorf("%v", err)
+				return false
+			}
+			if month > 12 || month < 0 || mths[month] < day {
+				return false
+			}
+			return true
+		} else {
+			return false
+		}
 	}
 }
