@@ -220,7 +220,7 @@ func FormatStringToDate(date string) (string, error) {
 			for len(d) < 2 {
 				d = "0" + d
 			}
-			if newD := y + "-" + m + "-" + d; validdate(newD) {
+			if newD := y + "-" + m + "-" + d; ValidDate(newD) {
 				return newD, nil
 			} else {
 				return "", errors.New("输入内容不合理，无法转换成正确的日期")
@@ -246,7 +246,7 @@ func FormatStringToDate(date string) (string, error) {
 				for len(d) < 2 {
 					d = "0" + d
 				}
-				if newD := y + "-" + m + "-" + d; validdate(newD) {
+				if newD := y + "-" + m + "-" + d; ValidDate(newD) {
 					return newD, nil
 				} else {
 					return "", errors.New("输入内容不合理，无法转换成正确的日期")
@@ -302,7 +302,7 @@ func CompareDate(start string, end string) int {
 }
 
 //日期校验
-func validdate(date string) bool {
+func ValidDate(date string) bool {
 	r, err := regexp.Compile(`^[\d]{4}/[\d]{1,2}/[\d]{1,2}$`)
 	if err != nil {
 		fmt.Errorf("%v", err)

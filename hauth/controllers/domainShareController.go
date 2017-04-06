@@ -15,6 +15,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type domainShareControll struct {
@@ -32,7 +33,6 @@ func (domainShareControll) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -41,7 +41,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 	var domain_id = ctx.Request.FormValue("domain_id")
 
 	if !models.CheckDomain(ctx,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, "您没有权限修改这个域的共享信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -49,7 +49,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 	rst, err := DomainCtl.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "获取域共享页面信息失败。")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419,i18n.Get("as_of_date_domain_get_info_failed"),err)
 		return
 	}
 
@@ -62,7 +62,6 @@ func (this domainShareControll) Get(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -75,14 +74,14 @@ func (this domainShareControll) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 410, "No Auth")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect())
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
 	if !models.CheckDomain(ctx,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,"权限不足")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Get("as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -90,7 +89,7 @@ func (this domainShareControll) Get(ctx *context.Context) {
 	rst, err := this.models.Get(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "操作数据库失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_get_info_failed"),err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -101,13 +100,13 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
 	if strings.TrimSpace(domain_id) == "" {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请求域信息为空")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_isempty"))
 		return
 	}
 	rst, err := this.models.UnAuth(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询未授权共享域信息失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_check_unshare"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -118,7 +117,6 @@ func (this domainShareControll) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -129,18 +127,18 @@ func (this domainShareControll) Post(ctx *context.Context) {
 
 
 	if !models.CheckDomain(ctx,domain_id,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, "您没有权限修改这个域的共享信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 
-	if govalidator.IsNull(target_domain_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择共享的目标域")
+	if !govalidator.IsWord(target_domain_id){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_target"))
 		return
 	}
 
 	if !govalidator.IsIn(auth_level,"1","2"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择共享模式")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_mode"))
 		return
 	}
 
@@ -148,17 +146,17 @@ func (this domainShareControll) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 410, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect())
 		return
 	}
 
 	err = this.models.Post(domain_id, target_domain_id, auth_level, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "授权失败，操作数据库时出现异常")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_failed"))
 		return
 	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "域信息共享成功")
+		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 	}
 }
 
@@ -167,24 +165,19 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
 	js := ctx.Request.FormValue("JSON")
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if strings.TrimSpace(domain_id) == "" {
-		return
-	}
-
 	if !govalidator.IsWord(domain_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"域编码格式不正确")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_id_check"))
 		return
 	}
 
 	if !models.CheckDomain(ctx,domain_id,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, "您没有权限修改这个域的共享信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
@@ -192,12 +185,11 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 	err := this.models.Delete(js,domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除授权域失败", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_delete"), err)
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除授权信息成功")
-
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
 // 更新域共享信息
@@ -205,7 +197,6 @@ func (this domainShareControll) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -214,17 +205,17 @@ func (this domainShareControll) Put(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("domain_id")
 
 	if !models.CheckDomain(ctx,domain_id,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, "您没有权限修改这个域的共享信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	if !govalidator.IsWord(domain_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"共享域编码不正确")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_target"))
 		return
 	}
 
 	if !govalidator.IsIn(level,"1","2"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择共享模式")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_mode"))
 		return
 	}
 
@@ -233,16 +224,16 @@ func (this domainShareControll) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 410, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect())
 		return
 	}
 
 	err = this.models.Update(uuid, jclaim.User_id, level)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "更新域共享信息傻逼爱。")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_update"))
 		return
 	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "更新域共享模式成功")
+		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 	}
 }

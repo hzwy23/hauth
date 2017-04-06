@@ -1,0 +1,58 @@
+# Comment
+# Comment
+- id: as_of_date_no_auth
+  translation: "sorry, you have no access"
+
+- id: as_of_date_domain_permission_denied
+  translation: "sorry, you have no right query this domain info"
+
+- id: as_of_date_domain_permission_denied_modify
+  translation: "sorry, you hvae no right modify this domain info"
+
+- id: as_of_date_domain_query
+  translation: "sorry, query domain info failed"
+
+- id: as_of_date_domain_get_info_failed
+  translation:
+    one: "sorry,query share domain info failed, please contact administrator"
+    other: "sorry,query share domain info failed, please contact administrator"
+
+- id: success
+  translation: "execute success"
+
+- id: as_of_date_disconnect
+  translation:
+    one: "sorry,disconnect, please login."
+    other: "sorry,disconnect, please login."
+
+- id: as_of_date_domain_isempty
+  translation:
+    one: "sorry,domain describe can't be empty"
+    other: "sorry,domain describe can't be empty"
+
+- id: as_of_date_page_not_exist
+  translation: "sorry,page not found"
+
+- id: as_of_date_domain_id_check
+  translation: "sorry,domain id must be constant of letters or digital"
+
+- id: as_of_date_domain_status_check
+  translation: "sorry,please select domain status"
+
+- id: as_of_date_domain_add_failed
+  translation: "sorry,add domain info failed"
+
+- id: as_of_date_domain_delete
+  translation: "sorry,delete domain info failed."
+
+- id: as_of_date_domain_update
+  translation: "sorry,update domain info failed"
+
+- id: as_of_date_domain_getowner
+  translation: "sorry,get user's domain failed."
+
+- id: as_of_date_domains_of_user
+  translation: "sorry,get user access domain failed."
+
+- id: as_of_date_domain_details
+  translation: "sorry,get domain details info failed."

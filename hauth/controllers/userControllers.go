@@ -179,7 +179,7 @@ func (this userController) Post(ctx *context.Context) {
 	}
 
 	//
-	if !govalidator.IsNumeric(userPhone) {
+	if !govalidator.IsMobilePhone(userPhone) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_phone_check)
 		return
 	}
@@ -299,7 +299,7 @@ func (this userController) Put(ctx *context.Context) {
 		return
 	}
 
-	if !govalidator.IsNumeric(phone){
+	if !govalidator.IsMobilePhone(phone){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请填写手机号")
 		return
 	}

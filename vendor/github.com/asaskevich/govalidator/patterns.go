@@ -45,6 +45,7 @@ const (
 	UnixPath       string = `^(/[^/\x00]*)+/?$`
 	Semver         string = "^v?(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?$"
 	tagName        string = "valid"
+	mobilePhone    string = "^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d{8}$"
 )
 
 // Used by IsFilePath func
@@ -90,4 +91,5 @@ var (
 	rxWinPath        = regexp.MustCompile(WinPath)
 	rxUnixPath       = regexp.MustCompile(UnixPath)
 	rxSemver         = regexp.MustCompile(Semver)
+	rxMobolePhone    = regexp.MustCompile(mobilePhone)
 )

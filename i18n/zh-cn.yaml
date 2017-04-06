@@ -1,0 +1,82 @@
+# Comment
+# Comment
+- id: as_of_date_no_auth
+  translation: "您没有被授权使用这个功能"
+
+- id: as_of_date_domain_permission_denied
+  translation: "您没有权限访问这个域"
+
+- id: as_of_date_domain_permission_denied_modify
+  translation: "您没有被授权修改这个域中的信息"
+
+- id: as_of_date_domain_query
+  translation: "查询域信息失败"
+
+- id: as_of_date_domain_get_info_failed
+  translation:
+    one: "获取域共享信息失败,请联系管理员"
+    other: "获取域共享信息失败,请联系管理员"
+
+- id: success
+  translation: "执行成功"
+
+- id: as_of_date_disconnect
+  translation:
+    one: "用户连接已断开"
+    other: "用户连接已断开"
+
+- id: as_of_date_domain_isempty
+  translation:
+    one: "域信息不能为空"
+    other: "域信息不能为空"
+
+- id: as_of_date_page_not_exist
+  translation: "页面不存在"
+
+- id: as_of_date_domain_id_check
+  translation: "域编码必须由1-30位字母,数字组合而成"
+
+- id: as_of_date_domain_status_check
+  translation: "请选择域状态"
+
+- id: as_of_date_domain_add_failed
+  translation: "新增域信息失败"
+
+- id: as_of_date_domain_delete
+  translation: "删除域信息失败"
+
+- id: as_of_date_domain_update
+  translation: "更新域信息失败"
+
+- id: as_of_date_domain_getowner
+  translation: "获取用户所属域失败"
+
+- id: as_of_date_domains_of_user
+  translation: "获取用户被授权域信息失败"
+
+- id: as_of_date_domain_details
+  translation: "获取域详细信息失败"
+
+- id: as_of_date_check_unshare
+  translation: "查询未授权共享域信息失败"
+
+- id: as_of_date_domain_target
+  translation: "请选择共享的目标域"
+
+- id: as_of_date_domain_mode
+  translation: "请选择共享模式"
+
+
+- id: as_of_date_domain_share_failed
+  translation: "授权域共享失败"
+
+- id: as_of_date_domain_share_delete
+  translation: "删除共享域信息失败"
+
+- id: as_of_date_domain_share_update
+  translation: "更新域共享信息失败"
+
+
+
+- id: ca_add_direction_id
+  translation: "新增费用方向信息失败"

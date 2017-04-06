@@ -1814,10 +1814,11 @@ var Hutils = {
          * 这个函数，用户显示提示框。
          * */
         Notify:function(param){
+
             var DEFAULT = {
                 icon:"icon-ok",
                 caption:"",
-                title:"执行成功",
+                title:"温馨提示: ",
                 message:"执行成功",
                 content:"",
                 type:"success",
@@ -1837,14 +1838,6 @@ var Hutils = {
                 case "warning": DEFAULT.icon = "icon-warning-sign"; break;
                 default :
                     DEFAULT.icon = "icon-bullhorn"
-            }
-
-            if (DEFAULT.caption !=""){
-                DEFAULT.title = DEFAULT.caption
-            }
-
-            if (DEFAULT.content !=""){
-                DEFAULT.message = DEFAULT.content
             }
 
             $.notify({

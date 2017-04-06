@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"net/http"
-
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
@@ -13,6 +11,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type domainController struct {
@@ -26,13 +25,13 @@ func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
 		return
 	}
 
 	rst, err := hcache.GetStaticFile("DomainPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
 		return
 	}
 
@@ -45,7 +44,6 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -55,7 +53,7 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 	rst, total, err := this.models.GetAll(offset, limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 312, "查询数据库失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 312, i18n.Get("as_of_date_domain_query"))
 	}
 
 	hret.WriteBootstrapTableJson(ctx.ResponseWriter, total, rst)
@@ -70,7 +68,6 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您没有权限新增域信息页面，请联系系统管理员")
 		return
 	}
 
@@ -79,27 +76,25 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	domainStatus := ctx.Request.FormValue("domainStatus")
 	//校验
 	if !govalidator.IsWord(domainId) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "域名编码格式错误,应为字母或数字组合，不为空")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_id_check"))
 		return
 	}
 
 	//
 	if !govalidator.IsIn(domainStatus,"0","1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "域状态不能为空")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_status_check"))
 		return
 	}
 
-	if govalidator.IsNull(domainDesc) {
-		logs.Error("域名信息为空")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "所属域描述信息为空，请填写域描述信息")
+	if govalidator.IsEmpty(domainDesc) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_isempty"))
 		return
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect())
 		return
 	}
 
@@ -107,7 +102,7 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "add domain info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_add_failed"), err)
 		return
 	}
 }
@@ -116,7 +111,6 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -125,8 +119,7 @@ func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 	err := json.Unmarshal(ijs, &js)
 	if err != nil {
 		logs.Error(err)
-		ctx.ResponseWriter.WriteHeader(http.StatusExpectationFailed)
-		ctx.ResponseWriter.Write([]byte("域编码格式错误,无法删除" + string(ijs)))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_delete"))
 		return
 	}
 
@@ -134,16 +127,15 @@ func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Get("as_of_date_disconnect"))
 		return
 	}
 
 	err = this.models.Delete(js, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 311, err.Error())
-	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除域信息成功")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, err.Error())
 	}
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Get("success"))
 }
 
 // 更新域信息
@@ -151,7 +143,6 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -160,14 +151,14 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	domainStatus := ctx.Request.FormValue("domainStatus")
 
 	// 校验域名称,不能为空
-	if govalidator.IsNull(domainDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"域名称不能为空.")
+	if govalidator.IsEmpty(domainDesc) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_isempty"))
 		return
 	}
 
 	// 校验域状态编码,必须是0或者1
 	if !govalidator.IsIn(domainStatus,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"域状态编码不正确")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_status_check"))
 		return
 	}
 
@@ -175,24 +166,19 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
-	if jclaim.User_id != "admin" && domainId != jclaim.Domain_id {
-		level := models.CheckDomainRights(jclaim.User_id, domainId)
-		if level != 2 {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您没有权限编辑这个域")
-			return
-		}
+	if !models.CheckDomain(ctx,domainId,"w"){
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_domain_permission_denied_modify"))
+		return
 	}
 
 	err = this.models.Update(domainDesc, domainStatus, jclaim.User_id, domainId)
 	if err != nil {
 		logs.Error(err)
-		ctx.ResponseWriter.WriteHeader(http.StatusExpectationFailed)
-		ctx.ResponseWriter.Write([]byte("更新域信息失败" + domainId))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("as_of_date_domain_update"))
 		return
 	}
 }
@@ -204,13 +190,13 @@ func (this *domainController) GetOwner(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect())
 		return
 	}
 	rst, err := this.models.GetOwner(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 412, "查询数据库失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_getowner"))
 	}
 
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -224,13 +210,13 @@ func (this *domainController) GetDomainOwner(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 	rst, err := this.models.Get(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "查询数据库失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domains_of_user"))
 	}
 
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -244,7 +230,7 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 	rst, err := this.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询域详细信息失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_details"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -258,7 +244,7 @@ func (this *domainController) GetDomainId(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 	var domain_id = jclaim.Domain_id

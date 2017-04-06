@@ -12,6 +12,7 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 // Controller
@@ -28,13 +29,12 @@ var AuthroityCtl = &AuthorityController{
 // Get authorization page
 func (this *AuthorityController) GetBatchPage(ctx *context.Context) {
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
 	rst, err := hcache.GetStaticFile("AuthorityPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
 		return
 	}
 

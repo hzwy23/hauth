@@ -110,22 +110,6 @@ func IsUTFLetter(str string) bool {
 
 }
 
-// add by hzwy23
-// IsWord check if the string contains letters and numbers. Empty string is invalid.
-// params accept 2 arguments
-// first argument is min len.
-// second argument is max len.
-func IsWord(str string,params ...int) bool{
-	if IsNull(str){
-		return false
-	}
-	return rxWord.MatchString(str)
-}
-
-func IsEmpty(str string)bool{
-	return len(strings.TrimSpace(str))==0
-}
-
 // IsAlphanumeric check if the string contains only letters and numbers. Empty string is valid.
 func IsAlphanumeric(str string) bool {
 	if IsNull(str) {
@@ -659,48 +643,6 @@ func IsSemver(str string) bool {
 	return rxSemver.MatchString(str)
 }
 
-// add by hzwy23
-func IsDate(str string, format ...string) bool {
-
-	if len(format) == 0 {
-
-		if len(strings.Split(str, "/")) > 1 {
-			return IsTime(str, "2006/01/02")
-		}
-
-		if len(strings.Split(str, "-")) > 1 {
-			return IsTime(str, "2006-01-02")
-		}
-
-		return false
-	}
-
-	return IsTime(str, format[0])
-}
-
-func IsURI(str string)bool{
-	relation := false
-	for idx,val := range str{
-		if val=='.'{
-			relation = true
-			continue
-		}
-		if val == '/' || val == '\\'{
-			if idx < len(str)-1{
-				if str[idx+1]=='.'{
-					relation = true
-					continue
-				}
-			}
-		}
-
-		if relation && (val != '/' && val != '\\') {
-			return false
-		}
-		return IsRequestURI(str[idx:])
-	}
-	return false
-}
 
 func IsTime(str string, format string) bool {
 	_, err := time.Parse(format, str)
@@ -1079,3 +1021,79 @@ func (sv stringValues) Len() int           { return len(sv) }
 func (sv stringValues) Swap(i, j int)      { sv[i], sv[j] = sv[j], sv[i] }
 func (sv stringValues) Less(i, j int) bool { return sv.get(i) < sv.get(j) }
 func (sv stringValues) get(i int) string   { return sv[i].String() }
+
+
+// add by hzwy23
+// IsWord check if the string contains letters and numbers. Empty string is invalid.
+// params accept 2 arguments
+// first argument is min len.
+// second argument is max len.
+func IsWord(str string,params ...int) bool{
+	if IsEmpty(str){
+		return false
+	}
+	return rxWord.MatchString(str)
+}
+
+// add by hzwy23
+// IsEmpty check if the string contains any character, but spacing is invalid.
+func IsEmpty(str string)bool{
+	return len(strings.TrimSpace(str))==0
+}
+
+
+// add by hzwy23
+// IsDate check if the string is date ,the formatter support 2006-01-02 or 2006/01/02.
+func IsDate(str string, format ...string) bool {
+
+	if len(format) == 0 {
+
+		if len(strings.Split(str, "/")) > 1 {
+			return IsTime(str, "2006/01/02")
+		}
+
+		if len(strings.Split(str, "-")) > 1 {
+			return IsTime(str, "2006-01-02")
+		}
+
+		return false
+	}
+
+	return IsTime(str, format[0])
+}
+
+
+// add by hzwy23
+// IsURI check if the string is URI address, relation address and absolute address is valid.
+func IsURI(str string)bool{
+	relation := false
+	for idx,val := range str{
+		if val=='.'{
+			relation = true
+			continue
+		}
+		if val == '/' || val == '\\'{
+			if idx < len(str)-1{
+				if str[idx+1]=='.'{
+					relation = true
+					continue
+				}
+			}
+		}
+
+		if relation && (val != '/' && val != '\\') {
+			return false
+		}
+		return IsRequestURI(str[idx:])
+	}
+	return false
+}
+
+// add by hzwy23
+// IsMobilePhone check if the str is mobile phone number.
+func IsMobilePhone(str string) bool{
+	if IsEmpty(str){
+		return false
+	}
+	return rxMobolePhone.MatchString(str)
+}
