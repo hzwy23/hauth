@@ -25,7 +25,6 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -45,7 +44,6 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 func (this roleAndResourceController) GetResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -77,7 +75,6 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	res_id := ctx.Request.FormValue("res_id")

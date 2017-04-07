@@ -42,7 +42,6 @@ func (userController) Page(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -61,7 +60,6 @@ func (userController) Page(ctx *context.Context) {
 func (this userController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -100,7 +98,6 @@ func (this userController) Get(ctx *context.Context) {
 func (this userController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -196,7 +193,6 @@ func (this userController) Post(ctx *context.Context) {
 func (this userController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -248,7 +244,6 @@ func (this userController) Search(ctx *context.Context) {
 func (this userController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -322,7 +317,6 @@ func (this userController) Download(ctx *context.Context) {
 func (this userController) ModifyPasswd(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -385,7 +379,6 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 func (this userController) ModifyStatus(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

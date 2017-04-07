@@ -25,7 +25,6 @@ func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
 		return
 	}
 

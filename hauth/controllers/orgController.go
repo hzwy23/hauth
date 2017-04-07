@@ -31,7 +31,6 @@ var OrgCtl = &orgController{
 func (orgController) GetOrgPage(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
@@ -45,7 +44,6 @@ func (orgController) GetOrgPage(ctx *context.Context) {
 func (this orgController) GetSysOrgInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -79,7 +77,6 @@ func (this orgController) GetSysOrgInfo(ctx *context.Context) {
 func (this orgController) DeleteOrgInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -114,7 +111,6 @@ func (this orgController) DeleteOrgInfo(ctx *context.Context) {
 func (this orgController) UpdateOrgInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -189,7 +185,6 @@ func (this orgController) UpdateOrgInfo(ctx *context.Context) {
 func (this orgController) InsertOrgInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -297,7 +292,6 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 func (this orgController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

@@ -29,7 +29,6 @@ var RoleCtl = &roleController{
 func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	rst, err := hcache.GetStaticFile("AsofdateRolePage")
@@ -43,7 +42,6 @@ func (roleController) Page(ctx *context.Context) {
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -80,7 +78,6 @@ func (this roleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -138,7 +135,6 @@ func (this roleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -171,7 +167,6 @@ func (this roleController) Delete(ctx *context.Context) {
 func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

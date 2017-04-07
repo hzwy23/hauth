@@ -32,7 +32,6 @@ var ResourceCtl = &resourceController{
 func (resourceController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -48,7 +47,6 @@ func (resourceController) Page(ctx *context.Context) {
 func (this resourceController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 	rst, err := this.models.Get()
@@ -87,7 +85,6 @@ func (this resourceController) QueryTheme(ctx *context.Context) {
 func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -262,7 +259,6 @@ func (this resourceController) Post(ctx *context.Context) {
 func (this resourceController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -282,7 +278,6 @@ func (this resourceController) Delete(ctx *context.Context) {
 func (this resourceController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -306,7 +301,6 @@ func (this resourceController) Update(ctx *context.Context) {
 func (this resourceController) ConfigTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

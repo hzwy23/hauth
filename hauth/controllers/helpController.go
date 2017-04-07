@@ -16,7 +16,6 @@ func (this helpController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

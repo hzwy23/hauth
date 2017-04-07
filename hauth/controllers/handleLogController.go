@@ -36,7 +36,6 @@ func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -52,7 +51,6 @@ func (HandleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -131,7 +129,6 @@ func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -169,7 +166,6 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

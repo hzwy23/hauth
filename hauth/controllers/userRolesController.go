@@ -65,7 +65,6 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 func (this userRolesController) Auth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 
@@ -94,7 +93,6 @@ func (this userRolesController) Auth(ctx *context.Context) {
 func (this userRolesController) Revoke(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !models.BasicAuth(ctx) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "权限不足")
 		return
 	}
 

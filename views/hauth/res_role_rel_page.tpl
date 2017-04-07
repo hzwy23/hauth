@@ -187,14 +187,13 @@
                     $.HAjaxRequest({
                         url:"/v1/auth/role/resource/rights",
                         type:"post",
-                        dataType:"json",
                         data:{role_id:role_id,res_id:res_id,type_id:"1"},
                         success:function () {
                             $.Notify({
                                 title:"操作成功",
                                 message:"授权资源成功",
                                 type:"success",
-                            })
+                            });
                             RoleResObj.resource_self()
                             RoleResObj.resource_other()
                         },
