@@ -314,6 +314,10 @@ func (this resourceController) ConfigTheme(ctx *context.Context) {
 	res_group_id := ctx.Request.FormValue("res_group_id")
 	res_sort_id := ctx.Request.FormValue("res_sort_id")
 
+	if govalidator.IsNull(res_sort_id) {
+		res_sort_id = "0"
+	}
+
 	flag := this.models.CheckThemeExists(theme_id, res_id)
 	if flag <= 0 {
 		// 没有这个主题的配置信息,新增主题信息
