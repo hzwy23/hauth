@@ -8,6 +8,8 @@ import (
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"time"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/asaskevich/govalidator"
 )
 
 const (
@@ -24,6 +26,7 @@ const (
 )
 
 type UserModel struct {
+	morg  OrgModel
 }
 
 type userInfo struct {
@@ -56,7 +59,7 @@ func (UserModel) GetOwnerDetails(user_id string) ([]userInfo, error) {
 	return rst, err
 }
 
-// 查询怒
+// 查询域中所有的用户信息
 func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 
 	key:=hcache.GenKey("USERMODELS",domain_id)
@@ -145,7 +148,7 @@ func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
 		}
 
 		// query domain_id by org_unit_id
-		did, err := CheckDomainByOrgId(val.Org_unit_id)
+		did, err := hrpc.CheckDomainByOrgId(val.Org_unit_id)
 		if err != nil {
 			logs.Error(err)
 			tx.Rollback()
@@ -153,7 +156,7 @@ func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
 		}
 
 		if user_id != "admin" && domain_id != did {
-			level := CheckDomainRights(user_id, did)
+			level := hrpc.CheckDomainRights(user_id, did)
 			if level != 2 {
 				logs.Error("没有被授权删除这个域中的信息")
 				tx.Rollback()
@@ -173,53 +176,56 @@ func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
 
 // 搜索用户信息
 func (this UserModel) Search(org_id string, status_id string, domain_id string) ([]userInfo, error) {
+
 	var rst []userInfo
-	var err error
-	// 如果机构号为空
-	// 直接查询指定域中所有的用户
-	if org_id == "" {
-		rst, err = this.GetDefault(domain_id)
+
+	ret, err := this.GetDefault(domain_id)
+	if err != nil {
+		logs.Error(err)
+		return nil, err
+	}
+
+	if !govalidator.IsEmpty(org_id) {
+
+		orglist,err := this.morg.GetSubOrgInfo(domain_id,org_id)
 		if err != nil {
 			logs.Error(err)
-			return nil, err
-		}
-	} else {
-		rows, err := dbobj.Query(sys_rdbms_090, org_id)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
+			return nil,err
 		}
 
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
+		var orgmap map[string]string = make(map[string]string)
+		for _, val:=range orglist {
+			orgmap[val.Org_unit_id] = ""
+		}
+
+		for _,val := range ret {
+			if _,ok:=orgmap[val.Org_unit_id]; ok{
+				if !govalidator.IsEmpty(status_id) {
+					if val.User_status_id == status_id {
+						rst = append(rst,val)
+					}
+				} else {
+					rst = append(rst,val)
+				}
+			}
+		}
+	} else {
+		for _,val := range ret {
+			if !govalidator.IsEmpty(status_id) {
+				if val.User_status_id == status_id {
+					rst = append(rst,val)
+				}
+			} else {
+				rst = append(rst,val)
+			}
 		}
 	}
 
-	if status_id == "" {
-		return rst, nil
-	} else if status_id == "0" {
-		var ret []userInfo
-		for _, val := range rst {
-			if val.User_status_id == "0" {
-				ret = append(ret, val)
-			}
-		}
-		return ret, nil
-	} else {
-		var ret []userInfo
-		for _, val := range rst {
-			if val.User_status_id == "1" {
-				ret = append(ret, val)
-			}
-		}
-		return ret, nil
-	}
+	return rst,nil
 }
 
 func (this UserModel) ModifyStatus(status_id, user_id string) (string, error) {
-	did,_:=CheckDomainByUserId(user_id)
+	did,_ := hrpc.CheckDomainByUserId(user_id)
 	defer hcache.Delete(hcache.GenKey("USERMODELS",did))
 	err := dbobj.Exec(sys_rdbms_016, status_id, user_id)
 	return error_user_modify_status, err

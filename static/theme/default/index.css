@@ -9,7 +9,14 @@ div,dl,dt,dd,ul,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textare
     margin:0;
     padding:0;
 }
-ul {list-style:none;}
+ul {
+    list-style:none;
+}
+
+li {
+    white-space: nowrap;
+}
+
 .ibox{
     height:30px !important;
     line-height:30px !important;

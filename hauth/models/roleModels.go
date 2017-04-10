@@ -7,6 +7,7 @@ import (
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"time"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type RoleModel struct {
@@ -74,7 +75,7 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 	for _, val := range allrole {
 
 		if val.Domain_id != domain_id && user_id != "admin" {
-			level := CheckDomainRights(user_id, val.Domain_id)
+			level := hrpc.CheckDomainRights(user_id, val.Domain_id)
 			if level != 2 {
 				tx.Rollback()
 				return errors.New("您没有权限删除这个域中的角色信息")

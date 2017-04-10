@@ -6,7 +6,6 @@ import (
 	"github.com/astaxie/beego/context"
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/models"
 
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
@@ -14,6 +13,7 @@ import (
 	"github.com/hzwy23/dbobj"
 	"github.com/tealeg/xlsx"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type HandleLogsController struct {
@@ -35,7 +35,7 @@ var HandleLogsCtl = &HandleLogsController{}
 func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -50,7 +50,7 @@ func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 func (HandleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -128,7 +128,7 @@ func (HandleLogsController) Download(ctx *context.Context) {
 func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -165,7 +165,7 @@ func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
 func (HandleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 

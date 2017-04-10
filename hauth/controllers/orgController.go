@@ -7,10 +7,6 @@ import (
 	"strconv"
 
 	"github.com/hzwy23/asofdate/hauth/models"
-
-	"fmt"
-	"strings"
-
 	"github.com/hzwy23/asofdate/hauth/hcache"
 
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -18,6 +14,11 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/tealeg/xlsx"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/utils"
+	"os"
+	"path/filepath"
 )
 
 type orgController struct {
@@ -28,9 +29,9 @@ var OrgCtl = &orgController{
 	models: new(models.OrgModel),
 }
 
-func (orgController) GetOrgPage(ctx *context.Context) {
+func (orgController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
@@ -41,9 +42,9 @@ func (orgController) GetOrgPage(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-func (this orgController) GetSysOrgInfo(ctx *context.Context) {
+func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -61,7 +62,7 @@ func (this orgController) GetSysOrgInfo(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !models.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限访问这个域中的信息。")
 		return
 	}
@@ -74,9 +75,9 @@ func (this orgController) GetSysOrgInfo(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this orgController) DeleteOrgInfo(ctx *context.Context) {
+func (this orgController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -89,30 +90,50 @@ func (this orgController) DeleteOrgInfo(ctx *context.Context) {
 		return
 	}
 
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	cok,_ := ctx.Request.Cookie("Authorization")
+	jclaim,err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect())
 		return
 	}
 
-	err = this.models.Delete(mjs, jclaim.Org_id, jclaim.User_id, jclaim.Domain_id)
+	// 校验用户能否访问这个域
+	// 由于有多个机构,所以,对每个机构中的域进行校验,一旦出现用户不封访问的域,则直接退出删除操作
+	for _, val:=range mjs {
+		// 根据机构号,获取机构所在的域
+		did, err := hrpc.CheckDomainByOrgId(val.Org_unit_id)
+		if err != nil {
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "获取机构对应的域信息错误.")
+			return
+		}
+
+		if val.Org_unit_id == jclaim.Org_id {
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,"您不能删除自己所在的机构.<br/>机构编码-> "+val.Code_number+" <br/>机构名称-> "+val.Org_unit_desc)
+			return
+		}
+
+		// 查看用户对这个域是否有读写操作
+		if !hrpc.CheckDomain(ctx,did,"w") {
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您没有权限删除这个域中的机构信息.")
+			return
+		}
+	}
+
+	err = this.models.Delete(mjs)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, err.Error())
 		return
-	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "delete org info successfully.")
-		return
 	}
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "delete org info successfully.")
 }
 
-func (this orgController) UpdateOrgInfo(ctx *context.Context) {
+func (this orgController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
+
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
@@ -125,21 +146,20 @@ func (this orgController) UpdateOrgInfo(ctx *context.Context) {
 	up_org_id := ctx.Request.FormValue("Up_org_id")
 	org_status_id := ctx.Request.FormValue("Status_cd")
 
-	did, err := models.CheckDomainByOrgId(org_unit_id)
+	did, err := hrpc.CheckDomainByOrgId(org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限更新这个域中的机构信息")
 		return
 	}
 
-	if !models.CheckDomain(ctx,did,"w"){
+	if !hrpc.CheckDomain(ctx,did,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限更新这个域中的机构信息")
 		return
 	}
 
-
 	// 校验输入信息
-	if govalidator.IsNull(org_unit_desc){
+	if govalidator.IsEmpty(org_unit_desc){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"机构描述信息不能为空.")
 		return
 	}
@@ -159,7 +179,7 @@ func (this orgController) UpdateOrgInfo(ctx *context.Context) {
 		return
 	}
 
-	check, err := this.models.GetSubOrgInfo(org_unit_id)
+	check, err := this.models.GetSubOrgInfo(did,org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "操作数据库失败。")
@@ -173,18 +193,18 @@ func (this orgController) UpdateOrgInfo(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Update(org_unit_desc, up_org_id, org_status_id, jclaim.User_id, org_unit_id)
+	err = this.models.Update(org_unit_desc, up_org_id, org_status_id, jclaim.User_id, org_unit_id,did)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "modify org info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "修改机构信息失败", err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "modify org info successfully")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
-func (this orgController) InsertOrgInfo(ctx *context.Context) {
+func (this orgController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -200,12 +220,12 @@ func (this orgController) InsertOrgInfo(ctx *context.Context) {
 	up_org_id := ctx.Request.FormValue("Up_org_id")
 	domain_id := ctx.Request.FormValue("Domain_id")
 
-	if !models.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.CheckDomain(ctx,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限在这个中新增机构信息")
 		return
 	}
 
-	id := domain_id + "_join_" + org_unit_id
+	id := utils.JoinCode(domain_id,org_unit_id)
 	create_user := jclaim.User_id
 	maintance_user := jclaim.User_id
 	org_status_id := "0"
@@ -215,7 +235,7 @@ func (this orgController) InsertOrgInfo(ctx *context.Context) {
 		return
 	}
 
-	if govalidator.IsNull(org_unit_desc) {
+	if govalidator.IsEmpty(org_unit_desc) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "机构名称不能为空，请输入机构名称")
 		return
 	}
@@ -239,10 +259,10 @@ func (this orgController) InsertOrgInfo(ctx *context.Context) {
 		domain_id, create_user, maintance_user, id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "add new org info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "新增机构信息失败.", err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new org info successfully")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
 func (orgController) getOrgTops(node []models.SysOrgInfo) []models.SysOrgInfo {
@@ -279,7 +299,14 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 	org_unit_id := ctx.Request.FormValue("org_unit_id")
 
-	rst, err := this.models.GetSubOrgInfo(org_unit_id)
+	did, err := hrpc.CheckDomainByOrgId(org_unit_id)
+	if err != nil {
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限更新这个域中的机构信息")
+		return
+	}
+
+	rst, err := this.models.GetSubOrgInfo(did,org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "操作数据库失败")
@@ -291,26 +318,25 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 func (this orgController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
 	ctx.ResponseWriter.Header().Set("Content-Type", "application/vnd.ms-excel")
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
-		return
-	}
-
-	if domain_id == "" {
+	if !govalidator.IsEmpty(domain_id) {
+		cookie, _ := ctx.Request.Cookie("Authorization")
+		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		if err != nil {
+			logs.Error(err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+			return
+		}
 		domain_id = jclaim.Domain_id
 	}
 
-	if !models.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,"您没有权限导出这个域中的机构信息.")
 		return
 	}
@@ -319,65 +345,98 @@ func (this orgController) Download(ctx *context.Context) {
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 417, "操作数据库失败")
+		return
 	}
 
-	var file *xlsx.File
+
 	var sheet *xlsx.Sheet
-
-	file = xlsx.NewFile()
-	sheet, err = file.AddSheet("Sheet1")
+	HOME:=os.Getenv("HBIGDATA_HOME")
+	file,err := xlsx.OpenFile(filepath.Join(HOME,"upload/template/hauthOrgExportTemplate.xlsx"))
 	if err != nil {
-		fmt.Printf(err.Error())
-	}
+		file = xlsx.NewFile()
+		sheet, err = file.AddSheet("机构信息")
+		if err != nil {
+			logs.Error(err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"没有找到sheet也名称为'机构信息'的页面")
+			return
+		}
 
-	{
-		row := sheet.AddRow()
-		cell1 := row.AddCell()
-		cell1.Value = "机构编码"
-		cell2 := row.AddCell()
-		cell2.Value = "机构名称"
-		cell3 := row.AddCell()
-		cell3.Value = "上级用户编码"
-		cell4 := row.AddCell()
-		cell4.Value = "机构状态"
-		cell5 := row.AddCell()
-		cell5.Value = "创建日期"
-		cell6 := row.AddCell()
-		cell6.Value = "创建人"
-		cell7 := row.AddCell()
-		cell7.Value = "维护日期"
-		cell8 := row.AddCell()
-		cell8.Value = "维护人"
-		cell9 := row.AddCell()
-		cell9.Value = "所属域"
-	}
+		{
+			row := sheet.AddRow()
+			cell1 := row.AddCell()
+			cell1.Value = "机构编码"
+			cell2 := row.AddCell()
+			cell2.Value = "机构名称"
+			cell3 := row.AddCell()
+			cell3.Value = "上级编码"
+			cell4 := row.AddCell()
+			cell4.Value = "机构状态"
 
+			cell9 := row.AddCell()
+			cell9.Value = "所属域"
+
+			cell5 := row.AddCell()
+			cell5.Value = "创建日期"
+			cell6 := row.AddCell()
+			cell6.Value = "创建人"
+			cell7 := row.AddCell()
+			cell7.Value = "维护日期"
+			cell8 := row.AddCell()
+			cell8.Value = "维护人"
+
+		}
+	} else {
+		sheet = file.Sheet["机构信息"]
+		if sheet == nil {
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"没有找到sheet也名称为'机构信息'的页面")
+			return
+		}
+	}
 	for _, v := range rst {
 		row := sheet.AddRow()
 		cell1 := row.AddCell()
 		cell1.Value = v.Code_number
+		cell1.SetStyle(sheet.Rows[1].Cells[0].GetStyle())
+
 		cell2 := row.AddCell()
 		cell2.Value = v.Org_unit_desc
+		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
+
 		cell3 := row.AddCell()
-		uplist := strings.Split(v.Up_org_id, "_join_")
-		if len(uplist) == 2 {
-			cell3.Value = uplist[1]
-		} else {
-			cell3.Value = v.Up_org_id
-		}
+		cell3.Value = utils.SplitCode(v.Up_org_id)
+		cell3.SetStyle(sheet.Rows[1].Cells[2].GetStyle())
+
 		cell4 := row.AddCell()
 		cell4.Value = v.Org_status_desc
+		cell4.SetStyle(sheet.Rows[1].Cells[3].GetStyle())
+
+		cell9 := row.AddCell()
+		cell9.Value = v.Domain_id
+		cell9.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
+
+
 		cell5 := row.AddCell()
 		cell5.Value = v.Create_date
+		cell5.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
+
 		cell6 := row.AddCell()
 		cell6.Value = v.Create_user
+		cell6.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
+
 		cell7 := row.AddCell()
 		cell7.Value = v.Maintance_date
+		cell7.SetStyle(sheet.Rows[1].Cells[7].GetStyle())
+
 		cell8 := row.AddCell()
 		cell8.Value = v.Maintance_user
-		cell9 := row.AddCell()
-		cell9.Value = v.Domain_desc
+		cell8.SetStyle(sheet.Rows[1].Cells[8].GetStyle())
+
 	}
+
+	if len(sheet.Rows) >= 3 {
+		sheet.Rows = append(sheet.Rows[0:1], sheet.Rows[2:]...)
+	}
+
 	file.Write(ctx.ResponseWriter)
 }
 

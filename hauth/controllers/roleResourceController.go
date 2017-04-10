@@ -7,6 +7,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"html/template"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type roleAndResourceController struct {
@@ -24,7 +25,7 @@ var RoleAndResourceCtl = &roleAndResourceController{
 func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -43,7 +44,7 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 // 查询指定角色的资源信息
 func (this roleAndResourceController) GetResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -74,7 +75,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 // 授权与撤权操作
 func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 	res_id := ctx.Request.FormValue("res_id")

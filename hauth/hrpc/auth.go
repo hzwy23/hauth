@@ -1,14 +1,16 @@
-package models
+package hrpc
 
+// hrpc package
+// this package provide permissions related function
 import (
-"database/sql"
+	"database/sql"
 
-"github.com/astaxie/beego/context"
-"github.com/hzwy23/asofdate/utils/hret"
-"github.com/hzwy23/asofdate/utils/logs"
-"github.com/hzwy23/asofdate/utils/token/hjwt"
-"github.com/hzwy23/dbobj"
-"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 const (
@@ -25,17 +27,17 @@ type mSysUserSec struct {
 }
 
 func updateContinueErrorCnt(cnt int64, user_id string) {
-	dbobj.Exec(sys_rdbms_098, cnt, user_id)
+	dbobj.Exec(sys_rdbms_hrpc_007, cnt, user_id)
 }
 
 func forbidUsers(user_id string) {
-	dbobj.Exec(sys_rdbms_099, user_id)
+	dbobj.Exec(sys_rdbms_hrpc_008, user_id)
 }
 
 // check user's passwd is right.
 func CheckPasswd(user_id, user_passwd string) (bool, int, int64, string) {
 	var sec mSysUserSec
-	err := dbobj.QueryRow(sys_rdbms_010, user_id).Scan(&sec.User_id, &sec.User_passwd, &sec.User_status, &sec.User_continue_error_cnt)
+	err := dbobj.QueryRow(sys_rdbms_hrpc_005, user_id).Scan(&sec.User_id, &sec.User_passwd, &sec.User_status, &sec.User_continue_error_cnt)
 	if err != nil {
 		return false, 402, 0, error_querydb
 	}
@@ -65,7 +67,7 @@ func CheckPasswd(user_id, user_passwd string) (bool, int, int64, string) {
 // 2    : can read and wirte the domain info
 func CheckDomainRights(user_id string, domain_id string) int {
 	var cnt = -1
-	err := dbobj.QueryRow(sys_rdbms_001, domain_id, user_id).Scan(&cnt)
+	err := dbobj.QueryRow(sys_rdbms_hrpc_001, domain_id, user_id).Scan(&cnt)
 	if err != nil {
 		logs.Error(err)
 		return -1
@@ -75,19 +77,19 @@ func CheckDomainRights(user_id string, domain_id string) int {
 
 func CheckDomainByOrgId(org_unit_id string) (string, error) {
 	domain_id := ""
-	err := dbobj.QueryRow(sys_rdbms_002, org_unit_id).Scan(&domain_id)
+	err := dbobj.QueryRow(sys_rdbms_hrpc_002, org_unit_id).Scan(&domain_id)
 	return domain_id, err
 }
 
 func CheckDomainByUserId(user_id string) (string, error) {
 	domain_id := ""
-	err := dbobj.QueryRow(sys_rdbms_003, user_id).Scan(&domain_id)
+	err := dbobj.QueryRow(sys_rdbms_hrpc_003, user_id).Scan(&domain_id)
 	return domain_id, err
 }
 
 func CheckDomainByRoleId(role_id string) (string, error) {
 	domain_id := ""
-	err := dbobj.QueryRow(sys_rdbms_004, role_id).Scan(&domain_id)
+	err := dbobj.QueryRow(sys_rdbms_hrpc_004, role_id).Scan(&domain_id)
 	return domain_id, err
 }
 
@@ -104,7 +106,7 @@ func BasicAuth(ctx *context.Context) bool {
 		return true
 	}
 	cnt := 0
-	err = dbobj.QueryRow(sys_rdbms_022, jclaim.User_id, ctx.Request.URL.Path).Scan(&cnt)
+	err = dbobj.QueryRow(sys_rdbms_hrpc_006, jclaim.User_id, ctx.Request.URL.Path).Scan(&cnt)
 	if err != nil {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
 		return false

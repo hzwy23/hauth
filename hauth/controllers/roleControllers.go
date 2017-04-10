@@ -12,6 +12,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type roleController struct {
@@ -28,7 +29,7 @@ var RoleCtl = &roleController{
 
 func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 	rst, err := hcache.GetStaticFile("AsofdateRolePage")
@@ -41,7 +42,7 @@ func (roleController) Page(ctx *context.Context) {
 
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -58,7 +59,7 @@ func (this roleController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !models.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"您没有权限访问这个域中的角色信息.")
 		return
 	}
@@ -77,7 +78,7 @@ func (this roleController) Get(ctx *context.Context) {
 func (this roleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -95,7 +96,7 @@ func (this roleController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !models.CheckDomain(ctx,domainid,"w"){
+	if !hrpc.CheckDomain(ctx,domainid,"w"){
 		logs.Error("没有权限在这个域中新增角色信息")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限在这个域中新增角色信息")
 		return
@@ -134,7 +135,7 @@ func (this roleController) Post(ctx *context.Context) {
 func (this roleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -166,7 +167,7 @@ func (this roleController) Delete(ctx *context.Context) {
 
 func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -182,14 +183,14 @@ func (this roleController) Update(ctx *context.Context) {
 		return
 	}
 
-	did, err := models.CheckDomainByRoleId(Role_id)
+	did, err := hrpc.CheckDomainByRoleId(Role_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "查询角色信息上边")
 		return
 	}
 
-	if !models.CheckDomain(ctx,did,"w"){
+	if !hrpc.CheckDomain(ctx,did,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限编辑这个域中的角色信息")
 		return
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 const (
@@ -31,7 +32,7 @@ var ResourceCtl = &resourceController{
 // 菜单资源子页面路由
 func (resourceController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -46,7 +47,7 @@ func (resourceController) Page(ctx *context.Context) {
 
 func (this resourceController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 	rst, err := this.models.Get()
@@ -84,7 +85,7 @@ func (this resourceController) QueryTheme(ctx *context.Context) {
 
 func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -258,7 +259,7 @@ func (this resourceController) Post(ctx *context.Context) {
 
 func (this resourceController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -277,7 +278,7 @@ func (this resourceController) Delete(ctx *context.Context) {
 
 func (this resourceController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -300,7 +301,7 @@ func (this resourceController) Update(ctx *context.Context) {
 
 func (this resourceController) ConfigTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 

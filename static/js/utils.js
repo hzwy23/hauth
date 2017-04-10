@@ -637,6 +637,8 @@ var Hutils = {
 
             attr:false,
 
+            showLevel:3,
+
             onChange:function (obj) {
                 console.log("没有注册点击函数")
             },
@@ -735,27 +737,56 @@ var Hutils = {
         // 3. genUI
         function genTreeUI(a){
 
-            var opt = "<ul>"
+            var opt = "<ul class='col-sm-12 col-md-12 col-lg-12'>"
             for(var i = 0; i < a.length; i++){
                 var pd = parseInt(a[i].dept)*20 - 10
                 if (isNaN(pd)){
                     pd = 10
                 }
                 if (a[i].attr == "0") {
-                    // 叶子信息
-                    opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                        '<hzw style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: pointer ;display: inline-block">' +
-                        '<i class="icon-leaf" style="color: green;"></i>' +
-                        '</hzw>' +
-                        '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+
+                    if  ( parseInt(a[i].dept) <= __DEFAULT.showLevel) {
+                        // 叶子信息
+                        opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            '<hzw style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: pointer ;display: inline-block">' +
+                            '<i class="icon-leaf" style="color: green;"></i>' +
+                            '</hzw>' +
+                            '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+
+                    } else {
+                        // 叶子信息
+                        opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative; display: none">' +
+                            '<hzw style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: pointer ;display: inline-block">' +
+                            '<i class="icon-leaf" style="color: green;"></i>' +
+                            '</hzw>' +
+                            '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+
+                    }
 
                 } else {
-                    // 节点信息
-                    opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                        '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell ;display: inline-block">' +
-                        '<i style="color: #ccb008;" class="icon-folder-open"> </i>' +
-                        '</hzw>' +
-                        '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                    if (parseInt(a[i].dept) < __DEFAULT.showLevel){
+                        // 节点信息
+                        opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell ;display: inline-block">' +
+                            '<i style="color: #ccb008;" class="icon-folder-open"> </i>' +
+                            '</hzw>' +
+                            '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                    } else  if (parseInt(a[i].dept == __DEFAULT.showLevel)) {
+                        // 节点信息
+                        opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell ;display: inline-block">' +
+                            '<i style="color: #ccb008;" class="icon-folder-close"> </i>' +
+                            '</hzw>' +
+                            '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                    } else {
+                        // 节点信息
+                        opt += '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;display: none;">' +
+                            '<hzw class="HTreeshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell ;display: inline-block">' +
+                            '<i style="color: #ccb008;" class="icon-folder-open"> </i>' +
+                            '</hzw>' +
+                            '<span class="HTreeLi" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                    }
+
                 }
             }
             opt +='</ul>'
@@ -787,7 +818,7 @@ var Hutils = {
                             $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open")
                         }
                         $(element).fadeOut(200);
-                    }else{
+                    } else {
                         return false
                     }
                 })
@@ -807,7 +838,7 @@ var Hutils = {
                         return false
                     }
                 })
-            }else {
+            } else {
                 $.Notify({
                     title:"温馨提示:",
                     message:"这个节点下边没有叶子信息",
@@ -819,7 +850,6 @@ var Hutils = {
                 } else if ($(e).find("i").hasClass("icon-folder-close")) {
                     $(e).find("i").removeClass("icon-folder-close").addClass("icon-folder-open")
                 }
-
                 return
             }
         }

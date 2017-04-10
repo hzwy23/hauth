@@ -12,6 +12,7 @@ import (
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 var indexModels = new(models.LoginModels)
@@ -63,13 +64,14 @@ func LoginSystem(ctx *context.Context) {
 		return
 	}
 
-	orgid, err := indexModels.GetDefaultDomainId(userId)
+	orgid, err := indexModels.GetDefaultOrgId(userId)
 	if err != nil {
 		logs.Error(userId, " 用户没有指定机构", err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 402, "can't get org id of user")
 		return
 	}
-	if ok, code, cnt, rmsg := models.CheckPasswd(userId, psd); ok {
+
+	if ok, code, cnt, rmsg := hrpc.CheckPasswd(userId, psd); ok {
 		token := hjwt.GenToken(userId, domainId, orgid, 86400)
 		cookie := http.Cookie{Name: "Authorization", Value: token, Path: "/", MaxAge: 86400}
 		http.SetCookie(ctx.ResponseWriter, &cookie)

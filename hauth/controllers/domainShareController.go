@@ -16,6 +16,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type domainShareControll struct {
@@ -32,7 +33,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -40,7 +41,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 	// config this domain to others
 	var domain_id = ctx.Request.FormValue("domain_id")
 
-	if !models.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied"))
 		return
 	}
@@ -61,7 +62,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 func (this domainShareControll) Get(ctx *context.Context) {
 	defer hret.HttpPanic()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -80,7 +81,7 @@ func (this domainShareControll) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !models.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Get("as_of_date_domain_permission_denied"))
 		return
 	}
@@ -116,7 +117,7 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 func (this domainShareControll) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -126,7 +127,7 @@ func (this domainShareControll) Post(ctx *context.Context) {
 
 
 
-	if !models.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.CheckDomain(ctx,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -164,7 +165,7 @@ func (this domainShareControll) Post(ctx *context.Context) {
 func (this domainShareControll) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -176,7 +177,7 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 		return
 	}
 
-	if !models.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.CheckDomain(ctx,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -196,7 +197,7 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 func (this domainShareControll) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -204,7 +205,7 @@ func (this domainShareControll) Put(ctx *context.Context) {
 	level := ctx.Request.FormValue("auth_level")
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if !models.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.CheckDomain(ctx,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}

@@ -12,6 +12,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type domainController struct {
@@ -24,7 +25,7 @@ var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
 	defer hret.HttpPanic()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -42,7 +43,7 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -66,7 +67,7 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 func (this *domainController) PostDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -109,7 +110,7 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 // 删除域信息
 func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -141,7 +142,7 @@ func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -169,7 +170,7 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 		return
 	}
 
-	if !models.CheckDomain(ctx,domainId,"w"){
+	if !hrpc.CheckDomain(ctx,domainId,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_domain_permission_denied_modify"))
 		return
 	}

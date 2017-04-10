@@ -8,6 +8,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 const (
@@ -64,7 +65,7 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 // 这个函数接收一个指定的json字符串。
 func (this userRolesController) Auth(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
@@ -92,7 +93,7 @@ func (this userRolesController) Auth(ctx *context.Context) {
 // @(http request param) user_id role_id
 func (this userRolesController) Revoke(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 

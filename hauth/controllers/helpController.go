@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type helpController struct {
@@ -15,7 +15,7 @@ var HelpCtl = &helpController{}
 func (this helpController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 

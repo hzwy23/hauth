@@ -13,6 +13,7 @@ import (
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 // Controller
@@ -28,7 +29,7 @@ var AuthroityCtl = &AuthorityController{
 
 // Get authorization page
 func (this *AuthorityController) GetBatchPage(ctx *context.Context) {
-	if !models.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
