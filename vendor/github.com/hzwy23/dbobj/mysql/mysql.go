@@ -1,39 +1,36 @@
-package dbobj
+package mysql
 
 import (
 	"database/sql"
 	"fmt"
 	"os"
-	"path"
 	"strings"
-
-	"github.com/hzwy23/dbobj/utils/config"
 
 	"github.com/hzwy23/dbobj/utils"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/hzwy23/dbobj/dbhandle"
+	"path/filepath"
 )
 
-type mysqldb struct {
+type mysql struct {
 	db *sql.DB
 }
 
-func NewMysqlDbObj() *mysqldb {
+func NewMySQL() dbhandle.DbObj {
 
 	var err error
 
-	o := new(mysqldb)
+	o := new(mysql)
 
 	HOME := os.Getenv("HBIGDATA_HOME")
-	if HOME == ""{
-		HOME = "./"
-	}
 
-	filedir := path.Join(HOME, "conf", "system.properties")
+	filedir := filepath.Join(HOME, "conf", "system.properties")
 
-	red, err := config.GetResource(filedir)
+	red, err := utils.GetResource(filedir)
 	if err != nil {
 		fmt.Errorf("cant not read ./conf/system.properties.please check this file.")
+		return nil
 	}
 
 	tns := red.Conf["DB.tns"]
@@ -48,9 +45,7 @@ func NewMysqlDbObj() *mysqldb {
 		}
 	}
 
-	tnsname := usr + ":" + pad + "@" + tns
-
-	o.db, err = sql.Open("mysql", tnsname)
+	o.db, err = sql.Open("mysql", usr + ":" + pad + "@" + tns)
 
 	if err != nil {
 		fmt.Errorf("open oracle database failed.", err)
@@ -60,16 +55,16 @@ func NewMysqlDbObj() *mysqldb {
 		psd, err := utils.Encrypt(pad)
 		if err != nil {
 			fmt.Errorf("decrypt passwd failed.", psd)
+			return nil
 		}
 		psd = "\"" + psd + "\""
 		red.Set("DB.passwd", psd)
 	}
-
-	fmt.Println("create mysql obj success.")
+	fmt.Println("create mysql dbhandle success.")
 	return o
 }
 
-func (this *mysqldb) GetErrorCode(err error) string {
+func (this *mysql) GetErrorCode(err error) string {
 	ret := err.Error()
 	if n := strings.Index(ret, ":"); n > 0 {
 		return strings.TrimSpace(ret[:n])
@@ -79,7 +74,7 @@ func (this *mysqldb) GetErrorCode(err error) string {
 	}
 }
 
-func (this *mysqldb) GetErrorMsg(err error) string {
+func (this *mysql) GetErrorMsg(err error) string {
 	ret := err.Error()
 	if n := strings.Index(ret, ":"); n > 0 {
 		return strings.TrimSpace(ret[n+1:])
@@ -89,45 +84,45 @@ func (this *mysqldb) GetErrorMsg(err error) string {
 	}
 }
 
-func (this *mysqldb) Query(sql string, args ...interface{}) (*sql.Rows, error) {
+func (this *mysql) Query(sql string, args ...interface{}) (*sql.Rows, error) {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewMysqlDbObj()
-		register("mysql", nd)
-		this = nd
+		//nd := NewMySQL()
+		//register("mysql", nd)
+		//this = nd
 	}
 	return this.db.Query(sql, args...)
 }
 
-func (this *mysqldb) Exec(sql string, args ...interface{}) error {
+func (this *mysql) Exec(sql string, args ...interface{}) error {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewMysqlDbObj()
-		register("mysql", nd)
-		this = nd
+		//nd := NewMySQL()
+		//register("mysql", nd)
+		//this = nd
 	}
 	_, err := this.db.Exec(sql, args...)
 	return err
 }
 
-func (this *mysqldb) Begin() (*sql.Tx, error) {
+func (this *mysql) Begin() (*sql.Tx, error) {
 	return this.db.Begin()
 }
 
-func (this *mysqldb) Prepare(query string) (*sql.Stmt, error) {
+func (this *mysql) Prepare(query string) (*sql.Stmt, error) {
 	return this.db.Prepare(query)
 }
 
-func (this *mysqldb) QueryRow(sql string, args ...interface{}) *sql.Row {
+func (this *mysql) QueryRow(sql string, args ...interface{}) *sql.Row {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewMysqlDbObj()
-		register("mysql", nd)
-		this = nd
+		//nd := NewMySQL()
+		//register("mysql", nd)
+		//this = nd
 	}
 	return this.db.QueryRow(sql, args...)
 }
 
 func init() {
-	register("mysql", NewMysqlDbObj())
+	dbhandle.Register("mysql", NewMySQL)
 }

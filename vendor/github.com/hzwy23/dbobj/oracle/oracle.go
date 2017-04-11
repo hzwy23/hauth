@@ -1,4 +1,4 @@
-package dbobj
+package oracle
 
 import (
 	"database/sql"
@@ -7,37 +7,33 @@ import (
 	"path"
 	"strings"
 
-	"github.com/hzwy23/dbobj/utils/config"
-
 	"github.com/hzwy23/dbobj/utils"
-
-	//	_ "github.com/mattn/go-oci8"
+	_ "github.com/mattn/go-oci8"
+	"github.com/hzwy23/dbobj/dbhandle"
 )
 
-type dbobj struct {
+type oracle struct {
 	db *sql.DB
 }
 
-func NewOraDbObj() *dbobj {
+func NewOracle() dbhandle.DbObj {
 
 	var err error
 
-	o := new(dbobj)
+	o := new(oracle)
 
 	nlsLang := os.Getenv("NLS_LANG")
 	if !strings.HasSuffix(nlsLang, "UTF8") {
 		os.Setenv("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8")
 	}
+	os.Setenv("NLS_DATE_FORMAT","yyyy-mm-dd")
 
 	HOME := os.Getenv("HBIGDATA_HOME")
-	if HOME == ""{
-		HOME = "./"
-	}
-
 	filedir := path.Join(HOME, "conf", "system.properties")
-	red, err := config.GetResource(filedir)
+	red, err := utils.GetResource(filedir)
 	if err != nil {
 		fmt.Errorf("cant not read ./conf/system.properties.please check this file.")
+		return nil
 	}
 
 	tns := red.Conf["DB.tns"]
@@ -64,17 +60,18 @@ func NewOraDbObj() *dbobj {
 		psd, err := utils.Encrypt(pad)
 		if err != nil {
 			fmt.Errorf("decrypt passwd failed.%v", psd)
+			return nil
 		}
 		psd = "\"" + psd + "\""
 		red.Set("DB.passwd", psd)
 	}
 	o.db.SetMaxOpenConns(0)
 	o.db.SetConnMaxLifetime(0)
-	fmt.Println("create Oracle obj success.")
+	fmt.Println("create Oracle dbhandle success.")
 	return o
 }
 
-func (this *dbobj) GetErrorCode(err error) string {
+func (this *oracle) GetErrorCode(err error) string {
 	ret := err.Error()
 	if n := strings.Index(ret, ":"); n > 0 {
 		return strings.TrimSpace(ret[:n])
@@ -84,7 +81,7 @@ func (this *dbobj) GetErrorCode(err error) string {
 	}
 }
 
-func (this *dbobj) GetErrorMsg(err error) string {
+func (this *oracle) GetErrorMsg(err error) string {
 	ret := err.Error()
 	if n := strings.Index(ret, ":"); n > 0 {
 		return strings.TrimSpace(ret[n+1:])
@@ -94,45 +91,45 @@ func (this *dbobj) GetErrorMsg(err error) string {
 	}
 }
 
-func (this *dbobj) Query(sql string, args ...interface{}) (*sql.Rows, error) {
+func (this *oracle) Query(sql string, args ...interface{}) (*sql.Rows, error) {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewOraDbObj()
-		register("oracle", nd)
-		this = nd
+		//nd := NewOracle()
+		//register("oracle", nd)
+		//this = nd
 	}
 	return this.db.Query(sql, args...)
 }
 
-func (this *dbobj) Exec(sql string, args ...interface{}) error {
+func (this *oracle) Exec(sql string, args ...interface{}) error {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewOraDbObj()
-		register("oracle", nd)
-		this = nd
+		//nd := NewOracle()
+		//register("oracle", nd)
+		//this = nd
 	}
 	_, err := this.db.Exec(sql, args...)
 	return err
 }
 
-func (this *dbobj) Begin() (*sql.Tx, error) {
+func (this *oracle) Begin() (*sql.Tx, error) {
 	return this.db.Begin()
 }
 
-func (this *dbobj) Prepare(query string) (*sql.Stmt, error) {
+func (this *oracle) Prepare(query string) (*sql.Stmt, error) {
 	return this.db.Prepare(query)
 }
 
-func (this *dbobj) QueryRow(sql string, args ...interface{}) *sql.Row {
+func (this *oracle) QueryRow(sql string, args ...interface{}) *sql.Row {
 	if this.db.Ping() != nil {
 		fmt.Errorf("数据库连接已断开")
-		nd := NewOraDbObj()
-		register("oracle", nd)
-		this = nd
+		//nd := NewOracle()
+		//register("oracle", nd)
+		//this = nd
 	}
 	return this.db.QueryRow(sql, args...)
 }
 
 func init() {
-	register("oracle", NewOraDbObj())
+	dbhandle.Register("oracle", NewOracle)
 }

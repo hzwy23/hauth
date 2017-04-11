@@ -309,7 +309,7 @@
                     },
     
                     // Get a promise for this deferred
-                    // If obj is provided, the promise aspect is added to the object
+                    // If dbhandle is provided, the promise aspect is added to the object
                     promise: function( obj ) {
     
                         return obj != null ? $.extend( obj, promise ) : promise;
@@ -694,10 +694,10 @@
              * var doSomething = function() {
              *         console.log( this.name );
              *     },
-             *     obj = {
+             *     dbhandle = {
              *         name: 'Object Name'
              *     },
-             *     aliasFn = Base.bind( doSomething, obj );
+             *     aliasFn = Base.bind( doSomething, dbhandle );
              *
              *  aliasFn();    // => Object Name
              *
@@ -856,16 +856,16 @@
              *
              * `callback`方法在执行时，arguments将会来源于trigger的时候携带的参数。如
              * ```javascript
-             * var obj = {};
+             * var dbhandle = {};
              *
              * // 使得obj有事件行为
-             * Mediator.installTo( obj );
+             * Mediator.installTo( dbhandle );
              *
-             * obj.on( 'testa', function( arg1, arg2 ) {
+             * dbhandle.on( 'testa', function( arg1, arg2 ) {
              *     console.log( arg1, arg2 ); // => 'arg1', 'arg2'
              * });
              *
-             * obj.trigger( 'testa', 'arg1', 'arg2' );
+             * dbhandle.trigger( 'testa', 'arg1', 'arg2' );
              * ```
              *
              * 如果`callback`中，某一个方法`return false`了，则后续的其他`callback`都不会被执行到。
@@ -874,7 +874,7 @@
              * `on`还可以用来添加一个特殊事件`all`, 这样所有的事件触发都会响应到。同时此类`callback`中的arguments有一个不同处，
              * 就是第一个参数为`type`，记录当前是什么事件在触发。此类`callback`的优先级比脚低，会再正常`callback`执行完后触发。
              * ```javascript
-             * obj.on( 'all', function( type, arg1, arg2 ) {
+             * dbhandle.on( 'all', function( type, arg1, arg2 ) {
              *     console.log( type, arg1, arg2 ); // => 'testa', 'arg1', 'arg2'
              * });
              * ```

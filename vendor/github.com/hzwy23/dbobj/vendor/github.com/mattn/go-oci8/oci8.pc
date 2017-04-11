@@ -1,6 +1,6 @@
-prefix="C:/Users/hzwy23/Desktop/gowork/src/github.com/hzwy23/asofdate/lib/instantclient_12_1"
-includedir="C:/Users/hzwy23/Desktop/gowork/src/github.com/hzwy23/asofdate/lib/instantclient_12_1/sdk/include"
-libdir="C:/Users/hzwy23/Desktop/gowork/src/github.com/hzwy23/asofdate/lib/instantclient_12_1/sdk/lib/msvc"
+prefix=/usr
+includedir=${prefix}/include/oracle/12.1/client64
+libdir=${prefix}/lib/oracle/12.1/client64/lib
 
 Name: oci8
 Description: Oracle Instant Client
