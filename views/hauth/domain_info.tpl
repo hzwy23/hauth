@@ -258,7 +258,12 @@
                         async:false,
                         dataType:"text",
                         success: function(data){
-                            $("#DomainPageTable").bootstrapTable("refresh");
+                            $.Notify({
+                                title:"温馨提示:",
+                                message:"更新域信息成功",
+                                type:"success",
+                            });
+
                             $(hmode).remove();
                             $("#HdomainInfoTable").bootstrapTable('refresh');
                         }
