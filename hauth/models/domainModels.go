@@ -147,5 +147,6 @@ func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) erro
 }
 
 func (ProjectMgr) Update(domainDesc, domainStatus, user_id, domainId string) error {
-	return dbobj.Exec(sys_rdbms_038, domainDesc, domainStatus, user_id, domainId)
+	_,err := dbobj.Exec(sys_rdbms_038, domainDesc, domainStatus, user_id, domainId)
+	return err
 }

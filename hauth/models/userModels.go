@@ -227,18 +227,18 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 func (this UserModel) ModifyStatus(status_id, user_id string) (string, error) {
 	did,_ := hrpc.CheckDomainByUserId(user_id)
 	defer hcache.Delete(hcache.GenKey("USERMODELS",did))
-	err := dbobj.Exec(sys_rdbms_016, status_id, user_id)
+	_,err := dbobj.Exec(sys_rdbms_016, status_id, user_id)
 	return error_user_modify_status, err
 }
 
 func (this UserModel) ModifyPasswd(passwd, user_id string) (string, error) {
-	err := dbobj.Exec(sys_rdbms_020, passwd, user_id)
+	_,err := dbobj.Exec(sys_rdbms_020, passwd, user_id)
 	return error_user_modify_passwd, err
 }
 
 // 修改用户信息
 func (this UserModel) Put(user_name, org_id, phone, email, uid, user_id,domain_id string) (string, error) {
 	defer hcache.Delete(hcache.GenKey("USERMODELS",domain_id))
-	err := dbobj.Exec(sys_rdbms_021, user_name, phone, email, uid, org_id, user_id)
+	_,err := dbobj.Exec(sys_rdbms_021, user_name, phone, email, uid, org_id, user_id)
 	return error_user_modify_info, err
 }

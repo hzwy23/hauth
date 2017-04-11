@@ -24,7 +24,7 @@ type DbObj interface {
 	QueryRow(sql string, args ...interface{}) *sql.Row
 
 	// Execute
-	Exec(sql string, args ...interface{}) error
+	Exec(sql string, args ...interface{}) (sql.Result,error)
 
 	// Begin transaction
 	Begin() (*sql.Tx, error)

@@ -17,21 +17,19 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/hzwy23/dbobj/dbhandle"
 	"reflect"
 	"strconv"
-	"github.com/hzwy23/dbobj/dbhandle"
 )
 
-
 var (
-	dbobj  dbhandle.DbObj
-	Default  = "mysql"
+	dbobj   dbhandle.DbObj
+	Default = "mysql"
 )
 
 func InitDB(dbtyp string) error {
-
 	if dbobj == nil {
-		if val,ok := dbhandle.Adapter[dbtyp];ok{
+		if val, ok := dbhandle.Adapter[dbtyp]; ok {
 			dbobj = val()
 		}
 	}
@@ -48,7 +46,7 @@ func Begin() (*sql.Tx, error) {
 	if dbobj == nil {
 		err := InitDB(Default)
 		if err != nil {
-			return nil,errors.New("can not connect database again.")
+			return nil, errors.New("can not connect database again.")
 		}
 		return dbobj.Begin()
 	}
@@ -59,11 +57,11 @@ func Query(sql string, args ...interface{}) (*sql.Rows, error) {
 	if dbobj == nil {
 		err := InitDB(Default)
 		if err != nil {
-			return nil,errors.New("can not connect database again.")
+			return nil, errors.New("can not connect database again.")
 		}
-		return dbobj.Query(sql,args...)
+		return dbobj.Query(sql, args...)
 	}
-	return dbobj.Query(sql,args...)
+	return dbobj.Query(sql, args...)
 }
 
 func QueryRow(sql string, args ...interface{}) *sql.Row {
@@ -72,29 +70,29 @@ func QueryRow(sql string, args ...interface{}) *sql.Row {
 		if err != nil {
 			return nil
 		}
-		return dbobj.QueryRow(sql,args...)
+		return dbobj.QueryRow(sql, args...)
 	}
-	return dbobj.QueryRow(sql,args...)
+	return dbobj.QueryRow(sql, args...)
 }
 
-func Exec(sql string, args ...interface{}) error {
+func Exec(sql string, args ...interface{}) (sql.Result,error) {
 	if dbobj == nil {
 		err := InitDB(Default)
 		if err != nil {
-			return nil
+			return nil,errors.New("connect database failed.")
 		}
-		return dbobj.Exec(sql,args...)
+		return dbobj.Exec(sql, args...)
 	}
-	return dbobj.Exec(sql,args...)
+	return dbobj.Exec(sql, args...)
 }
 
 func Prepare(sql string) (*sql.Stmt, error) {
 	if dbobj == nil {
 		err := InitDB(Default)
 		if err != nil {
-			return nil,errors.New("can not connect database again.")
+			return nil, errors.New("can not connect database again.")
 		}
-		dbobj.Prepare(sql)
+		return dbobj.Prepare(sql)
 	}
 	return dbobj.Prepare(sql)
 }

@@ -53,11 +53,13 @@ func (DomainShareModel) UnAuth(domain_id string) ([]dusModel, error) {
 }
 
 func (DomainShareModel) Post(domain_id, target_domain_id, auth_level, user_id string) error {
-	return dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
+	_,err := dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
+	return err
 }
 
 func (DomainShareModel) Update(uuid, user_id, auth_level string) error {
-	return dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
+	_,err := dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
+	return err
 }
 
 func (DomainShareModel) Delete(js string,domain_id string) error {
@@ -75,7 +77,7 @@ func (DomainShareModel) Delete(js string,domain_id string) error {
 	}
 
 	for _, val := range rst {
-		err := dbobj.Exec(sys_rdbms_087, val.Uuid,domain_id)
+		_,err := dbobj.Exec(sys_rdbms_087, val.Uuid,domain_id)
 		if err != nil {
 			tx.Rollback()
 			logs.Error(err)

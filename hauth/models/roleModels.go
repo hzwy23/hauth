@@ -61,7 +61,8 @@ func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
 
 func (RoleModel) Post(id, rolename, user_id, rolestatus, domainid, roleid string) error {
 	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domainid))
-	return dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
+	_,err := dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
+	return err
 }
 
 func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
@@ -95,5 +96,6 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 
 func (RoleModel) Update(Role_name, Role_status, Role_id, User_id,domain_id string) error {
 	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domain_id))
-	return dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
+	_,err := dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
+	return err
 }

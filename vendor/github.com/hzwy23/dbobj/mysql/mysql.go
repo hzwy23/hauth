@@ -85,40 +85,75 @@ func (this *mysql) GetErrorMsg(err error) string {
 }
 
 func (this *mysql) Query(sql string, args ...interface{}) (*sql.Rows, error) {
-	if this.db.Ping() != nil {
-		fmt.Errorf("数据库连接已断开")
-		//nd := NewMySQL()
-		//register("mysql", nd)
-		//this = nd
+	rows,err := this.db.Query(sql,args...)
+	if err != nil {
+		if this.db.Ping() != nil {
+			// if dbobj connection is broken,
+			// reconnect database.
+			fmt.Errorf("%s","Connection is broken")
+			if val,ok := NewMySQL().(*mysql);ok {
+				this.db = val.db
+			}
+			return this.db.Query(sql,args...)
+		}
 	}
-	return this.db.Query(sql, args...)
+	return rows,err
 }
 
-func (this *mysql) Exec(sql string, args ...interface{}) error {
-	if this.db.Ping() != nil {
-		fmt.Errorf("数据库连接已断开")
-		//nd := NewMySQL()
-		//register("mysql", nd)
-		//this = nd
+func (this *mysql) Exec(sql string, args ...interface{}) (sql.Result, error) {
+	result, err := this.db.Exec(sql, args...)
+	if err != nil {
+		if this.db.Ping() != nil {
+			// if dbobj connection is broken,
+			// reconnect database.
+			fmt.Errorf("%s","Connection is broken")
+			if val,ok := NewMySQL().(*mysql);ok {
+				this.db = val.db
+			}
+			return this.db.Exec(sql, args...)
+		}
 	}
-	_, err := this.db.Exec(sql, args...)
-	return err
+	return result,err
 }
 
 func (this *mysql) Begin() (*sql.Tx, error) {
-	return this.db.Begin()
+	tx,err := this.db.Begin()
+	if err != nil {
+		// if dbobj connection is broken,
+		// reconnect database.
+		if this.db.Ping() != nil {
+			fmt.Errorf("%s","Connection is broken")
+			if val,ok := NewMySQL().(*mysql);ok {
+				this.db = val.db
+			}
+			return this.db.Begin()
+		}
+	}
+	return tx,err
 }
 
-func (this *mysql) Prepare(query string) (*sql.Stmt, error) {
-	return this.db.Prepare(query)
+func (this *mysql) Prepare(sql string) (*sql.Stmt, error) {
+	stmt,err := this.db.Prepare(sql)
+	if err != nil {
+		// if dbobj connection is broken,
+		// reconnect database.
+		if this.db.Ping() != nil {
+			fmt.Errorf("%s","Connection is broken")
+			if val,ok := NewMySQL().(*mysql);ok {
+				this.db = val.db
+			}
+			return this.db.Prepare(sql)
+		}
+	}
+	return stmt,err
 }
 
 func (this *mysql) QueryRow(sql string, args ...interface{}) *sql.Row {
 	if this.db.Ping() != nil {
-		fmt.Errorf("数据库连接已断开")
-		//nd := NewMySQL()
-		//register("mysql", nd)
-		//this = nd
+		fmt.Errorf("%s","Connection is broken")
+		if val,ok := NewMySQL().(*mysql);ok {
+			this.db = val.db
+		}
 	}
 	return this.db.QueryRow(sql, args...)
 }

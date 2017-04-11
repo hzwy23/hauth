@@ -103,5 +103,6 @@ func (UserRolesModel) Revoke(user_id string, role_id string, uid, did string) (s
 			return error_user_role_no_auth, errors.New(error_user_role_no_auth)
 		}
 	}
-	return error_user_role_commit, dbobj.Exec(sys_rdbms_097, user_id, role_id)
+	_,err = dbobj.Exec(sys_rdbms_097, user_id, role_id)
+	return error_user_role_commit, err
 }

@@ -288,7 +288,8 @@ func (this ResourceModel) Delete(res_id string) (string, error) {
 
 func (this ResourceModel) Update(res_id, res_name string) error {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
-	return dbobj.Exec(sys_rdbms_005, res_name, res_id)
+	_,err := dbobj.Exec(sys_rdbms_005, res_name, res_id)
+	return err
 }
 
 func (this ResourceModel) CheckThemeExists(theme_id string, res_id string) int {
@@ -302,7 +303,8 @@ func (this ResourceModel) CheckThemeExists(theme_id string, res_id string) int {
 
 func (this ResourceModel) UpdateTheme(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id string) error {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
-	return dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
+	_,err := dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
+	return err
 }
 
 func (this ResourceModel) AddThemeInfo(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id string) (string, error) {
@@ -313,7 +315,7 @@ func (this ResourceModel) AddThemeInfo(theme_id, res_id, res_url, res_class, res
 		return error_resource_queryType, err
 	}
 
-	err = dbobj.Exec(sys_rdbms_008, theme_id, res_id, res_url, res_type, res_by_color, res_class, res_group_id, res_img, res_sort_id)
+	_,err = dbobj.Exec(sys_rdbms_008, theme_id, res_id, res_url, res_type, res_by_color, res_class, res_group_id, res_img, res_sort_id)
 
 	return error_resource_addTheme, err
 

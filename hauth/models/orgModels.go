@@ -78,13 +78,15 @@ func (OrgModel) Delete(mjs []SysOrgInfo) error {
 
 func (OrgModel) Update(org_unit_desc, up_org_id, org_status_id, maintance_user, org_unit_id,domain_id string) error {
 	defer hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",domain_id))
-	return dbobj.Exec(sys_rdbms_069, org_unit_desc, up_org_id, org_status_id, maintance_user, org_unit_id)
+	_,err := dbobj.Exec(sys_rdbms_069, org_unit_desc, up_org_id, org_status_id, maintance_user, org_unit_id)
+	return err
 }
 
 func (OrgModel) Post(org_unit_id, org_unit_desc, up_org_id, org_status_id, domain_id, create_user, maintance_user, id string) error {
 	defer hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",domain_id))
-	return dbobj.Exec(sys_rdbms_043, org_unit_id, org_unit_desc, up_org_id, org_status_id,
+	_,err := dbobj.Exec(sys_rdbms_043, org_unit_id, org_unit_desc, up_org_id, org_status_id,
 		domain_id, create_user, maintance_user, id)
+	return err
 }
 
 func (this OrgModel) GetSubOrgInfo(domain_id string,org_id string) ([]SysOrgInfo, error) {
