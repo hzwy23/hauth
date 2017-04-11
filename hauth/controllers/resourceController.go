@@ -1,16 +1,14 @@
 package controllers
 
 import (
-
-
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/logs"
 )
 
 const (
@@ -66,6 +64,7 @@ func (this resourceController) Query(ctx *context.Context) {
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_resource_query, err)
+		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
@@ -129,7 +128,7 @@ func (this resourceController) Post(ctx *context.Context) {
 	switch res_type {
 	case "0":
 		// 首页主菜单信息
-		if !govalidator.IsURI(res_url){
+		if !govalidator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 333, "菜单路由地址不能为空")
 			return
@@ -285,8 +284,8 @@ func (this resourceController) Update(ctx *context.Context) {
 	res_id := ctx.Request.FormValue("res_id")
 	res_name := ctx.Request.FormValue("res_name")
 
-	if govalidator.IsEmpty(res_name){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"资源描述不能为空.")
+	if govalidator.IsEmpty(res_name) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "资源描述不能为空.")
 		return
 	}
 
@@ -328,6 +327,7 @@ func (this resourceController) ConfigTheme(ctx *context.Context) {
 			return
 		}
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
+		return
 	} else {
 		// 新增主题配置信息
 		err := this.models.UpdateTheme(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
@@ -337,6 +337,7 @@ func (this resourceController) ConfigTheme(ctx *context.Context) {
 			return
 		}
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
+		return
 	}
 }
 

@@ -7,13 +7,13 @@ import (
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
 
+	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
 	"github.com/tealeg/xlsx"
-	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type HandleLogsController struct {
@@ -157,8 +157,7 @@ func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
 		return
 	}
-	cntsql := `select count(*) from sys_handle_logs t
-			where t.domain_id = ?`
+	cntsql := `select count(*) from sys_handle_logs t where t.domain_id = ?`
 	hret.WriteBootstrapTableJson(ctx.ResponseWriter, dbobj.Count(cntsql, jclaim.Domain_id), rst)
 }
 
@@ -181,8 +180,8 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 		return
 	}
 	var rst []handleLogs
-	fmt.Println(govalidator.IsDate(start),start)
-	fmt.Println(govalidator.IsDate(end),end)
+	fmt.Println(govalidator.IsDate(start), start)
+	fmt.Println(govalidator.IsDate(end), end)
 	if userid != "" && govalidator.IsDate(start) && govalidator.IsDate(end) {
 		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
 			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')

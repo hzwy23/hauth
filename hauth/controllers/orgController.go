@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/models"
 
+	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/tealeg/xlsx"
-	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/utils"
 	"os"
 	"path/filepath"
 )
@@ -62,7 +62,7 @@ func (this orgController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.CheckDomain(ctx, domain_id, "r") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限访问这个域中的信息。")
 		return
 	}
@@ -71,6 +71,7 @@ func (this orgController) Get(ctx *context.Context) {
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 417, "操作数据库失败")
+		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
@@ -90,16 +91,16 @@ func (this orgController) Delete(ctx *context.Context) {
 		return
 	}
 
-	cok,_ := ctx.Request.Cookie("Authorization")
-	jclaim,err := hjwt.ParseJwt(cok.Value)
+	cok, _ := ctx.Request.Cookie("Authorization")
+	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
 	// 校验用户能否访问这个域
 	// 由于有多个机构,所以,对每个机构中的域进行校验,一旦出现用户不封访问的域,则直接退出删除操作
-	for _, val:=range mjs {
+	for _, val := range mjs {
 		// 根据机构号,获取机构所在的域
 		did, err := hrpc.CheckDomainByOrgId(val.Org_unit_id)
 		if err != nil {
@@ -108,12 +109,12 @@ func (this orgController) Delete(ctx *context.Context) {
 		}
 
 		if val.Org_unit_id == jclaim.Org_id {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,"您不能删除自己所在的机构.<br/>机构编码-> "+val.Code_number+" <br/>机构名称-> "+val.Org_unit_desc)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您不能删除自己所在的机构.<br/>机构编码-> "+val.Code_number+" <br/>机构名称-> "+val.Org_unit_desc)
 			return
 		}
 
 		// 查看用户对这个域是否有读写操作
-		if !hrpc.CheckDomain(ctx,did,"w") {
+		if !hrpc.CheckDomain(ctx, did, "w") {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您没有权限删除这个域中的机构信息.")
 			return
 		}
@@ -125,6 +126,7 @@ func (this orgController) Delete(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, err.Error())
 		return
 	}
+
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "delete org info successfully.")
 }
 
@@ -153,33 +155,33 @@ func (this orgController) Update(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,did,"w"){
+	if !hrpc.CheckDomain(ctx, did, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限更新这个域中的机构信息")
 		return
 	}
 
 	// 校验输入信息
-	if govalidator.IsEmpty(org_unit_desc){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"机构描述信息不能为空.")
+	if govalidator.IsEmpty(org_unit_desc) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "机构描述信息不能为空.")
 		return
 	}
 
-	if !govalidator.IsIn(org_status_id,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择机构状态.")
+	if !govalidator.IsIn(org_status_id, "0", "1") {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "请选择机构状态.")
 		return
 	}
 
-	if !govalidator.IsWord(org_unit_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"机构编码不正确")
+	if !govalidator.IsWord(org_unit_id) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "机构编码不正确")
 		return
 	}
 
-	if !govalidator.IsWord(up_org_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择上级机构.")
+	if !govalidator.IsWord(up_org_id) {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "请选择上级机构.")
 		return
 	}
 
-	check, err := this.models.GetSubOrgInfo(did,org_unit_id)
+	check, err := this.models.GetSubOrgInfo(did, org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "操作数据库失败。")
@@ -193,7 +195,7 @@ func (this orgController) Update(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Update(org_unit_desc, up_org_id, org_status_id, jclaim.User_id, org_unit_id,did)
+	err = this.models.Update(org_unit_desc, up_org_id, org_status_id, jclaim.User_id, org_unit_id, did)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "修改机构信息失败", err)
@@ -220,12 +222,12 @@ func (this orgController) Post(ctx *context.Context) {
 	up_org_id := ctx.Request.FormValue("Up_org_id")
 	domain_id := ctx.Request.FormValue("Domain_id")
 
-	if !hrpc.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.CheckDomain(ctx, domain_id, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限在这个中新增机构信息")
 		return
 	}
 
-	id := utils.JoinCode(domain_id,org_unit_id)
+	id := utils.JoinCode(domain_id, org_unit_id)
 	create_user := jclaim.User_id
 	maintance_user := jclaim.User_id
 	org_status_id := "0"
@@ -250,8 +252,8 @@ func (this orgController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !govalidator.IsIn(org_status_id,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"机构状态不正确.")
+	if !govalidator.IsIn(org_status_id, "0", "1") {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "机构状态不正确.")
 		return
 	}
 
@@ -306,7 +308,7 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 		return
 	}
 
-	rst, err := this.models.GetSubOrgInfo(did,org_unit_id)
+	rst, err := this.models.GetSubOrgInfo(did, org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "操作数据库失败")
@@ -336,8 +338,8 @@ func (this orgController) Download(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,"您没有权限导出这个域中的机构信息.")
+	if !hrpc.CheckDomain(ctx, domain_id, "r") {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "您没有权限导出这个域中的机构信息.")
 		return
 	}
 
@@ -348,16 +350,15 @@ func (this orgController) Download(ctx *context.Context) {
 		return
 	}
 
-
 	var sheet *xlsx.Sheet
-	HOME:=os.Getenv("HBIGDATA_HOME")
-	file,err := xlsx.OpenFile(filepath.Join(HOME,"upload/template/hauthOrgExportTemplate.xlsx"))
+	HOME := os.Getenv("HBIGDATA_HOME")
+	file, err := xlsx.OpenFile(filepath.Join(HOME, "upload/template/hauthOrgExportTemplate.xlsx"))
 	if err != nil {
 		file = xlsx.NewFile()
 		sheet, err = file.AddSheet("机构信息")
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"没有找到sheet也名称为'机构信息'的页面")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有找到sheet也名称为'机构信息'的页面")
 			return
 		}
 
@@ -388,7 +389,7 @@ func (this orgController) Download(ctx *context.Context) {
 	} else {
 		sheet = file.Sheet["机构信息"]
 		if sheet == nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"没有找到sheet也名称为'机构信息'的页面")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有找到sheet也名称为'机构信息'的页面")
 			return
 		}
 	}
@@ -413,7 +414,6 @@ func (this orgController) Download(ctx *context.Context) {
 		cell9 := row.AddCell()
 		cell9.Value = v.Domain_id
 		cell9.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
-
 
 		cell5 := row.AddCell()
 		cell5.Value = v.Create_date
