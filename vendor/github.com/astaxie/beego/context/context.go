@@ -86,7 +86,7 @@ func (ctx *Context) WriteString(content string) {
 	ctx.ResponseWriter.Write([]byte(content))
 }
 
-// GetCookie Get cookie from request by a given key.
+// GetCookie GetDetails cookie from request by a given key.
 // It's alias of BeegoInput.Cookie.
 func (ctx *Context) GetCookie(key string) string {
 	return ctx.Input.Cookie(key)
@@ -98,7 +98,7 @@ func (ctx *Context) SetCookie(name string, value string, others ...interface{}) 
 	ctx.Output.Cookie(name, value, others...)
 }
 
-// GetSecureCookie Get secure cookie from request by a given key.
+// GetSecureCookie GetDetails secure cookie from request by a given key.
 func (ctx *Context) GetSecureCookie(Secret, key string) (string, bool) {
 	val := ctx.Input.Cookie(key)
 	if val == "" {

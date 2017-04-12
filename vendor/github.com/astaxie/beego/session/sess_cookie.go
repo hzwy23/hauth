@@ -41,7 +41,7 @@ func (st *CookieSessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from cookie session
+// GetDetails value from cookie session
 func (st *CookieSessionStore) Get(key interface{}) interface{} {
 	st.lock.RLock()
 	defer st.lock.RUnlock()
@@ -135,7 +135,7 @@ func (pder *CookieProvider) SessionInit(maxlifetime int64, config string) error 
 	return nil
 }
 
-// SessionRead Get SessionStore in cooke.
+// SessionRead GetDetails SessionStore in cooke.
 // decode cooke string to map and put into SessionStore with sid.
 func (pder *CookieProvider) SessionRead(sid string) (Store, error) {
 	maps, _ := decodeCookie(pder.block,

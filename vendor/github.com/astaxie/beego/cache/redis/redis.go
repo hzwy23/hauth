@@ -67,7 +67,7 @@ func (rc *Cache) do(commandName string, args ...interface{}) (reply interface{},
 	return c.Do(commandName, args...)
 }
 
-// Get cache from redis.
+// GetDetails cache from redis.
 func (rc *Cache) Get(key string) interface{} {
 	if v, err := rc.do("GET", key); err == nil {
 		return v
@@ -108,7 +108,7 @@ ERROR:
 	return rv
 }
 
-// Put put cache to redis.
+// Delete put cache to redis.
 func (rc *Cache) Put(key string, val interface{}, timeout time.Duration) error {
 	var err error
 	if _, err = rc.do("SETEX", key, int64(timeout/time.Second), val); err != nil {

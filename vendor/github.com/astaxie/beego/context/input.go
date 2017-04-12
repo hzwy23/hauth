@@ -414,7 +414,7 @@ func (input *BeegoInput) Bind(dest interface{}, key string) error {
 		return errors.New("beego: non-settable variable passed to Bind: " + key)
 	}
 	typ := value.Type()
-	// Get real type if dest define with interface{}.
+	// GetDetails real type if dest define with interface{}.
 	// e.g  var dest interface{} dest=1.0
 	if value.Kind() == reflect.Interface {
 		typ = value.Elem().Type()
@@ -611,7 +611,7 @@ func (input *BeegoInput) bindStruct(params *url.Values, key string, typ reflect.
 		}
 
 		if _, ok := fieldValues[fieldName]; !ok {
-			// Time to bind this field.  Get it and make sure we can set it.
+			// Time to bind this field.  GetDetails it and make sure we can set it.
 			fieldValue := result.FieldByName(fieldName)
 			if !fieldValue.IsValid() {
 				continue

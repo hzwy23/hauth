@@ -45,7 +45,7 @@ func (fs *FileSessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from file session
+// GetDetails value from file session
 func (fs *FileSessionStore) Get(key interface{}) interface{} {
 	fs.lock.RLock()
 	defer fs.lock.RUnlock()
@@ -71,7 +71,7 @@ func (fs *FileSessionStore) Flush() error {
 	return nil
 }
 
-// SessionID Get file session store id
+// SessionID GetDetails file session store id
 func (fs *FileSessionStore) SessionID() string {
 	return fs.sid
 }
@@ -186,7 +186,7 @@ func (fp *FileProvider) SessionGC() {
 	filepath.Walk(fp.savePath, gcpath)
 }
 
-// SessionAll Get active file session number.
+// SessionAll GetDetails active file session number.
 // it walks save path to count files.
 func (fp *FileProvider) SessionAll() int {
 	a := &activeSession{}

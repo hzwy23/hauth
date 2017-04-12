@@ -28,11 +28,11 @@ func TestTomlGet(t *testing.T) {
 	`)
 
 	if tree.Get("") != tree {
-		t.Errorf("Get should return the tree itself when given an empty path")
+		t.Errorf("GetDetails should return the tree itself when given an empty path")
 	}
 
 	if tree.Get("test.key") != "value" {
-		t.Errorf("Get should return the value")
+		t.Errorf("GetDetails should return the value")
 	}
 	if tree.Get(`\`) != nil {
 		t.Errorf("should return nil when the key is malformed")
@@ -50,7 +50,7 @@ func TestTomlGetDefault(t *testing.T) {
 	}
 
 	if tree.GetDefault("test.key", "hello") != "value" {
-		t.Error("Get should return the value")
+		t.Error("GetDetails should return the value")
 	}
 
 	if tree.GetDefault("whatever", "hello") != "hello" {

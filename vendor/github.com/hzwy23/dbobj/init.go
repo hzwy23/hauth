@@ -2,7 +2,7 @@ package dbobj
 
 import (
 	_ "github.com/hzwy23/dbobj/mysql"
-	//_ "github.com/hzwy23/dbobj/oracle"
+	_ "github.com/hzwy23/dbobj/oracle"
 	"os"
 	"path/filepath"
 	"github.com/hzwy23/dbobj/utils"

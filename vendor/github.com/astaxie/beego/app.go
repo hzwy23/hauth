@@ -266,9 +266,9 @@ func AutoPrefix(prefix string, c ControllerInterface) *App {
 	return BeeApp
 }
 
-// Get used to register router for Get method
+// GetDetails used to register router for GetDetails method
 // usage:
-//    beego.Get("/", func(ctx *context.Context){
+//    beego.GetDetails("/", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func Get(rootpath string, f FilterFunc) *App {
@@ -276,9 +276,9 @@ func Get(rootpath string, f FilterFunc) *App {
 	return BeeApp
 }
 
-// Post used to register router for Post method
+// Put used to register router for Put method
 // usage:
-//    beego.Post("/api", func(ctx *context.Context){
+//    beego.Put("/api", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func Post(rootpath string, f FilterFunc) *App {
@@ -296,9 +296,9 @@ func Delete(rootpath string, f FilterFunc) *App {
 	return BeeApp
 }
 
-// Put used to register router for Put method
+// Delete used to register router for Delete method
 // usage:
-//    beego.Put("/api", func(ctx *context.Context){
+//    beego.Delete("/api", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func Put(rootpath string, f FilterFunc) *App {

@@ -69,18 +69,6 @@ func (this resourceController) Query(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-func (this resourceController) QueryTheme(ctx *context.Context) {
-	ctx.Request.ParseForm()
-	res_id := ctx.Request.FormValue("res_id")
-	theme_id := ctx.Request.FormValue("theme_id")
-	rst, err := this.models.QueryTheme(res_id, theme_id)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_resource_query_theme, err)
-		return
-	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
-}
 
 func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
@@ -296,49 +284,6 @@ func (this resourceController) Update(ctx *context.Context) {
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
-}
-
-func (this resourceController) ConfigTheme(ctx *context.Context) {
-	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
-		return
-	}
-
-	res_id := ctx.Request.FormValue("res_id")
-
-	theme_id := ctx.Request.FormValue("theme_id")
-	res_url := ctx.Request.FormValue("res_url")
-	res_class := ctx.Request.FormValue("res_class")
-	res_img := ctx.Request.FormValue("res_img")
-	res_by_color := ctx.Request.FormValue("res_by_color")
-	res_group_id := ctx.Request.FormValue("res_group_id")
-	res_sort_id := ctx.Request.FormValue("res_sort_id")
-
-	if govalidator.IsNull(res_sort_id) {
-		res_sort_id = "0"
-	}
-
-	flag := this.models.CheckThemeExists(theme_id, res_id)
-	if flag <= 0 {
-		// 没有这个主题的配置信息,新增主题信息
-		msg, err := this.models.AddThemeInfo(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id)
-		if err != nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)
-			return
-		}
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
-		return
-	} else {
-		// 新增主题配置信息
-		err := this.models.UpdateTheme(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "修改主题配置信息失败", err)
-			return
-		}
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
-		return
-	}
 }
 
 func init() {

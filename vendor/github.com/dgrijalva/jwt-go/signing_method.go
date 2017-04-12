@@ -23,7 +23,7 @@ func RegisterSigningMethod(alg string, f func() SigningMethod) {
 	signingMethods[alg] = f
 }
 
-// Get a signing method from an "alg" string
+// GetDetails a signing method from an "alg" string
 func GetSigningMethod(alg string) (method SigningMethod) {
 	signingMethodLock.RLock()
 	defer signingMethodLock.RUnlock()

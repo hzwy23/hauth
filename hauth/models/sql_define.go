@@ -12,7 +12,6 @@ var (
 	sys_rdbms_009 = `update sys_theme_value set res_url = ?, res_bg_color = ?, res_class = ?, res_img = ?, group_id = ?, sort_id = ? where theme_id = ? and res_id = ?`
 	sys_rdbms_010 = `select user_id,user_passwd,status_id,continue_error_cnt from sys_sec_user where user_id = ?`
 	sys_rdbms_011 = `select distinct t2.res_url from sys_user_theme t1 inner join sys_theme_value t2 on t1.theme_id = t2.theme_id where t1.user_id = ? and t2.res_id = ? and t2.res_type = '0'`
-	sys_rdbms_012 = `select distinct t.res_id,t.res_name,v.res_url,v.res_bg_color,v.res_class, v.res_img, v.group_id from (select * from sys_resource_info t where find_in_set(res_up_id,getChildList(?))) t inner join sys_theme_value v on t.res_id = v.res_id inner join sys_user_theme h on v.theme_id = h.theme_id inner join sys_role_user_relation r on r.user_id = h.user_id inner join sys_role_resource_relat e on r.role_id = e.role_id and e.res_id = t.res_id inner join sys_role_info f on f.role_id = e.role_id and f.role_status_id = '0' where v.res_type = ? and h.user_id = ? order by sort_id asc`
 	sys_rdbms_013 = `select res_type from sys_theme_value where theme_id = '1001' and res_id = ?`
 	sys_rdbms_014 = `update sys_sec_user set user_passwd = ? where user_id = ? and user_passwd = ?`
 	sys_rdbms_015 = `update sys_sec_user set user_passwd = ? where user_id = ?`
@@ -25,10 +24,11 @@ var (
 	sys_rdbms_022 = `select count(*) from sys_user_info t inner join sys_role_user_relation r on t.user_id = r.user_id inner join sys_role_resource_relat e on r.role_id = e.role_id inner join sys_theme_value v on e.res_id = v.res_id inner join sys_user_theme m on v.theme_id = m.theme_id and t.user_id = m.user_id where t.user_id = ? and v.res_url = ?`
 	sys_rdbms_023 = `select t.user_id,t.user_name,a.status_desc,t.user_create_date, t.user_owner,t.user_email,t.user_phone,i.org_unit_id,i.org_unit_desc,di.domain_id,di.domain_name,t.user_maintance_date,t.user_maintance_user,u.status_id from sys_user_info t inner join sys_sec_user u on t.user_id = u.user_id inner join sys_user_status_attr a on u.status_id = a.status_id inner join sys_org_info i on i.org_unit_id = t.org_unit_id inner join sys_domain_info di on i.domain_id = di.domain_id where t.user_id = ?`
 	sys_rdbms_024 = `update sys_user_theme set theme_id = ? where user_id = ?`
+	sys_rdbms_025 = `select t.domain_id as project_id, t.domain_name as project_name, s.domain_status_name  as status_name, t.domain_create_date  as maintance_date, t.domain_owner as user_id,t.domain_maintance_date,t.domain_maintance_user from sys_domain_info t inner join sys_domain_status_attr s on t.domain_status_id = s.domain_status_id`
 	sys_rdbms_026 = `insert into sys_role_info(role_id,role_name,role_owner,role_create_date,role_status_id,domain_id,role_maintance_date,role_maintance_user,code_number) values(?,?,?,now(),?,?,now(),?,?)`
-	sys_rdbms_027 = `delete from  sys_role_info where role_id = ?`
-	sys_rdbms_028 = `select  t.code_number,t.role_name,t.role_owner,t.role_create_date,a.role_status_desc,a.role_status_id,t.domain_id,o.domain_name,t.role_maintance_date,t.role_maintance_user,t.role_id from sys_role_info t inner join sys_role_status_attr a on t.role_status_id = a.role_status_id inner join sys_domain_info o on t.domain_id = o.domain_id where t.domain_id = ?`
-	sys_rdbms_034 = `select t.domain_id as project_id, t.domain_name as project_name, s.domain_status_name  as status_name, t.domain_create_date  as maintance_date, t.domain_owner as user_id,t.domain_maintance_date,t.domain_maintance_user from sys_domain_info t inner join sys_domain_status_attr s  on t.domain_status_id = s.domain_status_id where exists ( select 1 from sys_domain_share_info i where i.target_domain_id = ?  and t.domain_id = i.domain_id ) or t.domain_id = ?`
+	sys_rdbms_027 = `delete from sys_role_info where role_id = ?`
+	sys_rdbms_028 = `select t.code_number,t.role_name,t.role_owner,t.role_create_date,a.role_status_desc,a.role_status_id,t.domain_id,o.domain_name,t.role_maintance_date,t.role_maintance_user,t.role_id from sys_role_info t inner join sys_role_status_attr a on t.role_status_id = a.role_status_id inner join sys_domain_info o on t.domain_id = o.domain_id where t.domain_id = ?`
+	sys_rdbms_034 = `select domain_id from sys_domain_share_info t where t.target_domain_id = ?`
 	sys_rdbms_036 = `insert into sys_domain_info(domain_id,domain_name,domain_status_id,domain_create_date,domain_owner,domain_maintance_date,domain_maintance_user) values(?,?,?,now(),?,now(),?)`
 	sys_rdbms_037 = `delete from sys_domain_info where domain_id = ?`
 	sys_rdbms_038 = `update sys_domain_info set domain_name = ?, domain_status_id = ?, domain_maintance_date = now(), domain_maintance_user = ? where domain_id = ?`
@@ -61,13 +61,14 @@ var (
 	sys_rdbms_088 = `update sys_domain_share_info set authorization_level = ?,modify_user = ? , modify_date = now() where uuid = ?`
 	sys_rdbms_089 = `select t.res_id,t.res_name,t.res_attr, a.res_attr_desc,t.res_up_id,t.res_type,r.res_type_desc from sys_resource_info t inner join sys_resource_info_attr a on t.res_attr = a.res_attr inner join sys_resource_type_attr r on t.res_type = r.res_type where res_id = ?`
 	sys_rdbms_091 = `select t.code_number,t.role_name,t.role_owner,t.role_create_date,a.role_status_desc,a.role_status_id,t.domain_id,o.domain_name,t.role_maintance_date,t.role_maintance_user,t.role_id from sys_role_info t inner join sys_role_status_attr a on t.role_status_id = a.role_status_id inner join sys_domain_info o on t.domain_id = o.domain_id where t.role_id = ?`
-	sys_rdbms_092 = `select distinct t.res_id,t.res_name,t.res_up_id from sys_resource_info t inner join sys_role_resource_relat r on t.res_id = r.res_id where r.role_id = ?`
 	sys_rdbms_093 = `delete from sys_role_resource_relat where role_id = ? and res_id = ?`
-	sys_rdbms_094 = `select r.user_id, t.role_id,t.code_number,t.role_name from sys_role_info t inner join sys_role_user_relation r on t.role_id = r.role_id where r.user_id = ?`
+	sys_rdbms_094 = `select r.user_id, t.role_id, t.code_number,t.role_name from sys_role_info t inner join sys_role_user_relation r on t.role_id = r.role_id where r.user_id = ?`
 	sys_rdbms_095 = `select '', t.role_id,t.code_number,t.role_name from sys_user_info i inner join sys_org_info o on i.org_unit_id = o.org_unit_id inner join sys_role_info t on o.domain_id = t.domain_id where i.user_id = ? and  not exists ( select 1 from sys_role_user_relation r where i.user_id = r.user_id and r.role_id = t.role_id )`
 	sys_rdbms_096 = `insert into sys_role_user_relation(uuid,role_id,user_id,maintance_date,maintance_user) values(uuid(),?,?,now(),?)`
 	sys_rdbms_097 = `delete from sys_role_user_relation where user_id = ? and role_id = ?`
 	sys_rdbms_098 = `update sys_sec_user set continue_error_cnt = ? where user_id = ?`
 	sys_rdbms_099 = `update sys_sec_user set status_id = 1 where user_id = ?`
-
+	sys_rdbms_100 = `select role_id,res_id from sys_role_resource_relat where role_id = ?`
+	sys_rdbms_101 = `select t.theme_id,i.theme_desc,res_id,res_url,res_type,res_bg_color,res_class,group_id,res_img,sort_id from sys_theme_value t inner join sys_theme_info i on t.theme_id = i.theme_id where t.theme_id = ? order by group_id,sort_id asc`
+	sys_rdbms_102 = `select t.user_id,t.theme_id,i.theme_desc from sys_user_theme t inner join sys_theme_info i on t.theme_id = i.theme_id where t.user_id = ?`
 )

@@ -69,7 +69,7 @@ func TestSimplePost(t *testing.T) {
 
 //func TestPostFile(t *testing.T) {
 //	v := "smallfish"
-//	req := Post("http://httpbin.org/post")
+//	req := Put("http://httpbin.org/post")
 //	req.Debug(true)
 //	req.Param("username", v)
 //	req.PostFile("uploadfile", "httplib_test.go")

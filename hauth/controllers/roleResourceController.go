@@ -53,7 +53,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 
 	if type_id == "0" {
 		// 查询角色已经获取到的资源信息
-		rst, err := this.resRoleModel.GetByRoleId(role_id)
+		rst, err := this.resRoleModel.Get(role_id)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
@@ -62,7 +62,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 		hret.WriteJson(ctx.ResponseWriter, rst)
 	} else if type_id == "1" {
 		// 查询角色没有获取到的资源信息
-		rst, err := this.resModel.UnGetted(role_id)
+		rst, err := this.resRoleModel.UnGetted(role_id)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
@@ -94,7 +94,7 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 
 	// 撤销权限操作
 	if type_id == "0" {
-		err := this.resRoleModel.Revoke(role_id, res_id)
+		err := this.resRoleModel.Delete(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")
@@ -105,7 +105,7 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 		}
 	} else {
 		//授权操作
-		err := this.resRoleModel.Auth(role_id, res_id)
+		err := this.resRoleModel.Post(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")

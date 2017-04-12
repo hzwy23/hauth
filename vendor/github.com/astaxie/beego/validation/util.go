@@ -141,7 +141,7 @@ func getValidFuncs(f reflect.StructField) (vfs []ValidFunc, err error) {
 	return
 }
 
-// Get Match function
+// GetDetails Match function
 // May be get NoMatch function in the future
 func getRegFuncs(tag, key string) (vfs []ValidFunc, str string, err error) {
 	tag = strings.TrimSpace(tag)

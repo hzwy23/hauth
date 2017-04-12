@@ -112,7 +112,7 @@ func generateFmtStr(n int) string {
 
 func init() {
 
-	//Get log dir from environment
+	//GetDetails log dir from environment
 	logpath := os.Getenv("HBIGDATA_HOME")
 
 	conf, err := config.GetConfig(path.Join(logpath, "conf", "system.properties"))

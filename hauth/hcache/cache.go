@@ -14,7 +14,7 @@ var bm, _ = cache.NewCache("memory", `{"interval":3600}`)
 func Get(key string) interface{}{
 	return 	bm.Get(key)
 }
-// GetMulti is a batch version of Get.
+// GetMulti is a batch version of GetDetails.
 func GetMulti(keys []string) []interface{}{
 	return bm.GetMulti(keys)
 }

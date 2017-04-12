@@ -39,17 +39,17 @@ func getPort() string {
 	return port
 }
 
-// Get returns test client in GET method
+// GetDetails returns test client in GET method
 func Get(path string) *TestHTTPRequest {
 	return &TestHTTPRequest{*httplib.Get(baseURL + getPort() + path)}
 }
 
-// Post returns test client in POST method
+// Put returns test client in POST method
 func Post(path string) *TestHTTPRequest {
 	return &TestHTTPRequest{*httplib.Post(baseURL + getPort() + path)}
 }
 
-// Put returns test client in PUT method
+// Delete returns test client in PUT method
 func Put(path string) *TestHTTPRequest {
 	return &TestHTTPRequest{*httplib.Put(baseURL + getPort() + path)}
 }

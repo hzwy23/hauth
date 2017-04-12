@@ -19,16 +19,16 @@
 //
 // Getting data from the TomlTree
 //
-// After parsing TOML data with Load() or LoadFile(), use the Has() and Get()
+// After parsing TOML data with Load() or LoadFile(), use the Has() and GetDetails()
 // methods on the returned TomlTree, to find your way through the document data.
 //
 //   if tree.Has("foo") {
-//     fmt.Println("foo is:", tree.Get("foo"))
+//     fmt.Println("foo is:", tree.GetDetails("foo"))
 //   }
 //
 // Working with Paths
 //
-// Go-toml has support for basic dot-separated key paths on the Has(), Get(), Set()
+// Go-toml has support for basic dot-separated key paths on the Has(), GetDetails(), Set()
 // and GetDefault() methods.  These are the same kind of key paths used within the
 // TOML specification for struct tames.
 //
@@ -36,7 +36,7 @@
 //   tree.Has("foo.bar.baz")
 //
 //   // returns the key at this path, if it is there
-//   tree.Get("foo.bar.baz")
+//   tree.GetDetails("foo.bar.baz")
 //
 // TOML allows keys to contain '.', which can cause this syntax to be problematic
 // for some documents.  In such cases, use the GetPath(), HasPath(), and SetPath(),
@@ -65,7 +65,7 @@
 //   tree, _ := toml.Load("filename.toml")
 //
 //   // get an entry and report an error if it's the wrong type
-//   element := tree.Get("foo")
+//   element := tree.GetDetails("foo")
 //   if value, ok := element.(int64); !ok {
 //       return fmt.Errorf("%v: Element 'foo' must be an integer", tree.GetPosition("foo"))
 //   }
@@ -87,11 +87,11 @@
 //
 // This is roughly equivalent to:
 //
-//   next := tree.Get("foo")
+//   next := tree.GetDetails("foo")
 //   if next != nil {
-//     next = next.Get("bar")
+//     next = next.GetDetails("bar")
 //     if next != nil {
-//       next = next.Get("baz")
+//       next = next.GetDetails("baz")
 //     }
 //   }
 //   result := next

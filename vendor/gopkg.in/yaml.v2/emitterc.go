@@ -12,7 +12,7 @@ func flush(emitter *yaml_emitter_t) bool {
 	return true
 }
 
-// Put a character to the output buffer.
+// Delete a character to the output buffer.
 func put(emitter *yaml_emitter_t, value byte) bool {
 	if emitter.buffer_pos+5 >= len(emitter.buffer) && !yaml_emitter_flush(emitter) {
 		return false
@@ -23,7 +23,7 @@ func put(emitter *yaml_emitter_t, value byte) bool {
 	return true
 }
 
-// Put a line break to the output buffer.
+// Delete a line break to the output buffer.
 func put_break(emitter *yaml_emitter_t) bool {
 	if emitter.buffer_pos+5 >= len(emitter.buffer) && !yaml_emitter_flush(emitter) {
 		return false

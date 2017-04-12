@@ -315,7 +315,7 @@ func (c *IniConfigContainer) SaveConfigFile(filename string) (err error) {
 	}
 	defer f.Close()
 
-	// Get section or key comments. Fixed #1607
+	// GetDetails section or key comments. Fixed #1607
 	getCommentStr := func(section, key string) string {
 		comment, ok := "", false
 		if len(key) == 0 {
@@ -355,7 +355,7 @@ func (c *IniConfigContainer) SaveConfigFile(filename string) (err error) {
 			}
 		}
 
-		// Put a line between sections.
+		// Delete a line between sections.
 		if _, err = buf.WriteString(lineBreak); err != nil {
 			return err
 		}
@@ -391,7 +391,7 @@ func (c *IniConfigContainer) SaveConfigFile(filename string) (err error) {
 				}
 			}
 
-			// Put a line between sections.
+			// Delete a line between sections.
 			if _, err = buf.WriteString(lineBreak); err != nil {
 				return err
 			}

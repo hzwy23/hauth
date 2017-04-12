@@ -32,7 +32,7 @@ func init() {
 	}
 }
 
-// Get returns a value by key.
+// GetDetails returns a value by key.
 // If the key does not exist, the default value will be returned.
 func Get(key string, defVal string) string {
 	if val := env.Get(key); val != nil {

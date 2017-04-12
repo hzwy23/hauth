@@ -125,12 +125,12 @@ func (c *Controller) Prepare() {}
 // Finish runs after request function execution.
 func (c *Controller) Finish() {}
 
-// Get adds a request function to handle GET request.
+// GetDetails adds a request function to handle GET request.
 func (c *Controller) Get() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }
 
-// Post adds a request function to handle POST request.
+// Put adds a request function to handle POST request.
 func (c *Controller) Post() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }
@@ -140,7 +140,7 @@ func (c *Controller) Delete() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }
 
-// Put adds a request function to handle PUT request.
+// Delete adds a request function to handle PUT request.
 func (c *Controller) Put() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }

@@ -117,14 +117,14 @@ func (n *Namespace) AutoPrefix(prefix string, c ControllerInterface) *Namespace 
 	return n
 }
 
-// Get same as beego.Get
+// GetDetails same as beego.GetDetails
 // refer: https://godoc.org/github.com/astaxie/beego#Get
 func (n *Namespace) Get(rootpath string, f FilterFunc) *Namespace {
 	n.handlers.Get(rootpath, f)
 	return n
 }
 
-// Post same as beego.Post
+// Put same as beego.Put
 // refer: https://godoc.org/github.com/astaxie/beego#Post
 func (n *Namespace) Post(rootpath string, f FilterFunc) *Namespace {
 	n.handlers.Post(rootpath, f)
@@ -138,7 +138,7 @@ func (n *Namespace) Delete(rootpath string, f FilterFunc) *Namespace {
 	return n
 }
 
-// Put same as beego.Put
+// Delete same as beego.Delete
 // refer: https://godoc.org/github.com/astaxie/beego#Put
 func (n *Namespace) Put(rootpath string, f FilterFunc) *Namespace {
 	n.handlers.Put(rootpath, f)
@@ -192,15 +192,15 @@ func (n *Namespace) Include(cList ...ControllerInterface) *Namespace {
 //ns := beego.NewNamespace(“/v1”).
 //Namespace(
 //    beego.NewNamespace("/shop").
-//        Get("/:id", func(ctx *context.Context) {
+//        GetDetails("/:id", func(ctx *context.Context) {
 //            ctx.Output.Body([]byte("shopinfo"))
 //    }),
 //    beego.NewNamespace("/order").
-//        Get("/:id", func(ctx *context.Context) {
+//        GetDetails("/:id", func(ctx *context.Context) {
 //            ctx.Output.Body([]byte("orderinfo"))
 //    }),
 //    beego.NewNamespace("/crm").
-//        Get("/:id", func(ctx *context.Context) {
+//        GetDetails("/:id", func(ctx *context.Context) {
 //            ctx.Output.Body([]byte("crminfo"))
 //    }),
 //)
@@ -311,14 +311,14 @@ func NSRouter(rootpath string, c ControllerInterface, mappingMethods ...string) 
 	}
 }
 
-// NSGet call Namespace Get
+// NSGet call Namespace GetDetails
 func NSGet(rootpath string, f FilterFunc) LinkNamespace {
 	return func(ns *Namespace) {
 		ns.Get(rootpath, f)
 	}
 }
 
-// NSPost call Namespace Post
+// NSPost call Namespace Put
 func NSPost(rootpath string, f FilterFunc) LinkNamespace {
 	return func(ns *Namespace) {
 		ns.Post(rootpath, f)
@@ -332,7 +332,7 @@ func NSHead(rootpath string, f FilterFunc) LinkNamespace {
 	}
 }
 
-// NSPut call Namespace Put
+// NSPut call Namespace Delete
 func NSPut(rootpath string, f FilterFunc) LinkNamespace {
 	return func(ns *Namespace) {
 		ns.Put(rootpath, f)

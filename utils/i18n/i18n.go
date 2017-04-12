@@ -13,6 +13,10 @@ func Get(translationID string, args ...interface{}) string{
 	return T(translationID,args)
 }
 
+func Success()string{
+	return Get("success")
+}
+
 func Disconnect()string{
 	return Get("as_of_date_disconnect")
 }

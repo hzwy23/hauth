@@ -22,6 +22,7 @@ const (
 )
 
 type ResourceModel struct {
+	Mtheme ThemeResourceModel
 }
 
 type resData struct {
@@ -33,82 +34,6 @@ type resData struct {
 	Res_type      string `json:"res_type"`
 	Res_type_desc string `json:"res_type_desc"`
 	Sys_flag      string `json:"sys_flag"`
-}
-
-type themeData struct {
-	Theme_id     string `json:"theme_id"`
-	Theme_desc   string `json:"theme_desc"`
-	Res_id       string `json:"res_id"`
-	Res_url      string `json:"res_url"`
-	Res_type     string `json:"res_type"`
-	Res_bg_color string `json:"res_bg_color"`
-	Res_class    string `json:"res_class"`
-	Group_id     string `json:"group_id"`
-	Res_img      string `json:"res_img"`
-	Sort_id      string `json:"sort_id"`
-}
-
-// 查找所有的父级资源信息
-func (this ResourceModel) searchParent(diff map[string]resData, all []resData) []resData {
-	var ret []resData
-	for _, val := range diff {
-		if _, ok := diff[val.Res_up_id]; !ok {
-			for _, vl := range all {
-				if vl.Res_id == val.Res_up_id {
-					ret = append(ret, vl)
-				}
-			}
-		}
-	}
-	return ret
-}
-
-// 查询没有获取到的资源信息
-func (this ResourceModel) UnGetted(role_id string) ([]resData, error) {
-
-	// 获取已经拥有的角色信息
-	rows, err := dbobj.Query(sys_rdbms_092, role_id)
-	if err != nil {
-		logs.Error(err)
-		return nil, err
-	}
-	var get = make(map[string]resData)
-	for rows.Next() {
-		var tmp = resData{}
-		err := rows.Scan(&tmp.Res_id, &tmp.Res_name, &tmp.Res_up_id)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		get[tmp.Res_id] = tmp
-	}
-
-	// 获取所有的资源信息
-	all, err := this.Get()
-	if err != nil {
-		logs.Error(err)
-		return nil, err
-	}
-
-	var diff = make(map[string]resData)
-	for _, val := range all {
-		if _, ok := get[val.Res_id]; !ok {
-			diff[val.Res_id] = val
-		}
-	}
-	// 修复差异项父节点
-	tmp := this.searchParent(diff, all)
-	for len(tmp) != 0 {
-		for _, val := range tmp {
-			diff[val.Res_id] = val
-		}
-		tmp = this.searchParent(diff, all)
-	}
-	var ret []resData
-	for _, val := range diff {
-		ret = append(ret, val)
-	}
-	return ret, nil
 }
 
 // 查询所有的资源信息
@@ -130,6 +55,17 @@ func (ResourceModel) Get() ([]resData, error) {
 	return rst, err
 }
 
+func (this ResourceModel)GetChildren(res_id string )([]resData,error){
+	rst,err := this.Get()
+	if err != nil {
+		logs.Error(err)
+		return nil,err
+	}
+	var ret []resData
+	this.dfs(rst,res_id,&ret)
+	return ret,nil
+}
+
 // 所有指定资源的详细信息
 func (ResourceModel) Query(res_id string) ([]resData, error) {
 	rows, err := dbobj.Query(sys_rdbms_089, res_id)
@@ -142,18 +78,6 @@ func (ResourceModel) Query(res_id string) ([]resData, error) {
 	return rst, err
 }
 
-// 查询指定资源,指定主题的详细信息
-func (ResourceModel) QueryTheme(res_id string, theme_id string) ([]themeData, error) {
-	rows, err := dbobj.Query(sys_rdbms_070, theme_id, res_id)
-	if err != nil {
-		logs.Error(err)
-		return nil, err
-	}
-	var rst []themeData
-	err = dbobj.Scan(rows, &rst)
-	return rst, err
-}
-
 // 新增资源
 func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id string) error {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
@@ -162,18 +86,24 @@ func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme
 		logs.Error(err)
 		return err
 	}
+
+	// update sys_resource_info
 	_, err = tx.Exec(sys_rdbms_072, res_id, res_name, res_attr, res_up_id, res_type)
 	if err != nil {
 		logs.Error(err)
 		tx.Rollback()
 		return err
 	}
+
+	// update sys_theme_value
 	_, err = tx.Exec(sys_rdbms_073, theme_id, res_id, res_url, res_type, res_bg_color, res_class, group_id, res_img, sort_id)
 	if err != nil {
 		logs.Error(err)
 		tx.Rollback()
 		return err
 	}
+
+	// 将新增资源授权给admin
 	_, err = tx.Exec(sys_rdbms_074, "vertex_root_join_sysadmin", res_id)
 	if err != nil {
 		logs.Error(err)
@@ -204,49 +134,26 @@ func (this ResourceModel) PostButton(res_id, res_name, res_attr, res_up_id, res_
 	return tx.Commit()
 }
 
-func (this ResourceModel) search(rst, all []resData) []resData {
-	var tmp []resData
-	for _, val := range rst {
-		for _, v := range all {
-			if val.Res_id == v.Res_up_id {
-				tmp = append(tmp, v)
-			}
-		}
-	}
-	return tmp
-}
-
 // 删除指定的资源
 func (this ResourceModel) Delete(res_id string) (string, error) {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
 	var rst []resData
-	var load []resData
+
 	all, err := this.Get()
 	if err != nil {
 		logs.Error(err)
 		return error_resource_query, err
 	}
 
-	for _, val := range all {
-		if val.Res_id == res_id {
-			rst = append(rst, val)
-			break
-		}
-	}
+	this.dfs(all,res_id,&rst)
 
-	//获取第一层子节点
-	tmp := this.search(rst, all)
-	load = append(load, tmp...)
-	for tmp != nil {
-		tep := this.search(tmp, all)
-		if tep == nil {
+	// add res_id
+	for _,val:=range all {
+		if val.Res_id == res_id {
+			rst = append(rst,val)
 			break
-		} else {
-			load = append(load, tep...)
-			tmp = tep
 		}
 	}
-	load = append(load, rst...)
 
 	tx, err := dbobj.Begin()
 	if err != nil {
@@ -254,7 +161,7 @@ func (this ResourceModel) Delete(res_id string) (string, error) {
 		return error_resource_begin, err
 	}
 
-	for _, val := range load {
+	for _, val := range rst {
 
 		if val.Sys_flag == "0" {
 			tx.Rollback()
@@ -292,31 +199,12 @@ func (this ResourceModel) Update(res_id, res_name string) error {
 	return err
 }
 
-func (this ResourceModel) CheckThemeExists(theme_id string, res_id string) int {
-	cnt := 0
-	err := dbobj.QueryRow(sys_rdbms_006, theme_id, res_id).Scan(&cnt)
-	if err != nil {
-		return -1
+// 获取子资源信息
+func (this ResourceModel)dfs(all []resData,res_id string,rst *[]resData){
+	for _, val:=range all {
+		if val.Res_up_id == res_id {
+			*rst = append(*rst,val)
+			this.dfs(all,val.Res_id,rst)
+		}
 	}
-	return cnt
-}
-
-func (this ResourceModel) UpdateTheme(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
-	_,err := dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
-	return err
-}
-
-func (this ResourceModel) AddThemeInfo(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id string) (string, error) {
-	res_type := "0"
-	err := dbobj.QueryRow(sys_rdbms_013, res_id).Scan(&res_type)
-	if err != nil {
-		logs.Error(err)
-		return error_resource_queryType, err
-	}
-
-	_,err = dbobj.Exec(sys_rdbms_008, theme_id, res_id, res_url, res_type, res_by_color, res_class, res_group_id, res_img, res_sort_id)
-
-	return error_resource_addTheme, err
-
 }

@@ -507,7 +507,7 @@ func yaml_event_delete(event *yaml_event_t) {
 //}
 //
 ///**
-// * Get a document node.
+// * GetDetails a document node.
 // */
 //
 //YAML_DECLARE(yaml_node_t *)
@@ -522,7 +522,7 @@ func yaml_event_delete(event *yaml_event_t) {
 //}
 //
 ///**
-// * Get the root object.
+// * GetDetails the root object.
 // */
 //
 //YAML_DECLARE(yaml_node_t *)

@@ -267,7 +267,7 @@ func getDbCreateSQL(al *alias) (sqls []string, tableIndexes map[string][]dbIndex
 	return
 }
 
-// Get string value for the attribute "DEFAULT" for the CREATE, ALTER commands
+// GetDetails string value for the attribute "DEFAULT" for the CREATE, ALTER commands
 func getColumnDefault(fi *fieldInfo) string {
 	var (
 		v, t, d string

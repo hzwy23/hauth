@@ -32,10 +32,10 @@ type DbObj interface {
 	// Prepare
 	Prepare(query string) (*sql.Stmt, error)
 
-	// Get Error Code
+	// GetDetails Error Code
 	GetErrorCode(err error) string
 
-	// Get Message info
+	// GetDetails Message info
 	GetErrorMsg(err error) string
 }
 

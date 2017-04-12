@@ -31,7 +31,7 @@ func (ls *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value in ledis session
+// GetDetails value in ledis session
 func (ls *SessionStore) Get(key interface{}) interface{} {
 	ls.lock.RLock()
 	defer ls.lock.RUnlock()

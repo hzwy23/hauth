@@ -109,7 +109,7 @@ func (d *dbBaseMysql) InsertOrUpdate(q dbQuerier, mi *modelInfo, ind reflect.Val
 
 	iouStr = "ON DUPLICATE KEY UPDATE"
 
-	//Get on the key-value pairs
+	//GetDetails on the key-value pairs
 	for _, v := range args {
 		kv := strings.Split(v, "=")
 		if len(kv) == 2 {

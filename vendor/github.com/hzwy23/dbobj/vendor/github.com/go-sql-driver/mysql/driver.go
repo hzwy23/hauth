@@ -123,7 +123,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 
 	}
 
-	// Get max allowed packet size
+	// GetDetails max allowed packet size
 	maxap, err := mc.getSystemVar("max_allowed_packet")
 	if err != nil {
 		mc.Close()

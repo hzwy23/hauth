@@ -260,7 +260,7 @@ func (manager *Manager) SessionDestroy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetSessionStore Get SessionStore by its id.
+// GetSessionStore GetDetails SessionStore by its id.
 func (manager *Manager) GetSessionStore(sid string) (sessions Store, err error) {
 	sessions, err = manager.provider.SessionRead(sid)
 	return
@@ -314,7 +314,7 @@ func (manager *Manager) SessionRegenerateID(w http.ResponseWriter, r *http.Reque
 	return
 }
 
-// GetActiveSession Get all active sessions count number.
+// GetActiveSession GetDetails all active sessions count number.
 func (manager *Manager) GetActiveSession() int {
 	return manager.provider.SessionAll()
 }

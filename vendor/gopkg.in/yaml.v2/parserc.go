@@ -58,7 +58,7 @@ func skip_token(parser *yaml_parser_t) {
 	parser.tokens_head++
 }
 
-// Get the next event.
+// GetDetails the next event.
 func yaml_parser_parse(parser *yaml_parser_t, event *yaml_event_t) bool {
 	// Erase the event object.
 	*event = yaml_event_t{}

@@ -253,27 +253,27 @@ func (p *ControllerRegister) Include(cList ...ControllerInterface) {
 	}
 }
 
-// Get add get method
+// GetDetails add get method
 // usage:
-//    Get("/", func(ctx *context.Context){
+//    GetDetails("/", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func (p *ControllerRegister) Get(pattern string, f FilterFunc) {
 	p.AddMethod("get", pattern, f)
 }
 
-// Post add post method
+// Put add post method
 // usage:
-//    Post("/api", func(ctx *context.Context){
+//    Put("/api", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func (p *ControllerRegister) Post(pattern string, f FilterFunc) {
 	p.AddMethod("post", pattern, f)
 }
 
-// Put add put method
+// Delete add put method
 // usage:
-//    Put("/api/:id", func(ctx *context.Context){
+//    Delete("/api/:id", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func (p *ControllerRegister) Put(pattern string, f FilterFunc) {

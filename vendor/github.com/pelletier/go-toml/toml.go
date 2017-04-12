@@ -59,7 +59,7 @@ func (t *TomlTree) Keys() []string {
 	return keys
 }
 
-// Get the value at key in the TomlTree.
+// GetDetails the value at key in the TomlTree.
 // Key is a dot-separated path (e.g. a.b.c).
 // Returns nil if the path does not exist in the tree.
 // If keys is of length zero, the current tree is returned.
@@ -158,7 +158,7 @@ func (t *TomlTree) GetPositionPath(keys []string) Position {
 	}
 }
 
-// GetDefault works like Get but with a default value
+// GetDefault works like GetDetails but with a default value
 func (t *TomlTree) GetDefault(key string, def interface{}) interface{} {
 	val := t.Get(key)
 	if val == nil {

@@ -8,6 +8,7 @@ import (
 )
 
 type DomainShareModel struct {
+	md  ProjectMgr
 }
 
 type dsModel struct {
@@ -26,6 +27,7 @@ type dusModel struct {
 	Domain_name string `json:"domain_name"`
 }
 
+// 获取指定域共享给了哪些对象
 func (DomainShareModel) Get(domain_id string) ([]dsModel, error) {
 
 	rows, err := dbobj.Query(sys_rdbms_083, domain_id)
@@ -85,4 +87,62 @@ func (DomainShareModel) Delete(js string,domain_id string) error {
 		}
 	}
 	return tx.Commit()
+}
+
+// 获取这个有哪些域把共享给了指定的这个域
+func (this DomainShareModel)get(domain_id string)([]ProjectMgr,error){
+	var rst []ProjectMgr
+	rows,err := dbobj.Query(sys_rdbms_034,domain_id)
+	if err != nil {
+		logs.Error(err)
+		return nil,err
+	}
+	err = dbobj.Scan(rows,&rst)
+	return rst,err
+}
+
+func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
+	// 获取所有的域信息
+	rst,err := this.md.Get()
+	if err != nil {
+		logs.Error(err)
+		return nil,err
+	}
+
+	// 获取指定域能够访问到的域信息
+	ret,err := this.get(domain_id)
+	if err != nil {
+		logs.Error(err)
+		return nil,err
+	}
+
+	var dmap  = make(map[string]bool)
+	dmap[domain_id]=true
+	for _, val := range ret {
+		dmap[val.Project_id]=true
+	}
+
+	var dslice []ProjectMgr
+	for _,val := range rst {
+		if _,ok := dmap[val.Project_id]; ok {
+			dslice = append(dslice,val)
+		}
+	}
+	return dslice, nil
+}
+
+func (this DomainShareModel) GetOwner(domain_id string) (domainDataModel, error) {
+
+	var ret domainDataModel
+
+	rst,err := this.GetList(domain_id)
+	if err != nil {
+		logs.Error(err)
+		return ret,err
+	}
+
+	ret.Domain_id = domain_id
+	ret.Owner_list = rst
+
+	return ret, nil
 }

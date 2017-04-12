@@ -36,11 +36,11 @@
 // 	beego.Controller
 // }
 //
-// func (this *MainController) Get() {
+// func (this *MainController) GetDetails() {
 // 	this.TplName = "index.tpl"
 // }
 //
-// func (this *MainController) Post() {
+// func (this *MainController) Put() {
 // 	this.TplName = "index.tpl"
 //
 // 	this.Data["Success"] = cpt.VerifyReq(this.Ctx.Request)

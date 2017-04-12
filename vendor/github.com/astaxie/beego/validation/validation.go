@@ -84,7 +84,7 @@ type Result struct {
 	Ok    bool
 }
 
-// Key Get Result by given key string.
+// Key GetDetails Result by given key string.
 func (r *Result) Key(key string) *Result {
 	if r.Error != nil {
 		r.Error.Key = key

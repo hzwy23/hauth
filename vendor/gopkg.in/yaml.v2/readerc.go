@@ -284,7 +284,7 @@ func yaml_parser_update_buffer(parser *yaml_parser_t, length int) bool {
 					break inner
 				}
 
-				// Get the character.
+				// GetDetails the character.
 				value = rune(parser.raw_buffer[parser.raw_buffer_pos+low]) +
 					(rune(parser.raw_buffer[parser.raw_buffer_pos+high]) << 8)
 
@@ -309,7 +309,7 @@ func yaml_parser_update_buffer(parser *yaml_parser_t, length int) bool {
 						break inner
 					}
 
-					// Get the next character.
+					// GetDetails the next character.
 					value2 := rune(parser.raw_buffer[parser.raw_buffer_pos+low+2]) +
 						(rune(parser.raw_buffer[parser.raw_buffer_pos+high+2]) << 8)
 

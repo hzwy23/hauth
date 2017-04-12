@@ -61,7 +61,7 @@ func TestNewAnsiColor1(t *testing.T) {
 	inner := bytes.NewBufferString("")
 	w := NewAnsiColorWriter(inner)
 	if w == inner {
-		t.Errorf("Get %#v, want %#v", w, inner)
+		t.Errorf("GetDetails %#v, want %#v", w, inner)
 	}
 }
 
@@ -70,6 +70,6 @@ func TestNewAnsiColor2(t *testing.T) {
 	w1 := NewAnsiColorWriter(inner)
 	w2 := NewAnsiColorWriter(w1)
 	if w1 != w2 {
-		t.Errorf("Get %#v, want %#v", w1, w2)
+		t.Errorf("GetDetails %#v, want %#v", w1, w2)
 	}
 }

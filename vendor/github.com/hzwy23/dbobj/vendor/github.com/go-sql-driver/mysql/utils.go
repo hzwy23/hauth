@@ -742,7 +742,7 @@ func stringToInt(b []byte) int {
 // the number of bytes read and an error, in case the string is longer than
 // the input slice
 func readLengthEncodedString(b []byte) ([]byte, bool, int, error) {
-	// Get length
+	// GetDetails length
 	num, isNull, n := readLengthEncodedInteger(b)
 	if num < 1 {
 		return b[n:n], isNull, n, nil
@@ -760,7 +760,7 @@ func readLengthEncodedString(b []byte) ([]byte, bool, int, error) {
 // returns the number of bytes skipped and an error, in case the string is
 // longer than the input slice
 func skipLengthEncodedString(b []byte) (int, error) {
-	// Get length
+	// GetDetails length
 	num, _, n := readLengthEncodedInteger(b)
 	if num < 1 {
 		return n, nil

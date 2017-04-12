@@ -201,7 +201,7 @@ func (e *Email) Attach(r io.Reader, filename string, args ...string) (a *Attachm
 		Header:   textproto.MIMEHeader{},
 		Content:  buffer.Bytes(),
 	}
-	// Get the Content-Type to be used in the MIMEHeader
+	// GetDetails the Content-Type to be used in the MIMEHeader
 	if c != "" {
 		at.Header.Set("Content-Type", c)
 	} else {

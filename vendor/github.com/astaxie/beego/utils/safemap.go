@@ -32,7 +32,7 @@ func NewBeeMap() *BeeMap {
 	}
 }
 
-// Get from maps return the k's value
+// GetDetails from maps return the k's value
 func (m *BeeMap) Get(k interface{}) interface{} {
 	m.lock.RLock()
 	defer m.lock.RUnlock()

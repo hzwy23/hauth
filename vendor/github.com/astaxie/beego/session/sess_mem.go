@@ -40,7 +40,7 @@ func (st *MemSessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from memory session by key
+// GetDetails value from memory session by key
 func (st *MemSessionStore) Get(key interface{}) interface{} {
 	st.lock.RLock()
 	defer st.lock.RUnlock()

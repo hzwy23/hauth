@@ -19,7 +19,6 @@ const (
 )
 
 type UserRolesModel struct {
-	User_id string
 }
 
 type userRoleData struct {
@@ -29,6 +28,7 @@ type userRoleData struct {
 	Role_name   string `json:"role_name"`
 }
 
+// 根据用户id,获取这个用户已经拥有的角色
 func (UserRolesModel) GetRolesByUser(user_id string) ([]userRoleData, error) {
 	rows, err := dbobj.Query(sys_rdbms_094, user_id)
 	if err != nil {
@@ -40,6 +40,7 @@ func (UserRolesModel) GetRolesByUser(user_id string) ([]userRoleData, error) {
 	return rst, err
 }
 
+// 获取这个用户id,还没有获取的角色信息
 func (UserRolesModel) GetOtherRoles(user_id string) ([]userRoleData, error) {
 	rows, err := dbobj.Query(sys_rdbms_095, user_id)
 	if err != nil {
@@ -51,6 +52,7 @@ func (UserRolesModel) GetOtherRoles(user_id string) ([]userRoleData, error) {
 	return rst, err
 }
 
+// 对这个域中的用户进行授权
 func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 
 	var rst []userRoleData
@@ -75,6 +77,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 			tx.Rollback()
 			return error_user_role_no_auth, errors.New(error_user_role_no_auth)
 		}
+
 		if domain_id != did && user_id != "admin" {
 			level := hrpc.CheckDomainRights(user_id, did)
 			if level != 2 {
@@ -82,6 +85,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 				return error_user_role_no_auth, errors.New(error_user_role_no_auth)
 			}
 		}
+
 		_, err = tx.Exec(sys_rdbms_096, val.Role_id, val.User_id, user_id)
 		if err != nil {
 			logs.Error(err)
@@ -92,6 +96,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 	return error_user_role_commit, tx.Commit()
 }
 
+// 移除这个用户拥有的角色信息
 func (UserRolesModel) Revoke(user_id string, role_id string, uid, did string) (string, error) {
 	u_domain_id, err := hrpc.CheckDomainByUserId(user_id)
 	if err != nil {

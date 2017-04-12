@@ -135,11 +135,11 @@ func TestUrlFor2(t *testing.T) {
 		logs.Info(handler.URLFor("TestController.Param"))
 		t.Errorf("TestController.List must equal to /v1/za_cms/ttt_12_123.html")
 	}
-	if handler.URLFor("TestController.Get", ":year", "1111", ":month", "11",
+	if handler.URLFor("TestController.GetDetails", ":year", "1111", ":month", "11",
 		":title", "aaaa", ":entid", "aaaa") !=
 		"/1111/11/aaaa/aaaa" {
-		logs.Info(handler.URLFor("TestController.Get"))
-		t.Errorf("TestController.Get must equal to /1111/11/aaaa/aaaa")
+		logs.Info(handler.URLFor("TestController.GetDetails"))
+		t.Errorf("TestController.GetDetails must equal to /1111/11/aaaa/aaaa")
 	}
 }
 
@@ -316,10 +316,10 @@ func TestRouterGet(t *testing.T) {
 
 	handler := NewControllerRegister()
 	handler.Get("/user", func(ctx *context.Context) {
-		ctx.Output.Body([]byte("Get userlist"))
+		ctx.Output.Body([]byte("GetDetails userlist"))
 	})
 	handler.ServeHTTP(w, r)
-	if w.Body.String() != "Get userlist" {
+	if w.Body.String() != "GetDetails userlist" {
 		t.Errorf("TestRouterGet can't run")
 	}
 }

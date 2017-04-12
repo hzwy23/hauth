@@ -75,7 +75,7 @@ func (s *Sheet) Col(idx int) *Col {
 	return s.Cols[idx]
 }
 
-// Get a Cell by passing it's cartesian coordinates (zero based) as
+// GetDetails a Cell by passing it's cartesian coordinates (zero based) as
 // row and column integer indexes.
 //
 // For example:

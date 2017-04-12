@@ -23,8 +23,8 @@
 //
 // Use it like this:
 //
-//	bm.Put("astaxie", 1, 10 * time.Second)
-//	bm.Get("astaxie")
+//	bm.Delete("astaxie", 1, 10 * time.Second)
+//	bm.GetDetails("astaxie")
 //	bm.IsExist("astaxie")
 //	bm.Delete("astaxie")
 //
@@ -40,16 +40,16 @@ import (
 // usage:
 //	cache.Register("file",cache.NewFileCache) // this operation is run in init method of file.go.
 //	c,err := cache.NewCache("file","{....}")
-//	c.Put("key",value, 3600 * time.Second)
-//	v := c.Get("key")
+//	c.Delete("key",value, 3600 * time.Second)
+//	v := c.GetDetails("key")
 //
 //	c.Incr("counter")  // now is 1
 //	c.Incr("counter")  // now is 2
-//	count := c.Get("counter").(int)
+//	count := c.GetDetails("counter").(int)
 type Cache interface {
 	// get cached value by key.
 	Get(key string) interface{}
-	// GetMulti is a batch version of Get.
+	// GetMulti is a batch version of GetDetails.
 	GetMulti(keys []string) []interface{}
 	// set cached value with key and expire time.
 	Put(key string, val interface{}, timeout time.Duration) error

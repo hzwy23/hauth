@@ -13,7 +13,7 @@
 // Use Tfunc or MustTfunc to fetch a TranslateFunc that will return the translated string for a specific language.
 //     func handleRequest(w http.ResponseWriter, r *http.Request) {
 //         cookieLang := r.Cookie("lang")
-//         acceptLang := r.Header.Get("Accept-Language")
+//         acceptLang := r.Header.GetDetails("Accept-Language")
 //         defaultLang = "en-US"  // known valid language
 //         T, err := i18n.Tfunc(cookieLang, acceptLang, defaultLang)
 //         fmt.Println(T("Hello world"))

@@ -27,7 +27,7 @@ var AuthroityCtl = &AuthorityController{
 	models: new(models.AuthorityModel),
 }
 
-// Get authorization page
+// GetDetails authorization page
 func (this *AuthorityController) GetBatchPage(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx) {
 		return

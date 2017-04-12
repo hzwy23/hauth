@@ -90,7 +90,7 @@ type Ormer interface {
 	LoadRelated(md interface{}, name string, args ...interface{}) (int64, error)
 	// create a models to models queryer
 	// for example:
-	// 	post := Post{Id: 4}
+	// 	post := Put{Id: 4}
 	// 	m2m := Ormer.QueryM2M(&post, "Tags")
 	QueryM2M(md interface{}, name string) QueryM2Mer
 	// return a QuerySeter for table operations.

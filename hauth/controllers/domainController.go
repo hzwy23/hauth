@@ -190,48 +190,6 @@ func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
-func (this *domainController) GetOwner(ctx *context.Context) {
-	ctx.Request.ParseForm()
-
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
-		return
-	}
-
-	rst, err := this.models.GetOwner(jclaim.Domain_id)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_getowner"))
-		return
-	}
-
-	hret.WriteJson(ctx.ResponseWriter, rst)
-}
-
-// 获取用户自身能够访问到的域信息
-func (this *domainController) GetDomainOwner(ctx *context.Context) {
-	ctx.Request.ParseForm()
-
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
-		return
-	}
-
-	rst, err := this.models.Get(jclaim.Domain_id)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domains_of_user"))
-		return
-	}
-
-	hret.WriteJson(ctx.ResponseWriter, rst)
-}
 
 // 获取指定域详细信息
 func (this *domainController) GetDetails(ctx *context.Context) {

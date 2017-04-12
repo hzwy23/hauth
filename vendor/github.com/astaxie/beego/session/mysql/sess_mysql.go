@@ -74,7 +74,7 @@ func (st *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from mysql session
+// GetDetails value from mysql session
 func (st *SessionStore) Get(key interface{}) interface{} {
 	st.lock.RLock()
 	defer st.lock.RUnlock()

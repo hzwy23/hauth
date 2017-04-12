@@ -56,7 +56,7 @@ func NewMemoryCache() Cache {
 	return &cache
 }
 
-// Get cache from memory.
+// GetDetails cache from memory.
 // if non-existed or expired, return nil.
 func (bc *MemoryCache) Get(name string) interface{} {
 	bc.RLock()
@@ -80,7 +80,7 @@ func (bc *MemoryCache) GetMulti(names []string) []interface{} {
 	return rc
 }
 
-// Put cache to memory.
+// Delete cache to memory.
 // if lifespan is 0, it will be forever till restart.
 func (bc *MemoryCache) Put(name string, value interface{}, lifespan time.Duration) error {
 	bc.Lock()

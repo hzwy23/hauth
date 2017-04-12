@@ -13,7 +13,10 @@ func registerRouter() {
 
 	beego.Any("/logout", controllers.LogoutSystem)
 
-	beego.Post("/v1/auth/theme/update", controllers.ThemeCtl.Post)
+	beego.Post("/v1/auth/theme/update", controllers.ThemeCtl.Put)
+	beego.Put("/v1/auth/resource/config/theme", controllers.ThemeCtl.ConfigTheme)
+	beego.Get("/v1/auth/resource/queryTheme", controllers.ThemeCtl.QueryTheme)
+
 
 	beego.Get("/", controllers.IndexPage)
 
@@ -33,8 +36,8 @@ func registerRouter() {
 	beego.Post("/v1/auth/domain/share/post", controllers.DomainShareCtl.Post)
 	beego.Put("/v1/auth/domain/share/put", controllers.DomainShareCtl.Put)
 	beego.Post("/v1/auth/domain/share/delete", controllers.DomainShareCtl.Delete)
-	beego.Get("/v1/auth/domain/owner", controllers.DomainCtl.GetDomainOwner)
-	beego.Get("/v1/auth/domain/self/owner", controllers.DomainCtl.GetOwner)
+	beego.Get("/v1/auth/domain/owner", controllers.DomainShareCtl.GetAccessDomain)
+	beego.Get("/v1/auth/domain/self/owner", controllers.DomainShareCtl.GetDomainOwner)
 	beego.Get("/v1/auth/domain/row/details", controllers.DomainCtl.GetDetails)
 	beego.Get("/v1/auth/domain/share/unauth", controllers.DomainShareCtl.UnAuth)
 
@@ -57,8 +60,6 @@ func registerRouter() {
 	beego.Post("/v1/auth/resource/post", controllers.ResourceCtl.Post)
 	beego.Put("/v1/auth/resource/update", controllers.ResourceCtl.Update)
 	beego.Get("/v1/auth/resource/get", controllers.ResourceCtl.Get)
-	beego.Get("/v1/auth/resource/queryTheme", controllers.ResourceCtl.QueryTheme)
-	beego.Put("/v1/auth/resource/config/theme", controllers.ResourceCtl.ConfigTheme)
 	beego.Get("/v1/auth/resource/query", controllers.ResourceCtl.Query)
 
 	//role_resource_info
@@ -102,10 +103,10 @@ func registerRouter() {
 	beego.Get("/v1/auth/user/page", controllers.UserCtl.Page)
 	beego.Get("/v1/auth/role/page", controllers.RoleCtl.Page)
 
-	//beego.Post("/v1/auth/passwd/modify", controllers.PasswdController.AdminModifyPasswd)
-	//beego.Get("/v1/auth/roles/getted", controllers.AuthroityCtl.GetGettedRoles)
-	//beego.Get("/v1/auth/roles/canGrant", controllers.AuthroityCtl.CanGrantRoles)
-	//beego.Post("/v1/auth/batch/grant", controllers.AuthroityCtl.BatchGrants)
-	//beego.Get("/v1/auth/domain/share/unauth",controllers.DomainShareCtl.UnAuth)
+	//beego.Put("/v1/auth/passwd/modify", controllers.PasswdController.AdminModifyPasswd)
+	//beego.GetDetails("/v1/auth/roles/getted", controllers.AuthroityCtl.GetGettedRoles)
+	//beego.GetDetails("/v1/auth/roles/canGrant", controllers.AuthroityCtl.CanGrantRoles)
+	//beego.Put("/v1/auth/batch/grant", controllers.AuthroityCtl.BatchGrants)
+	//beego.GetDetails("/v1/auth/domain/share/unauth",controllers.DomainShareCtl.UnAuth)
 
 }

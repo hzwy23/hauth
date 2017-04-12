@@ -70,7 +70,7 @@ func (cs *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from couchabse session
+// GetDetails value from couchabse session
 func (cs *SessionStore) Get(key interface{}) interface{} {
 	cs.lock.RLock()
 	defer cs.lock.RUnlock()
@@ -96,7 +96,7 @@ func (cs *SessionStore) Flush() error {
 	return nil
 }
 
-// SessionID Get couchbase session store id
+// SessionID GetDetails couchbase session store id
 func (cs *SessionStore) SessionID() string {
 	return cs.sid
 }

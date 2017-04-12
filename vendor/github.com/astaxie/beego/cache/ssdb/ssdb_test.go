@@ -27,7 +27,7 @@ func TestSsdbcacheCache(t *testing.T) {
 		t.Error("check err")
 	}
 
-	// Get test done
+	// GetDetails test done
 	if err = ssdb.Put("ssdb", "ssdb", timeoutDuration); err != nil {
 		t.Error("set Error", err)
 	}

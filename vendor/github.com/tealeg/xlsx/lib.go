@@ -63,7 +63,7 @@ func lettersToNumeric(letters string) int {
 	return sum
 }
 
-// Get the largestDenominator that is a multiple of a basedDenominator
+// GetDetails the largestDenominator that is a multiple of a basedDenominator
 // and fits at least once into a given numerator.
 func getLargestDenominator(numerator, multiple, baseDenominator, power int) (int, int) {
 	if numerator/multiple == 0 {
@@ -548,7 +548,7 @@ func readRowsFromSheet(Worksheet *xlsxWorksheet, file *File, sheet *Sheet) ([]*R
 		// Some spreadsheets will omit blank rows from the
 		// stored data
 		for rawrow.R > (insertRowIndex + 1) {
-			// Put an empty Row into the array
+			// Delete an empty Row into the array
 			if insertRowIndex < numRows {
 				rows[insertRowIndex] = makeEmptyRow(sheet)
 			}
@@ -583,7 +583,7 @@ func readRowsFromSheet(Worksheet *xlsxWorksheet, file *File, sheet *Sheet) ([]*R
 			// Some spreadsheets will omit blank cells
 			// from the data.
 			for x > insertColIndex {
-				// Put an empty Cell into the array
+				// Delete an empty Cell into the array
 				if insertColIndex < len(row.Cells) {
 					row.Cells[insertColIndex] = new(Cell)
 				}

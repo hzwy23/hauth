@@ -32,7 +32,7 @@ func is_digit(b []byte, i int) bool {
 	return b[i] >= '0' && b[i] <= '9'
 }
 
-// Get the value of a digit.
+// GetDetails the value of a digit.
 func as_digit(b []byte, i int) int {
 	return int(b[i]) - '0'
 }
@@ -42,7 +42,7 @@ func is_hex(b []byte, i int) bool {
 	return b[i] >= '0' && b[i] <= '9' || b[i] >= 'A' && b[i] <= 'F' || b[i] >= 'a' && b[i] <= 'f'
 }
 
-// Get the value of a hex-digit.
+// GetDetails the value of a hex-digit.
 func as_hex(b []byte, i int) int {
 	bi := b[i]
 	if bi >= 'A' && bi <= 'F' {

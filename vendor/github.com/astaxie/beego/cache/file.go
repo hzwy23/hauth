@@ -115,7 +115,7 @@ func (fc *FileCache) getCacheFileName(key string) string {
 	return filepath.Join(cachePath, fmt.Sprintf("%s%s", keyMd5, fc.FileSuffix))
 }
 
-// Get value from file cache.
+// GetDetails value from file cache.
 // if non-exist or expired, return empty string.
 func (fc *FileCache) Get(key string) interface{} {
 	fileData, err := FileGetContents(fc.getCacheFileName(key))
@@ -140,7 +140,7 @@ func (fc *FileCache) GetMulti(keys []string) []interface{} {
 	return rc
 }
 
-// Put value into file cache.
+// Delete value into file cache.
 // timeout means how long to keep this file, unit of ms.
 // if timeout equals FileCacheEmbedExpiry(default is 0), cache this item forever.
 func (fc *FileCache) Put(key string, val interface{}, timeout time.Duration) error {
@@ -220,13 +220,13 @@ func exists(path string) (bool, error) {
 	return false, err
 }
 
-// FileGetContents Get bytes to file.
+// FileGetContents GetDetails bytes to file.
 // if non-exist, create this file.
 func FileGetContents(filename string) (data []byte, e error) {
 	return ioutil.ReadFile(filename)
 }
 
-// FilePutContents Put bytes to file.
+// FilePutContents Delete bytes to file.
 // if non-exist, create this file.
 func FilePutContents(filename string, content []byte) error {
 	return ioutil.WriteFile(filename, content, os.ModePerm)

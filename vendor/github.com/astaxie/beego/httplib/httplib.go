@@ -17,7 +17,7 @@
 //
 // import "github.com/astaxie/beego/httplib"
 //
-//	b := httplib.Post("http://beego.me/")
+//	b := httplib.Put("http://beego.me/")
 //	b.Param("username","astaxie")
 //	b.Param("password","123456")
 //	b.PostFile("uploadfile1", "httplib.pdf")
@@ -102,17 +102,17 @@ func NewBeegoRequest(rawurl, method string) *BeegoHTTPRequest {
 	}
 }
 
-// Get returns *BeegoHttpRequest with GET method.
+// GetDetails returns *BeegoHttpRequest with GET method.
 func Get(url string) *BeegoHTTPRequest {
 	return NewBeegoRequest(url, "GET")
 }
 
-// Post returns *BeegoHttpRequest with POST method.
+// Put returns *BeegoHttpRequest with POST method.
 func Post(url string) *BeegoHTTPRequest {
 	return NewBeegoRequest(url, "POST")
 }
 
-// Put returns *BeegoHttpRequest with PUT method.
+// Delete returns *BeegoHttpRequest with PUT method.
 func Put(url string) *BeegoHTTPRequest {
 	return NewBeegoRequest(url, "PUT")
 }

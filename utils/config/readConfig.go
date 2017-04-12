@@ -242,7 +242,7 @@ func (c *config) splitEqual(str string) (string, string, error) {
 	return strings.Trim(key, "\""), strings.Trim(keyVal, "\""), nil
 }
 
-// Get the key and value from configuration file.
+// GetDetails the key and value from configuration file.
 //
 // Return pointer instance of config and error info.
 //
@@ -272,7 +272,7 @@ func GetResource(path string) (*config, error) {
 	}
 }
 
-// Get configuration infomation
+// GetDetails configuration infomation
 func GetConfig(path string) (*config, error) {
 	conf := createConf()
 	conf.file = path

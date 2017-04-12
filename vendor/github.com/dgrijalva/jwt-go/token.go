@@ -45,7 +45,7 @@ func NewWithClaims(method SigningMethod, claims Claims) *Token {
 	}
 }
 
-// Get the complete, signed token
+// GetDetails the complete, signed token
 func (t *Token) SignedString(key interface{}) (string, error) {
 	var sig, sstr string
 	var err error

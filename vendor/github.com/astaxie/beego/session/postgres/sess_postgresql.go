@@ -80,7 +80,7 @@ func (st *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value from postgresql session
+// GetDetails value from postgresql session
 func (st *SessionStore) Get(key interface{}) interface{} {
 	st.lock.RLock()
 	defer st.lock.RUnlock()

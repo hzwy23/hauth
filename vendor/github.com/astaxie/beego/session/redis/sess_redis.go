@@ -65,7 +65,7 @@ func (rs *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value in redis session
+// GetDetails value in redis session
 func (rs *SessionStore) Get(key interface{}) interface{} {
 	rs.lock.RLock()
 	defer rs.lock.RUnlock()

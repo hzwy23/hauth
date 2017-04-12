@@ -281,7 +281,7 @@ func SetMaxOpenConns(aliasName string, maxOpenConns int) {
 	}
 }
 
-// GetDB Get *sql.DB from registered database by db alias name.
+// GetDB GetDetails *sql.DB from registered database by db alias name.
 // Use "default" as alias name if you not set.
 func GetDB(aliasNames ...string) (*sql.DB, error) {
 	var name string

@@ -52,7 +52,7 @@ func request(project *LogProject, method, uri string, headers map[string]string,
 		req.Header.Add(k, v)
 	}
 
-	// Get ready to do request
+	// GetDetails ready to do request
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
 		return

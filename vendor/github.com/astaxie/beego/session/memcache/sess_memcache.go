@@ -61,7 +61,7 @@ func (rs *SessionStore) Set(key, value interface{}) error {
 	return nil
 }
 
-// Get value in memcache session
+// GetDetails value in memcache session
 func (rs *SessionStore) Get(key interface{}) interface{} {
 	rs.lock.RLock()
 	defer rs.lock.RUnlock()

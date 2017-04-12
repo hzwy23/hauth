@@ -254,8 +254,8 @@ func parseAuthority(authority string) (user, pass string, err error) {
 // are case-sensitive.
 type Values map[string][]string
 
-// Get gets the first value associated with the given key.
-// If there are no values associated with the key, Get returns
+// GetDetails gets the first value associated with the given key.
+// If there are no values associated with the key, GetDetails returns
 // the empty string. To access multiple values, use the map
 // directly.
 func (v Values) Get(key string) string {

@@ -50,7 +50,7 @@ func NewMemCache() cache.Cache {
 	return &Cache{}
 }
 
-// Get get value from memcache.
+// GetDetails get value from memcache.
 func (rc *Cache) Get(key string) interface{} {
 	if rc.conn == nil {
 		if err := rc.connectInit(); err != nil {
@@ -88,7 +88,7 @@ func (rc *Cache) GetMulti(keys []string) []interface{} {
 	return rv
 }
 
-// Put put value to memcache.
+// Delete put value to memcache.
 func (rc *Cache) Put(key string, val interface{}, timeout time.Duration) error {
 	if rc.conn == nil {
 		if err := rc.connectInit(); err != nil {

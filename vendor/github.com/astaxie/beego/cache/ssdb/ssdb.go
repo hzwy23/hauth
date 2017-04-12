@@ -23,7 +23,7 @@ func NewSsdbCache() cache.Cache {
 	return &Cache{}
 }
 
-// Get get value from memcache.
+// GetDetails get value from memcache.
 func (rc *Cache) Get(key string) interface{} {
 	if rc.conn == nil {
 		if err := rc.connectInit(); err != nil {
@@ -77,7 +77,7 @@ func (rc *Cache) DelMulti(keys []string) error {
 	return nil
 }
 
-// Put put value to memcache. only support string.
+// Delete put value to memcache. only support string.
 func (rc *Cache) Put(key string, value interface{}, timeout time.Duration) error {
 	if rc.conn == nil {
 		if err := rc.connectInit(); err != nil {

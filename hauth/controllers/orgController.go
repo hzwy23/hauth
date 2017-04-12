@@ -42,6 +42,7 @@ func (orgController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
+// 获取机构信息
 func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -50,15 +51,14 @@ func (this orgController) Get(ctx *context.Context) {
 
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
-		return
-	}
-
 	if domain_id == "" {
+		cookie, _ := ctx.Request.Cookie("Authorization")
+		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		if err != nil {
+			logs.Error(err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+			return
+		}
 		domain_id = jclaim.Domain_id
 	}
 
