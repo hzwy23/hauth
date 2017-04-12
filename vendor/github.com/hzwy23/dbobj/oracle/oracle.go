@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"path"
 	"strings"
 
 	"github.com/hzwy23/dbobj/utils"
 	_ "github.com/mattn/go-oci8"
 	"github.com/hzwy23/dbobj/dbhandle"
+	"path/filepath"
 )
 
 type oracle struct {
@@ -29,7 +29,7 @@ func NewOracle() dbhandle.DbObj {
 	os.Setenv("NLS_DATE_FORMAT","yyyy-mm-dd")
 
 	HOME := os.Getenv("HBIGDATA_HOME")
-	filedir := path.Join(HOME, "conf", "system.properties")
+	filedir := filepath.Join(HOME, "conf", "system.properties")
 	red, err := utils.GetResource(filedir)
 	if err != nil {
 		fmt.Errorf("cant not read ./conf/system.properties.please check this file.")
