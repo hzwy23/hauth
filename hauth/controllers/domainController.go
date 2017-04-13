@@ -22,7 +22,7 @@ type domainController struct {
 var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 
 // 获取domain_info配置页面
-func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
+func (this *domainController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -39,7 +39,7 @@ func (this *domainController) GetDomainInfoPage(ctx *context.Context) {
 }
 
 // 查询域信息
-func (this *domainController) GetDomainInfo(ctx *context.Context) {
+func (this *domainController) Get(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 
@@ -65,7 +65,7 @@ func (this *domainController) GetDomainInfo(ctx *context.Context) {
 // domainId     域编码,必须由数字,字母组成
 // domainDesc   域名称,不能为空
 // domainStatus 域状态,必须是0或者1中的一个
-func (this *domainController) PostDomainInfo(ctx *context.Context) {
+func (this *domainController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -111,7 +111,7 @@ func (this *domainController) PostDomainInfo(ctx *context.Context) {
 }
 
 // 删除域信息
-func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
+func (this *domainController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
 		return
@@ -144,7 +144,7 @@ func (this *domainController) DeleteDomainInfo(ctx *context.Context) {
 }
 
 // 更新域信息
-func (this *domainController) UpdateDomainInfo(ctx *context.Context) {
+func (this *domainController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -206,7 +206,7 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 }
 
 // 获取用户自己所属域的编码
-func (this *domainController) GetDomainId(ctx *context.Context) {
+func (this *domainController) GetId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")

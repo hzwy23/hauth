@@ -17,14 +17,10 @@ import (
 
 type roleController struct {
 	models        models.RoleModel
-	resModels     models.ResourceModel
-	roleResModels models.RoleAndResourceModel
 }
 
 var RoleCtl = &roleController{
 	models.RoleModel{},
-	models.ResourceModel{},
-	models.RoleAndResourceModel{},
 }
 
 func (roleController) Page(ctx *context.Context) {
@@ -194,7 +190,6 @@ func (this roleController) Update(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限编辑这个域中的角色信息")
 		return
 	}
-
 
 	if !govalidator.IsWord(Role_id){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色编码不正确")

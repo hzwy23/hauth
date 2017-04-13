@@ -31,14 +31,14 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 
 	var role_id = ctx.Request.FormValue("role_id")
 	rst, err := this.model.GetRow(role_id)
-	if err != nil || len(rst) == 0 {
+	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色资源信息失败")
 		return
 	}
 	file, _ := template.ParseFiles("./views/hauth/res_role_rel_page.tpl")
 
-	file.Execute(ctx.ResponseWriter, rst[0])
+	file.Execute(ctx.ResponseWriter, rst)
 }
 
 // 查询指定角色的资源信息

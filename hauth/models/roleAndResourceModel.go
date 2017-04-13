@@ -275,7 +275,6 @@ func (this RoleAndResourceModel) searchParent(diff map[string]resData, all []res
 }
 
 
-
 func (this RoleAndResourceModel) search(rst, all []resData) []resData {
 	var tmp []resData
 	for _, val := range rst {

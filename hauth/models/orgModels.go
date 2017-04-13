@@ -52,7 +52,7 @@ func (OrgModel) Get(domain_id string) ([]SysOrgInfo, error) {
 	return rst, nil
 }
 
-func (OrgModel) Delete(mjs []SysOrgInfo) error {
+func (this OrgModel) Delete(mjs []SysOrgInfo,domain_id string) error {
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -60,13 +60,23 @@ func (OrgModel) Delete(mjs []SysOrgInfo) error {
 	}
 
 	for _, val := range mjs {
-		_, err := tx.Exec(sys_rdbms_044, val.Org_unit_id, val.Domain_id)
+		// 获取这个机构的所有下属机构信息
+		sublist,err := this.GetSubOrgInfo(domain_id,val.Org_unit_id)
 		if err != nil {
 			logs.Error(err)
 			tx.Rollback()
-			return errors.New("这个机构下边存在用户信息,请先清除用户信息,再来删除机构")
+			return errors.New("获取下级机构信息失败.")
 		}
-		hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",val.Domain_id))
+		for _,org := range sublist {
+			_, err := tx.Exec(sys_rdbms_044, org.Org_unit_id, domain_id)
+			if err != nil {
+				logs.Error(err)
+				tx.Rollback()
+				return errors.New("这个机构下边存在用户信息,请先清除用户信息,再来删除机构, 机构编码是:"+org.Org_unit_id+", 域是: :"+domain_id)
+			}
+			hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",val.Domain_id))
+		}
+
 	}
 	err = tx.Commit()
 	if err != nil {
@@ -118,4 +128,27 @@ func (this OrgModel)dfs(node []SysOrgInfo,org_id string ,rst *[]SysOrgInfo) {
 			this.dfs(node,val.Org_unit_id,rst)
 		}
 	}
+}
+
+func (this OrgModel)Upload(data []SysOrgInfo) error {
+	tx,err := dbobj.Begin()
+	if err != nil {
+		logs.Error(err)
+		return errors.New("开启上传事务处理失败,请联系管理员")
+	}
+	for _,val := range data {
+		hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",val.Domain_id))
+		_,err = tx.Exec(sys_rdbms_043,val.Code_number,val.Org_unit_desc,val.Up_org_id,"0",val.Domain_id,val.Create_user,val.Create_user,val.Org_unit_id)
+		if err != nil {
+			logs.Error(err)
+			tx.Rollback()
+			return errors.New("上传机构信息失败,机构号是:"+val.Code_number+",机构名称是:"+val.Org_unit_desc)
+		}
+	}
+	err = tx.Commit()
+	if err != nil {
+		logs.Error(err)
+		return errors.New("提交上传请求失败,请联系管理员.")
+	}
+	return nil
 }

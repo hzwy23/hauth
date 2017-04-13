@@ -26,10 +26,10 @@ func registerRouter() {
 
 	//domain_info
 	beego.Get("/v1/auth/domain/share/page", controllers.DomainShareCtl.Page)
-	beego.Get("/v1/auth/domain/get", controllers.DomainCtl.GetDomainInfo)
-	beego.Post("/v1/auth/domain/post", controllers.DomainCtl.PostDomainInfo)
-	beego.Post("/v1/auth/domain/delete", controllers.DomainCtl.DeleteDomainInfo)
-	beego.Put("/v1/auth/domain/update", controllers.DomainCtl.UpdateDomainInfo)
+	beego.Get("/v1/auth/domain/get", controllers.DomainCtl.Get)
+	beego.Post("/v1/auth/domain/post", controllers.DomainCtl.Post)
+	beego.Post("/v1/auth/domain/delete", controllers.DomainCtl.Delete)
+	beego.Put("/v1/auth/domain/update", controllers.DomainCtl.Update)
 
 	//domain_share_info
 	beego.Get("/v1/auth/domain/share/get", controllers.DomainShareCtl.Get)
@@ -52,8 +52,9 @@ func registerRouter() {
 	beego.Put("/v1/auth/resource/org/update", controllers.OrgCtl.Update)
 	beego.Post("/v1/auth/resource/org/delete", controllers.OrgCtl.Delete)
 	beego.Get("/v1/auth/resource/org/download", controllers.OrgCtl.Download)
+	beego.Post("/v1/auth/resource/org/upload", controllers.OrgCtl.Upload)
 	beego.Get("/v1/auth/relation/domain/org", controllers.OrgCtl.GetSubOrgInfo)
-	beego.Get("/v1/auth/domain/id", controllers.DomainCtl.GetDomainId)
+	beego.Get("/v1/auth/domain/id", controllers.DomainCtl.GetId)
 
 	//resource_info
 	beego.Post("/v1/auth/resource/delete", controllers.ResourceCtl.Delete)
@@ -96,7 +97,7 @@ func registerRouter() {
 	///////////////////////////////////////////////////////////////////////////
 
 	beego.Get("/v1/auth/HandleLogsPage", controllers.HandleLogsCtl.GetHandleLogPage)
-	beego.Get("/v1/auth/domain/page", controllers.DomainCtl.GetDomainInfoPage)
+	beego.Get("/v1/auth/domain/page", controllers.DomainCtl.Page)
 	beego.Get("/v1/auth/batch/page", controllers.AuthroityCtl.GetBatchPage)
 	beego.Get("/v1/auth/resource/org/page", controllers.OrgCtl.Page)
 	beego.Get("/v1/auth/resource/page", controllers.ResourceCtl.Page)

@@ -8,6 +8,7 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"time"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils"
 )
 
 type RoleModel struct {
@@ -28,15 +29,20 @@ type RoleInfo struct {
 }
 
 // 查询某一个角色的具体信息
-func (RoleModel) GetRow(role_id string) ([]RoleInfo, error) {
-	var rst []RoleInfo
-	rows, err := dbobj.Query(sys_rdbms_091, role_id)
-	if err != nil {
+func (this RoleModel) GetRow(role_id string) (RoleInfo, error) {
+	var rst RoleInfo
+	domain_id := utils.SplitDomain(role_id)
+	ret,err := this.Get(domain_id)
+	if err !=nil {
 		logs.Error(err)
-		return nil, err
+		return rst,err
 	}
-	err = dbobj.Scan(rows, &rst)
-	return rst, err
+	for _, val := range ret {
+		if val.Role_id == role_id {
+			return rst,nil
+		}
+	}
+	return rst, errors.New("no found")
 }
 
 func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {

@@ -25,12 +25,23 @@ var staticFile map[string]string = make(map[string]string)
 
 // 注册静态文件信息
 func Register(key, value string) {
-	lock.RLock()
-	defer lock.RUnlock()
+	lock.Lock()
 	if _, ok := staticFile[key]; ok {
+		lock.Unlock()
 		panic(key + value + " 这个静态页面已经被注册了.")
 	}
 	staticFile[key] = value
+	lock.Unlock()
+}
+
+func FileiSExist(key string) bool {
+	lock.RLock()
+	if _,ok := staticFile[key];ok{
+		lock.RUnlock()
+		return true
+	}
+	lock.RUnlock()
+	return false
 }
 
 func GetStaticFile(key string) ([]byte, error) {
@@ -52,6 +63,7 @@ func GetStaticFile(key string) ([]byte, error) {
 	if err != nil {
 		goto DISK
 	}
+	logs.Debug("get data from cache.")
 	return rst.ByteSlice(), err
 
 DISK:

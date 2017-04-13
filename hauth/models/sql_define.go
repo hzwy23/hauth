@@ -12,6 +12,7 @@ var (
 	sys_rdbms_009 = `update sys_theme_value set res_url = ?, res_bg_color = ?, res_class = ?, res_img = ?, group_id = ?, sort_id = ? where theme_id = ? and res_id = ?`
 	sys_rdbms_010 = `select user_id,user_passwd,status_id,continue_error_cnt from sys_sec_user where user_id = ?`
 	sys_rdbms_011 = `select distinct t2.res_url from sys_user_theme t1 inner join sys_theme_value t2 on t1.theme_id = t2.theme_id where t1.user_id = ? and t2.res_id = ? and t2.res_type = '0'`
+	sys_rdbms_012 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? order by handle_time desc`
 	sys_rdbms_013 = `select res_type from sys_theme_value where theme_id = '1001' and res_id = ?`
 	sys_rdbms_014 = `update sys_sec_user set user_passwd = ? where user_id = ? and user_passwd = ?`
 	sys_rdbms_015 = `update sys_sec_user set user_passwd = ? where user_id = ?`
@@ -28,11 +29,20 @@ var (
 	sys_rdbms_026 = `insert into sys_role_info(role_id,role_name,role_owner,role_create_date,role_status_id,domain_id,role_maintance_date,role_maintance_user,code_number) values(?,?,?,now(),?,?,now(),?,?)`
 	sys_rdbms_027 = `delete from sys_role_info where role_id = ?`
 	sys_rdbms_028 = `select t.code_number,t.role_name,t.role_owner,t.role_create_date,a.role_status_desc,a.role_status_id,t.domain_id,o.domain_name,t.role_maintance_date,t.role_maintance_user,t.role_id from sys_role_info t inner join sys_role_status_attr a on t.role_status_id = a.role_status_id inner join sys_domain_info o on t.domain_id = o.domain_id where t.domain_id = ?`
+	sys_rdbms_029 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? order by handle_time desc limit ?,?`
+	sys_rdbms_030 = `select count(*) from sys_handle_logs t where t.domain_id = ?`
+	sys_rdbms_031 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d') and handle_time < str_to_date(?,'%Y-%m-%d') order by handle_time desc`
+	sys_rdbms_032 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d') order by handle_time desc`
+	sys_rdbms_033 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d') and handle_time < str_to_date(?,'%Y-%m-%d') order by handle_time desc`
 	sys_rdbms_034 = `select domain_id from sys_domain_share_info t where t.target_domain_id = ?`
+	sys_rdbms_035 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d') order by handle_time desc`
 	sys_rdbms_036 = `insert into sys_domain_info(domain_id,domain_name,domain_status_id,domain_create_date,domain_owner,domain_maintance_date,domain_maintance_user) values(?,?,?,now(),?,now(),?)`
 	sys_rdbms_037 = `delete from sys_domain_info where domain_id = ?`
 	sys_rdbms_038 = `update sys_domain_info set domain_name = ?, domain_status_id = ?, domain_maintance_date = now(), domain_maintance_user = ? where domain_id = ?`
+	sys_rdbms_039 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and handle_time < str_to_date(?,'%Y-%m-%d') order by handle_time desc`
+	sys_rdbms_040 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? and user_id = ? order by handle_time desc`
 	sys_rdbms_041 = `select org_unit_id,org_unit_desc,up_org_id,t.org_status_id,r.org_status_desc,t.domain_id,create_date,maintance_date,create_user,maintance_user,code_number from sys_org_info t inner join sys_org_status_attr r on t.org_status_id = r.org_status_id where t.domain_id = ?`
+	sys_rdbms_042 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? order by user_id,handle_time desc`
 	sys_rdbms_043 = `insert into sys_org_info(code_number,org_unit_desc,up_org_id,org_status_id,domain_id,create_date,maintance_date,create_user,maintance_user,org_unit_id) values(?,?,?,?,?,now(),now(),?,?,?)`
 	sys_rdbms_044 = `delete from sys_org_info where org_unit_id = ? and domain_id = ?`
 	sys_rdbms_046 = `select t.role_id,t.role_name,t.code_number from sys_role_info t where ( t.role_owner = ? or exists ( select 1 from sys_role_user_relation r where r.user_id = ? and t.role_id = r.role_id ))`
@@ -60,7 +70,6 @@ var (
 	sys_rdbms_087 = `delete from sys_domain_share_info where uuid = ? and domain_id = ?`
 	sys_rdbms_088 = `update sys_domain_share_info set authorization_level = ?,modify_user = ? , modify_date = now() where uuid = ?`
 	sys_rdbms_089 = `select t.res_id,t.res_name,t.res_attr, a.res_attr_desc,t.res_up_id,t.res_type,r.res_type_desc from sys_resource_info t inner join sys_resource_info_attr a on t.res_attr = a.res_attr inner join sys_resource_type_attr r on t.res_type = r.res_type where res_id = ?`
-	sys_rdbms_091 = `select t.code_number,t.role_name,t.role_owner,t.role_create_date,a.role_status_desc,a.role_status_id,t.domain_id,o.domain_name,t.role_maintance_date,t.role_maintance_user,t.role_id from sys_role_info t inner join sys_role_status_attr a on t.role_status_id = a.role_status_id inner join sys_domain_info o on t.domain_id = o.domain_id where t.role_id = ?`
 	sys_rdbms_093 = `delete from sys_role_resource_relat where role_id = ? and res_id = ?`
 	sys_rdbms_094 = `select r.user_id, t.role_id, t.code_number,t.role_name from sys_role_info t inner join sys_role_user_relation r on t.role_id = r.role_id where r.user_id = ?`
 	sys_rdbms_095 = `select '', t.role_id,t.code_number,t.role_name from sys_user_info i inner join sys_org_info o on i.org_unit_id = o.org_unit_id inner join sys_role_info t on o.domain_id = t.domain_id where i.user_id = ? and  not exists ( select 1 from sys_role_user_relation r where i.user_id = r.user_id and r.role_id = t.role_id )`

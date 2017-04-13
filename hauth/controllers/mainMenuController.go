@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"io/ioutil"
 	"net/http"
 
 	"github.com/astaxie/beego/context"
@@ -9,6 +8,8 @@ import (
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 )
 
 var homePageMenusModel = new(models.HomePageMenusModel)
@@ -22,7 +23,7 @@ func HomePageMenus(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
@@ -48,6 +49,14 @@ func SubSystemEntry(ctx *context.Context) {
 	}
 
 	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
-	hz, _ := ioutil.ReadFile(url)
-	ctx.ResponseWriter.Write(hz)
+	if !hcache.FileiSExist(id) {
+		hcache.Register(id, url)
+	}
+	tpl,err := hcache.GetStaticFile(id)
+	if err != nil {
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,404,"应用不存在,或者没有注册到平台上.")
+		return
+	}
+	ctx.ResponseWriter.Write(tpl)
 }

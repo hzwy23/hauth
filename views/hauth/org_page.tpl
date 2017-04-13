@@ -76,11 +76,11 @@
                         <th data-field="code_number">机构编码</th>
                         <th data-field="org_desc">机构描述</th>
                         <th data-field="up_org_id" data-formatter="OrgObj.upOrgId">上级机构编码</th>
-                        <th data-field="status_desc">机构状态</th>
-                        <th data-field="create_date">创建日期</th>
-                        <th data-field="create_user">创建人</th>
-                        <th data-field="modify_date">修改日期</th>
-                        <th data-field="modify_user">修改人</th>
+                        <th data-align="center" data-field="status_desc">机构状态</th>
+                        <th data-align="center" data-field="create_date">创建日期</th>
+                        <th data-align="center" data-field="create_user">创建人</th>
+                        <th data-align="center" data-field="modify_date">修改日期</th>
+                        <th data-align="center" data-field="modify_user">修改人</th>
                     </tr>
                     </thead>
                 </table>
@@ -296,48 +296,41 @@
             return addArray
         },
         delete:function(){
+            var domain_id = $("#h-org-domain-list").val();
 
             var data = OrgObj.$table.bootstrapTable("getSelections").concat();
-            var alldata = OrgObj.$table.bootstrapTable('getData');
 
-            // 将数组中的值复制一份
-            var all = alldata.concat()
-            if (data.length == 0){
-                $.Notify({
-                    title:"温馨提示",
-                    message:"您没有在下列机构信息表中，选择需要删除的机构",
-                    type:"info",
-                })
-                return
-            } else {
-                $.Hconfirm({
-                    preprocess:function () {
-
-                        var deletedata = OrgObj.getSubOrg(data,all);
-
-                        $(deletedata).each(function (index, element) {
-                            data.push(element)
-                        });
-
-                    },
-                    callback:function () {
-                        $.HAjaxRequest({
-                            url:"/v1/auth/resource/org/delete",
-                            type:"post",
-                            data:{JSON:JSON.stringify(data)},
-                            success:function () {
-                                $.Notify({
-                                    title:"操作成功",
-                                    message:"删除机构信息成功",
-                                    type:"success",
-                                });
-                                OrgObj.tree(data[0].domain_id)
-                            },
-                        })
-                    },
-                    body:"确认要删除选中的机构信息吗"
-                })
+            if (data.length == 0) {
+                var selected_id = $("#h-org-tree-info-list").attr("data-selected");
+                if (selected_id == undefined) {
+                    $.Notify({
+                        title: "温馨提示",
+                        message: "请在列表中选择一个需要编辑的机构",
+                        type: "warning",
+                    });
+                    return
+                }
+                data.push(OrgObj.$table.bootstrapTable('getRowByUniqueId', selected_id))
             }
+
+            $.Hconfirm({
+                callback:function () {
+                    $.HAjaxRequest({
+                        url:"/v1/auth/resource/org/delete",
+                        type:"post",
+                        data:{JSON:JSON.stringify(data),domain_id:domain_id},
+                        success:function () {
+                            $.Notify({
+                                title:"操作成功",
+                                message:"删除机构信息成功",
+                                type:"success",
+                            });
+                            OrgObj.tree(data[0].domain_id)
+                        },
+                    })
+                },
+                body:"确认要删除选中的机构信息吗"
+            })
         },
         download:function(){
             var domain_id = $("#h-org-domain-list").val()
@@ -349,11 +342,10 @@
             }
             x.send();
         },
-        upload:function(){
-            $.Notify({
-                title:"非常抱歉",
-                message:"目前没有权限使用导出数据功能",
-                type:"info",
+        upload:function(param){
+            $.Hupload({
+                url:"/v1/auth/resource/org/upload",
+                domain_id:$("#h-org-domain-list").val(),
             })
         },
         tree:function(domain_id){

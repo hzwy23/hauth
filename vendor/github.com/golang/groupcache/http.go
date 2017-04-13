@@ -141,8 +141,7 @@ func (p *HTTPPool) PickPeer(key string) (ProtoGetter, bool) {
 func (p *HTTPPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Parse request.
 	if !strings.HasPrefix(r.URL.Path, p.opts.BasePath) {
-		fmt.Println("HTTPPool serving unexpected path: " + r.URL.Path)
-		return
+		panic("HTTPPool serving unexpected path: " + r.URL.Path)
 	}
 	parts := strings.SplitN(r.URL.Path[len(p.opts.BasePath):], "/", 2)
 	if len(parts) != 2 {

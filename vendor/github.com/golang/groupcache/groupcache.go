@@ -204,15 +204,6 @@ func (g *Group) initPeers() {
 	}
 }
 
-// 删除cache中的值
-// add by hzwy23@163.com
-// TODO
-// 对于多节点情况下,还需要实现同步删除各个节点中的cache值.
-func (g *Group)Delete(ctx Context,key string) {
-	g.mainCache.delete(key)
-	g.hotCache.delete(key)
-}
-
 func (g *Group) Get(ctx Context, key string, dest Sink) error {
 	g.peersOnce.Do(g.initPeers)
 	g.Stats.Gets.Add(1)
@@ -444,31 +435,6 @@ func (c *cache) get(key string) (value ByteView, ok bool) {
 	}
 	c.nhit++
 	return vi.(ByteView), true
-}
-
-// delete cache by key
-// add by hzwy23@163.com
-func (c *cache)delete(key string) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	if c.lru == nil {
-		return errors.New("lru is empty")
-	}
-
-	// get contain value of the key in the cache
-	vi,ok := c.lru.Get(key)
-	if !ok {
-		return errors.New("no cache")
-	}
-
-	byteSize := vi.(ByteView).Len()
-
-	// delete size
-	// of all keys and values
-	c.nbytes -= int64(byteSize) + int64(len(key))
-	// delete cache by key
-	c.lru.Remove(key)
-	return nil
 }
 
 func (c *cache) removeOldest() {

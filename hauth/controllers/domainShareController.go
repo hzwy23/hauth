@@ -30,7 +30,6 @@ var DomainShareCtl = domainShareControll{
 // domain share configuration page
 // in this page, you can config share the domain to others.
 func (domainShareControll) Page(ctx *context.Context) {
-	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -60,14 +59,11 @@ func (domainShareControll) Page(ctx *context.Context) {
 
 // 查询域共享信息
 func (this domainShareControll) Get(ctx *context.Context) {
-	defer hret.HttpPanic()
-
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
 	domain_id := ctx.Request.FormValue("domain_id")
-
 	// if the request argument domain_id is empty,
 	// so set domain_id yourself.
 	if strings.TrimSpace(domain_id) == "" {

@@ -1,34 +1,29 @@
 package controllers
 
 import (
-	"fmt"
+
 
 	"github.com/astaxie/beego/context"
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
 
-	"github.com/asaskevich/govalidator"
+
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
-	"github.com/hzwy23/dbobj"
+
 	"github.com/tealeg/xlsx"
+	"github.com/hzwy23/asofdate/hauth/models"
+	"github.com/hzwy23/asofdate/utils/i18n"
+	"path/filepath"
+	"os"
 )
 
 type HandleLogsController struct {
+	model models.HandleLogMode
 }
 
-type handleLogs struct {
-	Uuid        string `json:"uuid"`
-	User_id     string `json:"user_id"`
-	Handle_time string `json:"handle_time"`
-	Client_ip   string `json:"client_ip"`
-	Status_code string `json:"status_code"`
-	Method      string `json:"method"`
-	Url         string `json:"url"`
-	Data        string `json:"data"`
-}
 
 var HandleLogsCtl = &HandleLogsController{}
 
@@ -47,7 +42,7 @@ func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-func (HandleLogsController) Download(ctx *context.Context) {
+func (this HandleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -60,72 +55,68 @@ func (HandleLogsController) Download(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
-	sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? order by handle_time desc`
-	var rst []handleLogs
-	rows, err := dbobj.Query(sql, jclaim.Domain_id)
-	defer rows.Close()
+	rst,err := this.model.Download(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"查询日志信息失败.")
 		return
 	}
-	err = dbobj.Scan(rows, &rst)
+
+	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"upload","template","hauthHandleLogsTemplate.xlsx"))
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,422,"创建excel失败.",err)
 		return
 	}
-
-	var file *xlsx.File
-	var sheet *xlsx.Sheet
-
-	file = xlsx.NewFile()
-	sheet, err = file.AddSheet("机构信息")
-	if err != nil {
-		fmt.Printf(err.Error())
+	sheet, ok := file.Sheet["handle_logs"]
+	if !ok {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,422,"获取sheet页失败,没有找打sheet名称为 handle_logs.",)
+		return
 	}
-
-	row := sheet.AddRow()
-	cell1 := row.AddCell()
-	cell1.Value = "用户"
-	cell2 := row.AddCell()
-	cell2.Value = "操作日期"
-	cell3 := row.AddCell()
-	cell3.Value = "客户端IP"
-	cell4 := row.AddCell()
-	cell4.Value = "请求方法"
-	cell5 := row.AddCell()
-	cell5.Value = "API地址"
-	cell6 := row.AddCell()
-	cell6.Value = "返回状态"
-	cell7 := row.AddCell()
-	cell7.Value = "请求数据"
 
 	for _, v := range rst {
 		row := sheet.AddRow()
 		cell1 := row.AddCell()
 		cell1.Value = v.User_id
+		cell1.SetStyle(sheet.Rows[1].Cells[0].GetStyle())
+
 		cell2 := row.AddCell()
 		cell2.Value = v.Handle_time
+		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
+
+
 		cell3 := row.AddCell()
 		cell3.Value = v.Client_ip
+		cell3.SetStyle(sheet.Rows[1].Cells[2].GetStyle())
+
 		cell4 := row.AddCell()
 		cell4.Value = v.Method
+		cell4.SetStyle(sheet.Rows[1].Cells[3].GetStyle())
+
 		cell5 := row.AddCell()
 		cell5.Value = v.Url
+		cell5.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
+
 		cell6 := row.AddCell()
 		cell6.Value = v.Status_code
+		cell6.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
+
 		cell7 := row.AddCell()
 		cell7.Value = v.Data
+		cell7.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
 	}
+
+	if len(sheet.Rows) >= 3 {
+		sheet.Rows = append(sheet.Rows[0:1], sheet.Rows[2:]...)
+	}
+
 	file.Write(ctx.ResponseWriter)
 }
 
-func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
+func (this HandleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -141,27 +132,17 @@ func (HandleLogsController) GetHandleLogs(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
 		return
 	}
-	sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? order by handle_time desc limit ?,?`
-	var rst []handleLogs
-	rows, err := dbobj.Query(sql, jclaim.Domain_id, offset, limit)
-	defer rows.Close()
+
+	rst,total,err := this.model.Get(jclaim.Domain_id,offset,limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"查询日志信息失败.")
 		return
 	}
-	err = dbobj.Scan(rows, &rst)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-		return
-	}
-	cntsql := `select count(*) from sys_handle_logs t where t.domain_id = ?`
-	hret.WriteBootstrapTableJson(ctx.ResponseWriter, dbobj.Count(cntsql, jclaim.Domain_id), rst)
+	hret.WriteBootstrapTableJson(ctx.ResponseWriter,total, rst)
 }
 
-func (HandleLogsController) SerachLogs(ctx *context.Context) {
+func (this HandleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -176,160 +157,16 @@ func (HandleLogsController) SerachLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, i18n.Disconnect())
 		return
 	}
-	var rst []handleLogs
-	fmt.Println(govalidator.IsDate(start), start)
-	fmt.Println(govalidator.IsDate(end), end)
-	if userid != "" && govalidator.IsDate(start) && govalidator.IsDate(end) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
-			and handle_time < str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
 
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, userid, start, end)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if userid != "" && govalidator.IsDate(start) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, userid, start)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if userid != "" && govalidator.IsDate(end) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and user_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
-			and handle_time < str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, userid, start, end)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if govalidator.IsDate(start) && govalidator.IsDate(end) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
-			and handle_time < str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, start, end)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if govalidator.IsDate(start) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and handle_time >= str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, start, end)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if govalidator.IsDate(end) {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and handle_time < str_to_date(?,'%Y-%m-%d')
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, start, end)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else if userid != "" {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? and user_id = ?
-			order by handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id, userid)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-	} else {
-		sql := `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t
-			where t.domain_id = ? order by user_id,handle_time desc`
-
-		rows, err := dbobj.Query(sql, jclaim.Domain_id)
-		defer rows.Close()
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
-		err = dbobj.Scan(rows, &rst)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "query failed.")
-			return
-		}
+	rst,err := this.model.Search(jclaim.Domain_id,userid,start,end)
+	if err != nil {
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"搜索日志失败.")
+		return
 	}
-
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
