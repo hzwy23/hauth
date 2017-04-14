@@ -36,6 +36,34 @@ func (roleController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
+// Page return views/hauth/sys_batch_page.tpl content
+// swagger:route GET /v1/auth/resource/role/get roleController roleController
+//
+// Lists Page filtered by some parameters.
+//
+// This will show all available pets by default.
+// You can get the pets that are out of stock
+//
+//     Consumes:
+//     - application/json
+//     - application/x-protobuf
+//
+//     Produces:
+//     - application/json
+//     - application/octet-stream
+//     - application/x-protobuf
+//
+//     Schemes: https
+//
+//     Security:
+//       api_key:
+//       oauth: read, write
+//
+//     Responses:
+//       default:
+//       200:
+//       404:
+//       422:
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -216,5 +244,5 @@ func (this roleController) Update(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdateRolePage", "./views/hauth/role_info_page.tpl")
+	hcache.RegisterStaticFile("AsofdateRolePage", "./views/hauth/role_info_page.tpl")
 }

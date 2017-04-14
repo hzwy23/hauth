@@ -98,11 +98,12 @@ func registerRouter() {
 
 	beego.Get("/v1/auth/HandleLogsPage", controllers.HandleLogsCtl.GetHandleLogPage)
 	beego.Get("/v1/auth/domain/page", controllers.DomainCtl.Page)
-	beego.Get("/v1/auth/batch/page", controllers.AuthroityCtl.GetBatchPage)
+	beego.Get("/v1/auth/batch/page", controllers.AuthroityCtl.Page)
 	beego.Get("/v1/auth/resource/org/page", controllers.OrgCtl.Page)
 	beego.Get("/v1/auth/resource/page", controllers.ResourceCtl.Page)
 	beego.Get("/v1/auth/user/page", controllers.UserCtl.Page)
 	beego.Get("/v1/auth/role/page", controllers.RoleCtl.Page)
+	beego.Get("/v1/auth/swagger/page", controllers.SwaggerCtl.Page)
 
 	//beego.Put("/v1/auth/passwd/modify", controllers.PasswdController.AdminModifyPasswd)
 	//beego.GetDetails("/v1/auth/roles/getted", controllers.AuthroityCtl.GetGettedRoles)

@@ -29,6 +29,31 @@ var DomainShareCtl = domainShareControll{
 
 // domain share configuration page
 // in this page, you can config share the domain to others.
+// first, get html content from groupcache,
+// if not fount , return 404
+// Page return views/hauth/domain_share_info.tpl content
+// swagger:operation GET /v1/auth/domain/share/page StaticFiles domainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (domainShareControll) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -58,6 +83,28 @@ func (domainShareControll) Page(ctx *context.Context) {
 }
 
 // 查询域共享信息
+// swagger:operation GET /v1/auth/domain/share/get domainShareController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this domainShareControll) Get(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx) {
 		return
@@ -93,6 +140,28 @@ func (this domainShareControll) Get(ctx *context.Context) {
 }
 
 // check unshare domains to the domain
+// swagger:operation GET /v1/auth/domain/share/unauth domainShareController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this domainShareControll) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
@@ -110,6 +179,40 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 }
 
 // 新增域共享信息
+// swagger:operation POST /v1/auth/domain/share/post domainShareController postomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: target_domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: auth_level
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this domainShareControll) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -155,6 +258,28 @@ func (this domainShareControll) Post(ctx *context.Context) {
 }
 
 // 删除域共享信息
+// swagger:operation DELETE /v1/auth/domain/share/delete domainShareController postomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: JSON
+//   in: query
+//   description: json formatter
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this domainShareControll) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -187,6 +312,40 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 }
 
 // 更新域共享信息
+// swagger:operation PUT /v1/auth/domain/share/put domainShareController postomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: target_domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: auth_level
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this domainShareControll) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -233,6 +392,21 @@ func (this domainShareControll) Put(ctx *context.Context) {
 }
 
 // 获取用户能够访问到的域
+// swagger:operation GET /v1/auth/domain/owner domainShareController postomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -256,6 +430,21 @@ func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 
 
 // 获取用户自身能够访问到的域信息
+// swagger:operation GET /v1/auth/domain/self/owner domainShareController postomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func (this *domainShareControll) GetDomainOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 

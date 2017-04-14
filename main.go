@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
+	if beego.BConfig.RunMode == "dev" {
+		beego.SetStaticPath("/swagger","swagger")
+	}
 	service.StartHauth()
 	beego.Run()
 }

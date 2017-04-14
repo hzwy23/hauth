@@ -27,6 +27,22 @@ type HandleLogsController struct {
 
 var HandleLogsCtl = &HandleLogsController{}
 
+// GetHandleLogPage return views/hauth/handle_logs_page.tpl content
+// swagger:operation GET /v1/auth/HandleLogsPage StaticFiles domainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -171,5 +187,5 @@ func (this HandleLogsController) SerachLogs(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdateHandleLogPage", "./views/hauth/handle_logs_page.tpl")
+	hcache.RegisterStaticFile("AsofdateHandleLogPage", "./views/hauth/handle_logs_page.tpl")
 }

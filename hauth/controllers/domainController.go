@@ -22,6 +22,29 @@ type domainController struct {
 var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 
 // 获取domain_info配置页面
+// first, get html content from groupcache,
+// if not fount , return 404
+// Page return views/hauth/domain_info.tpl content
+// swagger:route GET /v1/auth/domain/page StaticFiles AuthorityController
+//
+// Lists Page filtered by some parameters.
+//
+// This will show all available pets by default.
+// You can get the pets that are out of stock
+//
+//     Consumes:
+//     - application/json
+//     - text/plain
+//
+//     Produces:
+//     - application/json
+//     - text/plain
+//
+//     Schemes: https
+//
+//     Responses:
+//       200:
+//       404:
 func (this *domainController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
@@ -39,6 +62,36 @@ func (this *domainController) Page(ctx *context.Context) {
 }
 
 // 查询域信息
+// Page return domain info
+//
+// swagger:operation GET /v1/auth/domain/get domainController getDomainInfo
+//
+// Returns all domain information
+//
+//
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: offset
+//   in: query
+//   description: start row number
+//   required: false
+//   type: integer
+//   format: int32
+// - name: limit
+//   in: query
+//   description: maximum number of results to return
+//   required: false
+//   type: integer
+//   format: int32
+// responses:
+//   '200':
+//     description: all domain information
 func (this *domainController) Get(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -65,6 +118,41 @@ func (this *domainController) Get(ctx *context.Context) {
 // domainId     域编码,必须由数字,字母组成
 // domainDesc   域名称,不能为空
 // domainStatus 域状态,必须是0或者1中的一个
+//
+// swagger:operation POST /v1/auth/domain/post domainController postDomainInfo
+//
+// Returns all domain information
+//
+//
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domainId
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: domainDesc
+//   in: query
+//   description: domain name
+//   required: true
+//   type: string
+//   format:
+// - name: domainStatus
+//   in: query
+//   description: domain status, 0 is enable, 1 is disable
+//   required: true
+//   type: integer
+//   format: int32
+// responses:
+//   '200':
+//     description: all domain information
 func (this *domainController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -111,6 +199,29 @@ func (this *domainController) Post(ctx *context.Context) {
 }
 
 // 删除域信息
+//
+// swagger:operation DELETE /v1/auth/domain/delete domainController deleteDomainInfo
+//
+// Returns all domain information
+//
+//
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: JSON
+//   in: query
+//   description: domain info, for example is ,[{domain_id}]
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: success
 func (this *domainController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -144,6 +255,40 @@ func (this *domainController) Delete(ctx *context.Context) {
 }
 
 // 更新域信息
+// swagger:operation PUT /v1/auth/domain/update domainController putDomainInfo
+//
+// API Describe: update domain describe, domain status
+//
+// update domain info , you neet input three arguments, domainId,domainDesc,domainStatus. column domain_id can't update.
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domainId
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: domainDesc
+//   in: query
+//   description: domain name
+//   required: true
+//   type: string
+//   format:
+// - name: domainStatus
+//   in: query
+//   description: domain status, 0 is enable, 1 is disable
+//   required: true
+//   type: integer
+//   format: int32
+// responses:
+//   '200':
+//     description: success
 func (this *domainController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -192,6 +337,28 @@ func (this *domainController) Update(ctx *context.Context) {
 
 
 // 获取指定域详细信息
+// swagger:operation GET /v1/auth/domain/row/details domainController getDomainDetailsInfo
+//
+// Returns all domain information
+//
+//
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: success
 func (this *domainController) GetDetails(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	var domain_id = ctx.Request.FormValue("domain_id")
@@ -206,6 +373,21 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 }
 
 // 获取用户自己所属域的编码
+// swagger:operation GET /v1/auth/domain/id domainController getDomainId
+//
+// Returns all domain information
+//
+//
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: success
 func (this *domainController) GetId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -221,5 +403,5 @@ func (this *domainController) GetId(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("DomainPage", "./views/hauth/domain_info.tpl")
+	hcache.RegisterStaticFile("DomainPage", "./views/hauth/domain_info.tpl")
 }

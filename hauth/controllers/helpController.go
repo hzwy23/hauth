@@ -28,5 +28,5 @@ func (this helpController) Page(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdateHelpPage", "./views/help/auth_help.tpl")
+	hcache.RegisterStaticFile("AsofdateHelpPage", "./views/help/auth_help.tpl")
 }

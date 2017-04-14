@@ -46,6 +46,32 @@ func (orgController) Page(ctx *context.Context) {
 }
 
 // 获取机构信息
+// Page return views/hauth/sys_batch_page.tpl content
+// swagger:route GET /v1/auth/resource/org/get orgController Get
+//
+// Lists Page filtered by some parameters.
+//
+// This will show all available pets by default.
+// You can get the pets that are out of stock
+//
+//     Consumes:
+//     - application/json
+//     - application/x-protobuf
+//
+//     Produces:
+//     - application/json
+//     - application/octet-stream
+//     - application/x-protobuf
+//
+//     Schemes: https
+//
+//     Security:
+//       api_key:
+//       oauth: read, write
+//
+//     Responses:
+//   	'200':
+//     		description: pet response
 func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -503,5 +529,5 @@ func (this orgController)Upload(ctx *context.Context){
 }
 
 func init() {
-	hcache.Register("AsofdateOrgPage", "./views/hauth/org_page.tpl")
+	hcache.RegisterStaticFile("AsofdateOrgPage", "./views/hauth/org_page.tpl")
 }

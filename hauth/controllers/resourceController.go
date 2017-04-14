@@ -287,5 +287,5 @@ func (this resourceController) Update(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdateResourcePage", "./views/hauth/res_info_page.tpl")
+	hcache.RegisterStaticFile("AsofdateResourcePage", "./views/hauth/res_info_page.tpl")
 }

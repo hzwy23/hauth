@@ -49,8 +49,8 @@ func SubSystemEntry(ctx *context.Context) {
 	}
 
 	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
-	if !hcache.FileiSExist(id) {
-		hcache.Register(id, url)
+	if !hcache.FileIsExist(id) {
+		hcache.RegisterStaticFile(id, url)
 	}
 	tpl,err := hcache.GetStaticFile(id)
 	if err != nil {

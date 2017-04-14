@@ -7,14 +7,17 @@ import (
 	"github.com/hzwy23/dbobj"
 )
 
+// swagger:model
 type AuthorityModel struct {
 }
 
+// swagger:model
 type mbatchUsers struct {
 	User_id string `json:"user_id"`
 	Role_id string `json:"role_id"`
 }
 
+// swagger:model
 type gettedRoles struct {
 	Role_id     string `json:"role_id"`
 	Role_name   string `json:"role_name"`

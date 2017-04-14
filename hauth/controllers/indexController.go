@@ -16,5 +16,5 @@ func IndexPage(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdateIndexPage", "./views/login.tpl")
+	hcache.RegisterStaticFile("AsofdateIndexPage", "./views/login.tpl")
 }

@@ -1,0 +1,602 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/v1/auth/HandleLogsPage": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "domainShareControll",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/batch/page": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "consumes": [
+          "application/json",
+          "text/plain"
+        ],
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Lists Page filtered by some parameters.",
+        "operationId": "AuthorityController",
+        "responses": {
+          "200": {},
+          "404": {}
+        }
+      }
+    },
+    "/v1/auth/domain/delete": {
+      "delete": {
+        "description": "Returns all domain information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "operationId": "deleteDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain info, for example is ,[{domain_id}]",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/get": {
+      "get": {
+        "description": "Returns all domain information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "operationId": "getDomainInfo",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "start row number",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "maximum number of results to return",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/id": {
+      "get": {
+        "description": "Returns all domain information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "operationId": "getDomainId",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/owner": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "postomainShareControll",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/page": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "consumes": [
+          "application/json",
+          "text/plain"
+        ],
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Lists Page filtered by some parameters.",
+        "operationId": "AuthorityController",
+        "responses": {
+          "200": {},
+          "404": {}
+        }
+      }
+    },
+    "/v1/auth/domain/post": {
+      "post": {
+        "description": "Returns all domain information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "operationId": "postDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domainId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain name",
+            "name": "domainDesc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "domain status, 0 is enable, 1 is disable",
+            "name": "domainStatus",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/row/details": {
+      "get": {
+        "description": "Returns all domain information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "operationId": "getDomainDetailsInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/self/owner": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "postomainShareControll",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/delete": {
+      "delete": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "json formatter",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "domainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/post": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/put": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/unauth": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/update": {
+      "put": {
+        "description": "update domain info , you neet input three arguments, domainId,domainDesc,domainStatus. column domain_id can't update.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "API Describe: update domain describe, domain status",
+        "operationId": "putDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domainId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain name",
+            "name": "domainDesc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "domain status, 0 is enable, 1 is disable",
+            "name": "domainStatus",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/get": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "consumes": [
+          "application/json",
+          "application/x-protobuf"
+        ],
+        "produces": [
+          "application/json",
+          "application/octet-stream",
+          "application/x-protobuf"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Lists Page filtered by some parameters.",
+        "operationId": "Get",
+        "security": [
+          {
+            "api_key": []
+          },
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/v1/auth/resource/role/get": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "consumes": [
+          "application/json",
+          "application/x-protobuf"
+        ],
+        "produces": [
+          "application/json",
+          "application/octet-stream",
+          "application/x-protobuf"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "Lists Page filtered by some parameters.",
+        "operationId": "roleController",
+        "security": [
+          {
+            "api_key": []
+          },
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {},
+          "404": {},
+          "422": {},
+          "default": {}
+        }
+      }
+    }
+  }
+}

@@ -446,5 +446,5 @@ func (this userController) GetUserDetails(ctx *context.Context) {
 }
 
 func init() {
-	hcache.Register("AsofdasteUserPage", "./views/hauth/UserInfoPage.tpl")
+	hcache.RegisterStaticFile("AsofdasteUserPage", "./views/hauth/UserInfoPage.tpl")
 }

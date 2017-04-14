@@ -12,7 +12,7 @@ import (
 // 将系统中使用到的静态html文件缓存到内存中,
 // 下次在打开这个页面时,就不需要从磁盘中读取,而是直接冲缓存中加载.
 // example:
-// hcache.Register(key,value)
+// hcache.RegisterStaticFile(key,value)
 // 每一个key只能注册一次,否则会panic.
 
 var groupctx groupcache.Context
@@ -24,7 +24,7 @@ var lock = new(sync.RWMutex)
 var staticFile map[string]string = make(map[string]string)
 
 // 注册静态文件信息
-func Register(key, value string) {
+func RegisterStaticFile(key, value string) {
 	lock.Lock()
 	if _, ok := staticFile[key]; ok {
 		lock.Unlock()
@@ -34,7 +34,7 @@ func Register(key, value string) {
 	lock.Unlock()
 }
 
-func FileiSExist(key string) bool {
+func FileIsExist(key string) bool {
 	lock.RLock()
 	if _,ok := staticFile[key];ok{
 		lock.RUnlock()
