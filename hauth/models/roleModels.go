@@ -37,9 +37,10 @@ func (this RoleModel) GetRow(role_id string) (RoleInfo, error) {
 		logs.Error(err)
 		return rst,err
 	}
+
 	for _, val := range ret {
 		if val.Role_id == role_id {
-			return rst,nil
+			return val,nil
 		}
 	}
 	return rst, errors.New("no found")

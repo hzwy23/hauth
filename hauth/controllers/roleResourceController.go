@@ -28,9 +28,10 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
-
 	var role_id = ctx.Request.FormValue("role_id")
+
 	rst, err := this.model.GetRow(role_id)
+
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色资源信息失败")
