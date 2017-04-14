@@ -35,7 +35,7 @@
     });
 
     $(document).ready(function(){
-        Hutils.initMenu(1,'1100000000',"系统帮助信息","管理会计帮助信息","公共信息帮助信息");
+        Hutils.initMenu(1,'1100000000',"系统帮助信息","API文档","公共信息帮助信息");
         $("#page-wrapper").show();
         NProgress.done();
     });
