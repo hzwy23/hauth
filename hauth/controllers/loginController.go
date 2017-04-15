@@ -16,6 +16,22 @@ import (
 
 var indexModels = new(models.LoginModels)
 
+//
+// swagger:operation GET /HomePage StaticFiles IndexPage
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func HomePage(ctx *context.Context) {
 	defer hret.HttpPanic(func() {
 		ctx.Redirect(302, "/")
@@ -40,6 +56,35 @@ func HomePage(ctx *context.Context) {
 	h.Execute(ctx.ResponseWriter, jclaim.User_id)
 }
 
+//
+// swagger:operation POST /login LoginSystem LoginSystem
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: username
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: password
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func LoginSystem(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -80,6 +125,35 @@ func LoginSystem(ctx *context.Context) {
 	}
 }
 
+//
+// swagger:operation POST /logout LoginSystem LoginSystem
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: username
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: password
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func LogoutSystem(ctx *context.Context) {
 	cookie := http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: -1}
 	http.SetCookie(ctx.ResponseWriter, &cookie)

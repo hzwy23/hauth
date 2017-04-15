@@ -76,6 +76,14 @@
 - id: as_of_date_domain_share_update
   translation: "更新域共享信息失败"
 
+- id: error_user_role_query
+  translation: "获取用户拥有的角色信息失败"
+
+- id: error_user_role_no_user
+  translation: "请选择需要查询的用户账号信息"
+
+- id: error_user_role_un_auth
+  translation: "查询未授权角色信息失败"
 
 
 - id: ca_add_direction_id

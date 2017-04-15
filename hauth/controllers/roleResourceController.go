@@ -22,6 +22,28 @@ var RoleAndResourceCtl = &roleAndResourceController{
 	new(models.ResourceModel),
 }
 
+// swagger:operation GET /v1/auth/role/resource/details StaticFiles domainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
@@ -43,6 +65,28 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 }
 
 // 查询指定角色的资源信息
+// swagger:operation GET /v1/auth/role/resource/get roleAndResourceController roleAndResourceController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleAndResourceController) GetResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -74,6 +118,28 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 }
 
 // 授权与撤权操作
+// swagger:operation POST /v1/auth/role/resource/rights roleAndResourceController roleAndResourceController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {

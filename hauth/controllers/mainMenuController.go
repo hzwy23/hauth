@@ -14,6 +14,34 @@ import (
 
 var homePageMenusModel = new(models.HomePageMenusModel)
 
+// swagger:operation GET /v1/auth/main/menu HomePageMenus HomePageMenus
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: TypeId
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: Id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func HomePageMenus(ctx *context.Context) {
 	defer hret.HttpPanic()
 	typeId := ctx.Request.FormValue("TypeId")
@@ -36,6 +64,34 @@ func HomePageMenus(ctx *context.Context) {
 	ctx.ResponseWriter.Write(ojs)
 }
 
+// swagger:operation GET /v1/auth/index/entry HomePageMenus HomePageMenus
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: TypeId
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: Id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func SubSystemEntry(ctx *context.Context) {
 	defer hret.HttpPanic()
 	ctx.Request.ParseForm()

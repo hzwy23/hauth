@@ -12,6 +12,22 @@ type helpController struct {
 
 var HelpCtl = &helpController{}
 
+
+// swagger:operation GET /v1/help/system/help StaticFiles helpController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func (this helpController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 

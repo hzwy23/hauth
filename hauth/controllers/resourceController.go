@@ -28,6 +28,28 @@ var ResourceCtl = &resourceController{
 }
 
 // 菜单资源子页面路由
+// swagger:operation GET /v1/auth/resource/page StaticFiles domainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (resourceController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -43,6 +65,28 @@ func (resourceController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
+// swagger:operation GET /v1/auth/resource/get resourceController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this resourceController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -57,6 +101,28 @@ func (this resourceController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
+// swagger:operation GET /v1/auth/resource/query resourceController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this resourceController) Query(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")
@@ -70,6 +136,28 @@ func (this resourceController) Query(ctx *context.Context) {
 }
 
 
+// swagger:operation POST /v1/auth/resource/post resourceController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -244,6 +332,29 @@ func (this resourceController) Post(ctx *context.Context) {
 
 }
 
+
+// swagger:operation DELETE /v1/auth/resource/delete resourceController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this resourceController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -263,6 +374,28 @@ func (this resourceController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "remove resource successfully.")
 }
 
+// swagger:operation PUT /v1/auth/resource/update resourceController getdomainShareControll
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this resourceController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {

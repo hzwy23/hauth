@@ -23,6 +23,28 @@ var RoleCtl = &roleController{
 	models.RoleModel{},
 }
 
+// swagger:operation GET /v1/auth/role/page StaticFiles roleController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -37,33 +59,28 @@ func (roleController) Page(ctx *context.Context) {
 }
 
 // Page return views/hauth/sys_batch_page.tpl content
-// swagger:route GET /v1/auth/resource/role/get roleController roleController
+// swagger:operation GET /v1/auth/role/get roleController roleController
 //
-// Lists Page filtered by some parameters.
+// Returns all domain information
 //
-// This will show all available pets by default.
-// You can get the pets that are out of stock
+// get special domain share information
 //
-//     Consumes:
-//     - application/json
-//     - application/x-protobuf
-//
-//     Produces:
-//     - application/json
-//     - application/octet-stream
-//     - application/x-protobuf
-//
-//     Schemes: https
-//
-//     Security:
-//       api_key:
-//       oauth: read, write
-//
-//     Responses:
-//       default:
-//       200:
-//       404:
-//       422:
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -99,6 +116,28 @@ func (this roleController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
+// swagger:operation POST /v1/auth/role/post roleController roleController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -156,6 +195,28 @@ func (this roleController) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new role info successfully.")
 }
 
+// swagger:operation DELETE /v1/auth/role/delete roleController roleController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -189,6 +250,28 @@ func (this roleController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除角色信息成功。")
 }
 
+// swagger:operation PUT /v1/auth/role/put roleController roleController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {

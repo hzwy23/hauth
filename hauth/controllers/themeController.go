@@ -22,6 +22,28 @@ var ThemeCtl = &themeController{
 }
 
 // 更新用户主题信息
+// swagger:operation POST /v1/auth/theme/update themeController themeController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this *themeController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	theme_id := ctx.Request.FormValue("theme_id")
@@ -46,8 +68,28 @@ func (this *themeController) Put(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success())
 }
 
-
-
+// swagger:operation PUT /v1/auth/resource/config/theme themeController themeController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this themeController) ConfigTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -90,7 +132,28 @@ func (this themeController) ConfigTheme(ctx *context.Context) {
 	}
 }
 
-
+// swagger:operation GET /v1/auth/resource/queryTheme themeController themeController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this themeController) QueryTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")

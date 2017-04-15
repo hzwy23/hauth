@@ -77,11 +77,11 @@ func registerRouter() {
 	beego.Get("/v1/auth/role/resource/details", controllers.RoleAndResourceCtl.ResourcePage)
 
 	//sys_batch_info
-	beego.Get("/v1/auth/user/roles/get", controllers.UserRolesController.GetRolesByUserId)
+	beego.Get("/v1/auth/user/roles/get", controllers.UserRolesCtl.GetRolesByUserId)
 	beego.Get("/v1/auth/user/search", controllers.UserCtl.Search)
-	beego.Get("/v1/auth/user/roles/other", controllers.UserRolesController.GetOtherRoles)
-	beego.Post("/v1/auth/user/roles/auth", controllers.UserRolesController.Auth)
-	beego.Post("/v1/auth/user/roles/revoke", controllers.UserRolesController.Revoke)
+	beego.Get("/v1/auth/user/roles/other", controllers.UserRolesCtl.GetOtherRoles)
+	beego.Post("/v1/auth/user/roles/auth", controllers.UserRolesCtl.Auth)
+	beego.Post("/v1/auth/user/roles/revoke", controllers.UserRolesCtl.Revoke)
 
 	//user_info
 	beego.Get("/v1/auth/user/get", controllers.UserCtl.Get)
@@ -96,19 +96,13 @@ func registerRouter() {
 	beego.Get("/v1/help/system/help", controllers.HelpCtl.Page)
 	///////////////////////////////////////////////////////////////////////////
 
-	beego.Get("/v1/auth/HandleLogsPage", controllers.HandleLogsCtl.GetHandleLogPage)
+	beego.Get("/v1/auth/HandleLogsPage", controllers.HandleLogsCtl.Page)
 	beego.Get("/v1/auth/domain/page", controllers.DomainCtl.Page)
-	beego.Get("/v1/auth/batch/page", controllers.AuthroityCtl.Page)
+	beego.Get("/v1/auth/batch/page", controllers.UserRolesCtl.Page)
 	beego.Get("/v1/auth/resource/org/page", controllers.OrgCtl.Page)
 	beego.Get("/v1/auth/resource/page", controllers.ResourceCtl.Page)
 	beego.Get("/v1/auth/user/page", controllers.UserCtl.Page)
 	beego.Get("/v1/auth/role/page", controllers.RoleCtl.Page)
 	beego.Get("/v1/auth/swagger/page", controllers.SwaggerCtl.Page)
-
-	//beego.Put("/v1/auth/passwd/modify", controllers.PasswdController.AdminModifyPasswd)
-	//beego.GetDetails("/v1/auth/roles/getted", controllers.AuthroityCtl.GetGettedRoles)
-	//beego.GetDetails("/v1/auth/roles/canGrant", controllers.AuthroityCtl.CanGrantRoles)
-	//beego.Put("/v1/auth/batch/grant", controllers.AuthroityCtl.BatchGrants)
-	//beego.GetDetails("/v1/auth/domain/share/unauth",controllers.DomainShareCtl.UnAuth)
 
 }

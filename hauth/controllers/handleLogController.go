@@ -20,15 +20,15 @@ import (
 	"os"
 )
 
-type HandleLogsController struct {
+type handleLogsController struct {
 	model models.HandleLogMode
 }
 
 
-var HandleLogsCtl = &HandleLogsController{}
+var HandleLogsCtl = &handleLogsController{}
 
-// GetHandleLogPage return views/hauth/handle_logs_page.tpl content
-// swagger:operation GET /v1/auth/HandleLogsPage StaticFiles domainShareControll
+// Page return views/hauth/handle_logs_page.tpl content
+// swagger:operation GET /v1/auth/HandleLogsPage StaticFiles handleLogsController
 //
 // Returns all domain information
 //
@@ -43,7 +43,7 @@ var HandleLogsCtl = &HandleLogsController{}
 // responses:
 //   '200':
 //     description: all domain information
-func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
+func (this *handleLogsController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -58,7 +58,29 @@ func (this *HandleLogsController) GetHandleLogPage(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-func (this HandleLogsController) Download(ctx *context.Context) {
+// swagger:operation GET /v1/auth/handle/logs/download handleLogsController handleLogsController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
+func (this handleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -132,7 +154,35 @@ func (this HandleLogsController) Download(ctx *context.Context) {
 	file.Write(ctx.ResponseWriter)
 }
 
-func (this HandleLogsController) GetHandleLogs(ctx *context.Context) {
+// swagger:operation GET /v1/auth/handle/logs handleLogsController handleLogsController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: offset
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: integer
+//   format:
+// - name: limit
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: integer
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
+func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -158,7 +208,42 @@ func (this HandleLogsController) GetHandleLogs(ctx *context.Context) {
 	hret.WriteBootstrapTableJson(ctx.ResponseWriter,total, rst)
 }
 
-func (this HandleLogsController) SerachLogs(ctx *context.Context) {
+
+// swagger:operation GET /v1/auth/handle/logs/search handleLogsController handleLogsController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: UserId
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: StartDate
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: EndDate
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
+func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {

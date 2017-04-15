@@ -1,6 +1,122 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "IndexPage",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/HomePage": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "IndexPage",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "LoginSystem"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "LoginSystem",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "username",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "password",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "LoginSystem"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "LoginSystem",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "username",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "password",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
     "/v1/auth/HandleLogsPage": {
       "get": {
         "description": "get special domain share information",
@@ -14,7 +130,7 @@
           "StaticFiles"
         ],
         "summary": "Returns all domain information",
-        "operationId": "domainShareControll",
+        "operationId": "handleLogsController",
         "responses": {
           "200": {
             "description": "all domain information"
@@ -24,26 +140,25 @@
     },
     "/v1/auth/batch/page": {
       "get": {
-        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
-        "consumes": [
-          "application/json",
-          "text/plain"
-        ],
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nIf the user is authorized to visit, the return authorization information page",
         "produces": [
           "application/json",
-          "text/plain"
-        ],
-        "schemes": [
-          "https"
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Lists Page filtered by some parameters.",
-        "operationId": "AuthorityController",
+        "summary": "If the request is successful,\nwill return authorization page information to the client",
+        "operationId": "domainShareControll",
         "responses": {
-          "200": {},
-          "404": {}
+          "200": {
+            "description": "request success."
+          },
+          "404": {
+            "description": "page not found."
+          }
         }
       }
     },
@@ -525,76 +640,1414 @@
         }
       }
     },
-    "/v1/auth/resource/org/get": {
+    "/v1/auth/handle/logs": {
       "get": {
-        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
-        "consumes": [
-          "application/json",
-          "application/x-protobuf"
-        ],
+        "description": "get special domain share information",
         "produces": [
           "application/json",
-          "application/octet-stream",
-          "application/x-protobuf"
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
-        "schemes": [
-          "https"
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "handleLogsController",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "domain code number",
+            "name": "offset",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "domain code number",
+            "name": "limit",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/handle/logs/download": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "handleLogsController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/handle/logs/search": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "handleLogsController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "UserId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "StartDate",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "EndDate",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/index/entry": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "HomePageMenus"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "HomePageMenus",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "TypeId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "Id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/main/menu": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "HomePageMenus"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "HomePageMenus",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "TypeId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "Id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/passwd/update": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "passwdController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "passwdController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "orapasswd",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "newpasswd",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "surepasswd",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/relation/domain/org": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
         "tags": [
           "orgController"
         ],
-        "summary": "Lists Page filtered by some parameters.",
-        "operationId": "Get",
-        "security": [
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
           {
-            "api_key": []
-          },
-          {
-            "oauth": [
-              "read",
-              "write"
-            ]
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
       }
     },
-    "/v1/auth/resource/role/get": {
-      "get": {
-        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
-        "consumes": [
-          "application/json",
-          "application/x-protobuf"
-        ],
+    "/v1/auth/resource/config/theme": {
+      "put": {
+        "description": "get special domain share information",
         "produces": [
           "application/json",
-          "application/octet-stream",
-          "application/x-protobuf"
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
-        "schemes": [
-          "https"
+        "tags": [
+          "themeController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "themeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/delete": {
+      "delete": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/delete": {
+      "delete": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/download": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/post": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/update": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/upload": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "domainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/post": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/query": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/queryTheme": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "themeController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "themeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/update": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/delete": {
+      "delete": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
         "tags": [
           "roleController"
         ],
-        "summary": "Lists Page filtered by some parameters.",
+        "summary": "Returns all domain information",
         "operationId": "roleController",
-        "security": [
+        "parameters": [
           {
-            "api_key": []
-          },
-          {
-            "oauth": [
-              "read",
-              "write"
-            ]
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
-          "200": {},
-          "404": {},
-          "422": {},
-          "default": {}
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/post": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/put": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/details": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "domainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleAndResourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleAndResourceController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/rights": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleAndResourceController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "roleAndResourceController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/swagger/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "swaggerController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/theme/update": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "themeController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "themeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/delete": {
+      "delete": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/modify/passwd": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/modify/status": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/page": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/post": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/put": {
+      "put": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/query": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/auth": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/get": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/other": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/revoke": {
+      "post": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/search": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/help/system/help": {
+      "get": {
+        "description": "get special domain share information",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "Returns all domain information",
+        "operationId": "helpController",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
         }
       }
     }

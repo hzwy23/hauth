@@ -9,24 +9,80 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
-const (
-	error_user_role_query   = "获取用户拥有的角色信息失败"
-	error_user_role_no_user = "请选择需要查询的用户账号信息"
-	error_user_role_un_auth = "查询未授权角色信息失败"
-)
 
 type userRolesController struct {
 	models *models.UserRolesModel
 }
 
-var UserRolesController = &userRolesController{
+var UserRolesCtl = &userRolesController{
 	models: new(models.UserRolesModel),
+}
+
+
+// swagger:operation GET /v1/auth/batch/page StaticFiles domainShareControll
+//
+// If the request is successful,
+// will return authorization page information to the client
+//
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
+//
+// If the user is authorized to visit, the return authorization information page
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: request success.
+//   '404':
+//     description: page not found.
+func (this *userRolesController) Page(ctx *context.Context) {
+	if !hrpc.BasicAuth(ctx) {
+		return
+	}
+
+	// According to the key get the value from the groupCache system
+	rst, err := hcache.GetStaticFile("AuthorityPage")
+	if err != nil {
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
+		return
+	}
+
+	ctx.ResponseWriter.Write(rst)
 }
 
 // 通过user_id用户账号，来查询这个用户拥有的角色信息
 // @(http request params)  user_id
+// swagger:operation GET /v1/auth/user/roles/get userRolesController userRolesController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	user_id := ctx.Request.FormValue("user_id")
@@ -34,7 +90,7 @@ func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	rst, err := this.models.GetRolesByUser(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_role_query, err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_query"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -42,19 +98,41 @@ func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 
 // 通过user_id账号，查询这个用户能够访问，但是又没有获取到的角色信息
 // @(http request param) user_id
+// swagger:operation GET /v1/auth/user/roles/other userRolesController userRolesController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	user_id := ctx.Request.FormValue("user_id")
 
 	if user_id == "" {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_role_no_user)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_no_user"))
 		return
 	}
 
 	rst, err := this.models.GetOtherRoles(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_user_role_un_auth, err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_un_auth"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -63,6 +141,28 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 // 给指定的用户授予角色
 // @(http request param) JSON
 // 这个函数接收一个指定的json字符串。
+// swagger:operation POST /v1/auth/user/roles/auth userRolesController userRolesController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userRolesController) Auth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -89,8 +189,37 @@ func (this userRolesController) Auth(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
-// 删除用户拥有的角色信息
-// @(http request param) user_id role_id
+// swagger:operation POST /v1/auth/user/roles/revoke userRolesController userRolesController
+//
+// Delete user has been granted the roles
+//
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
+//
+// If the user is authorized to visit, the system will delete the roles that client request specified.
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: user_id
+//   in: query
+//   description: Removed the role of the user
+//   required: true
+//   type: string
+//   format:
+// - name: role_id
+//   in: query
+//   description: The role of ready to delete
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userRolesController) Revoke(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -104,7 +233,7 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		http.Redirect(ctx.ResponseWriter, ctx.Request, "/", http.StatusMovedPermanently)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect())
 		return
 	}
 
@@ -117,4 +246,9 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 		return
 	}
+}
+
+func init() {
+	// Registered in the static page to the groupCache system
+	hcache.RegisterStaticFile("AuthorityPage", "./views/hauth/sys_batch_page.tpl")
 }

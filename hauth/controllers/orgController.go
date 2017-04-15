@@ -32,6 +32,22 @@ var OrgCtl = &orgController{
 	upload:make(chan int,1),
 }
 
+
+// swagger:operation GET /v1/auth/resource/org/page StaticFiles orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: all domain information
 func (orgController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -46,32 +62,28 @@ func (orgController) Page(ctx *context.Context) {
 }
 
 // 获取机构信息
-// Page return views/hauth/sys_batch_page.tpl content
-// swagger:route GET /v1/auth/resource/org/get orgController Get
+// swagger:operation GET /v1/auth/resource/org/get orgController orgController
 //
-// Lists Page filtered by some parameters.
+// Returns all domain information
 //
-// This will show all available pets by default.
-// You can get the pets that are out of stock
+// get special domain share information
 //
-//     Consumes:
-//     - application/json
-//     - application/x-protobuf
-//
-//     Produces:
-//     - application/json
-//     - application/octet-stream
-//     - application/x-protobuf
-//
-//     Schemes: https
-//
-//     Security:
-//       api_key:
-//       oauth: read, write
-//
-//     Responses:
-//   	'200':
-//     		description: pet response
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -105,6 +117,28 @@ func (this orgController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
+// swagger:operation DELETE /v1/auth/resource/org/delete orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -147,6 +181,28 @@ func (this orgController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "delete org info successfully.")
 }
 
+// swagger:operation PUT /v1/auth/resource/org/update orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -221,6 +277,29 @@ func (this orgController) Update(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
+
+// swagger:operation POST /v1/auth/resource/org/post orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -310,6 +389,28 @@ func (this orgController) orgTree(node []models.SysOrgInfo, id string, d int, re
 	}
 }
 
+// swagger:operation GET /v1/auth/relation/domain/org orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -333,6 +434,28 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
+// swagger:operation GET /v1/auth/resource/org/download orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -454,7 +577,28 @@ func (this orgController) Download(ctx *context.Context) {
 	file.Write(ctx.ResponseWriter)
 }
 
-
+// swagger:operation GET /v1/auth/resource/org/upload orgController orgController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this orgController)Upload(ctx *context.Context){
 	if len(this.upload) != 0 {
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "已经有正在导入的任务,请稍等")
@@ -524,7 +668,6 @@ func (this orgController)Upload(ctx *context.Context){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,err.Error())
 		return
 	}
-
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Success())
 }
 

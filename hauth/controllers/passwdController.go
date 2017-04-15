@@ -21,6 +21,40 @@ var PasswdController = &passwdController{
 	p: &models.PasswdModels{},
 }
 
+// swagger:operation POST /v1/auth/passwd/update passwdController passwdController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: orapasswd
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: newpasswd
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// - name: surepasswd
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this passwdController) PostModifyPasswd(ctx *context.Context) {
 
 	ctx.Request.ParseForm()

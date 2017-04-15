@@ -14,6 +14,28 @@ type swaggerController struct {
 
 var SwaggerCtl = &swaggerController{}
 
+// swagger:operation GET /v1/auth/swagger/page StaticFiles swaggerController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this swaggerController)Page(ctx *context.Context){
 	if !hrpc.BasicAuth(ctx) {
 		return

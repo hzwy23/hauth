@@ -38,6 +38,28 @@ var UserCtl = &userController{
 }
 
 // 获取用户管理子页面
+// swagger:operation GET /v1/auth/user/page StaticFiles userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (userController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
@@ -58,6 +80,28 @@ func (userController) Page(ctx *context.Context) {
 
 // 获取指定域中用户信息
 // @(http request param) domain_id
+// swagger:operation GET /v1/auth/user/get userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -96,6 +140,28 @@ func (this userController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
+// swagger:operation POST /v1/auth/user/post userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -191,6 +257,28 @@ func (this userController) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
+// swagger:operation DELETE /v1/auth/user/delete userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -216,6 +304,28 @@ func (this userController) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
+// swagger:operation GET /v1/auth/user/search userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) Search(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	var org_id = ctx.Request.FormValue("org_id")
@@ -242,6 +352,28 @@ func (this userController) Search(ctx *context.Context) {
 }
 
 // 修改用户信息
+// swagger:operation PUT /v1/auth/user/put userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -309,12 +441,29 @@ func (this userController) Put(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
 }
 
-// 导出用户信息
-func (this userController) Download(ctx *context.Context) {
-
-}
-
 // 修改用户密码
+// swagger:operation PUT /v1/auth/user/modify/passwd userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) ModifyPasswd(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -377,6 +526,28 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 }
 
 // 修改用户锁状态
+// swagger:operation PUT /v1/auth/user/modify/status userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) ModifyStatus(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -427,6 +598,28 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 }
 
 // 查询用户自身信息
+// swagger:operation GET /v1/auth/user/query userController userController
+//
+// Returns all domain information
+//
+// get special domain share information
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: domain_id
+//   in: query
+//   description: domain code number
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: all domain information
 func (this userController) GetUserDetails(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	cookie, _ := ctx.Request.Cookie("Authorization")
