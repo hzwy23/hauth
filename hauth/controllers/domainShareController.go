@@ -27,16 +27,13 @@ var DomainShareCtl = domainShareControll{
 	models: new(models.DomainShareModel),
 }
 
-// domain share configuration page
-// in this page, you can config share the domain to others.
-// first, get html content from groupcache,
-// if not fount , return 404
-// Page return views/hauth/domain_share_info.tpl content
 // swagger:operation GET /v1/auth/domain/share/page StaticFiles domainShareControll
 //
-// Returns all domain information
+// 返回共享域管理页面
 //
-// get special domain share information
+// 用户需要首先登录系统, 系统会对用户权限进行校验,校验成功,将会返回共享域管理页面.
+//
+// 用户需要在request中传入domain_id, 系统将会返回这个域的详细信息
 //
 // ---
 // produces:
@@ -54,9 +51,16 @@ var DomainShareCtl = domainShareControll{
 // responses:
 //   '200':
 //     description: all domain information
+//   '403':
+//     description: Insufficient permissions
+//   '419':
+//     description: get domain information failed
+//   '404':
+//     description: page not found
 func (domainShareControll) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
+	// Check the user permissions
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
@@ -82,12 +86,11 @@ func (domainShareControll) Page(ctx *context.Context) {
 	hz.Execute(ctx.ResponseWriter, rst)
 }
 
-// 查询域共享信息
 // swagger:operation GET /v1/auth/domain/share/get domainShareController getdomainShareControll
 //
-// Returns all domain information
+// 返回某个域的共享对象
 //
-// get special domain share information
+// 客户端在请求中传入域,系统将会查询这个域的共享独享列表.
 //
 // ---
 // produces:
@@ -105,6 +108,10 @@ func (domainShareControll) Page(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: all domain information
+//   '403':
+//     description: Insufficient permissions
+//   '419':
+//     description: get domain share information failed.
 func (this domainShareControll) Get(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx) {
 		return
@@ -139,12 +146,11 @@ func (this domainShareControll) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-// check unshare domains to the domain
 // swagger:operation GET /v1/auth/domain/share/unauth domainShareController getdomainShareControll
 //
-// Returns all domain information
+// 返回某个指定的域没有共享的对象
 //
-// get special domain share information
+// 根据传入的domain_id, 查询这个域还没有共享的域信息.
 //
 // ---
 // produces:
@@ -161,7 +167,7 @@ func (this domainShareControll) Get(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this domainShareControll) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
@@ -178,12 +184,11 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-// 新增域共享信息
 // swagger:operation POST /v1/auth/domain/share/post domainShareController postomainShareControll
 //
-// Returns all domain information
+// 新增共享域信息
 //
-// get special domain share information
+// 首先,系统会校验用户的权限信息,如果用户被授权,则进行字段校验,如果新增的域字段信息格式正确,将会写入数据库.
 //
 // ---
 // produces:
@@ -212,7 +217,7 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this domainShareControll) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -257,12 +262,11 @@ func (this domainShareControll) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
-// 删除域共享信息
-// swagger:operation DELETE /v1/auth/domain/share/delete domainShareController postomainShareControll
+// swagger:operation POST /v1/auth/domain/share/delete domainShareController postomainShareControll
 //
-// Returns all domain information
+// 删除某个域指定域的共享对象
 //
-// get special domain share information
+// 在用户请求时,需要传入用户账号
 //
 // ---
 // produces:
@@ -271,15 +275,21 @@ func (this domainShareControll) Post(ctx *context.Context) {
 // - text/xml
 // - text/html
 // parameters:
+// - name: _method
+//   in: body
+//   description: DELETE
+//   required: true
+//   type: string
+//   format:
 // - name: JSON
 //   in: query
-//   description: json formatter
+//   description: json格式信息,例如[{Uuid\:value}]
 //   required: true
 //   type: string
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this domainShareControll) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -311,12 +321,11 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
-// 更新域共享信息
 // swagger:operation PUT /v1/auth/domain/share/put domainShareController postomainShareControll
 //
-// Returns all domain information
+// 更新指定域的共享对象
 //
-// get special domain share information
+// 在请求更新时,需要传入域id,域的共享对象id,共享模式
 //
 // ---
 // produces:
@@ -345,7 +354,7 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this domainShareControll) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -391,12 +400,11 @@ func (this domainShareControll) Put(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
 }
 
-// 获取用户能够访问到的域
 // swagger:operation GET /v1/auth/domain/owner domainShareController postomainShareControll
 //
-// Returns all domain information
+// 获取用户能够访问到的域信息.
 //
-// get special domain share information
+// 当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.
 //
 // ---
 // produces:
@@ -406,7 +414,11 @@ func (this domainShareControll) Put(ctx *context.Context) {
 // - text/html
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
+//   '403':
+//     description: Insufficient permissions
+//   '421':
+//     description: get domain that user is able to access failed.
 func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -428,13 +440,11 @@ func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-
-// 获取用户自身能够访问到的域信息
 // swagger:operation GET /v1/auth/domain/self/owner domainShareController postomainShareControll
 //
-// Returns all domain information
+// 获取用户能够访问到的域信息.
 //
-// get special domain share information
+// 当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.
 //
 // ---
 // produces:
@@ -444,7 +454,7 @@ func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 // - text/html
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this *domainShareControll) GetDomainOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 

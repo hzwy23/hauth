@@ -119,7 +119,7 @@
     },
     "/v1/auth/HandleLogsPage": {
       "get": {
-        "description": "get special domain share information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
           "application/xml",
@@ -129,11 +129,14 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "Returns user handle logs information page",
         "operationId": "handleLogsController",
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "404": {
+            "description": "page not found"
           }
         }
       }
@@ -163,8 +166,8 @@
       }
     },
     "/v1/auth/domain/delete": {
-      "delete": {
-        "description": "Returns all domain information",
+      "post": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
           "application/xml",
@@ -174,11 +177,19 @@
         "tags": [
           "domainController"
         ],
+        "summary": "Delete domain information.",
         "operationId": "deleteDomainInfo",
         "parameters": [
           {
             "type": "string",
-            "description": "domain info, for example is ,[{domain_id}]",
+            "description": "DELETE",
+            "name": "_method",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain info, for example is ,[{Project_id\\:value}]",
             "name": "JSON",
             "in": "query",
             "required": true
@@ -193,7 +204,7 @@
     },
     "/v1/auth/domain/get": {
       "get": {
-        "description": "Returns all domain information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nYou must pass in two arguments, first is offset ,second is limit.",
         "produces": [
           "application/json",
           "application/xml",
@@ -203,6 +214,7 @@
         "tags": [
           "domainController"
         ],
+        "summary": "If the request is successful, will return domain information that the user be able to access.",
         "operationId": "getDomainInfo",
         "parameters": [
           {
@@ -210,26 +222,34 @@
             "format": "int32",
             "description": "start row number",
             "name": "offset",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
             "format": "int32",
             "description": "maximum number of results to return",
             "name": "limit",
-            "in": "query"
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "get domain information failed."
           }
         }
       }
     },
     "/v1/auth/domain/id": {
       "get": {
-        "description": "Returns all domain information",
+        "description": "查询用户登录信息, 根据用户信息,返回用户所属域.",
         "produces": [
           "application/json",
           "application/xml",
@@ -239,17 +259,21 @@
         "tags": [
           "domainController"
         ],
+        "summary": "返回用户所属域ID号",
         "operationId": "getDomainId",
         "responses": {
           "200": {
             "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
           }
         }
       }
     },
     "/v1/auth/domain/owner": {
       "get": {
-        "description": "get special domain share information",
+        "description": "当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.",
         "produces": [
           "application/json",
           "application/xml",
@@ -259,43 +283,51 @@
         "tags": [
           "domainShareController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "获取用户能够访问到的域信息.",
         "operationId": "postomainShareControll",
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "get domain that user is able to access failed."
           }
         }
       }
     },
     "/v1/auth/domain/page": {
       "get": {
-        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
-        "consumes": [
-          "application/json",
-          "text/plain"
-        ],
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
-          "text/plain"
-        ],
-        "schemes": [
-          "https"
+          "application/xml",
+          "text/xml",
+          "text/html"
         ],
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Lists Page filtered by some parameters.",
+        "summary": "If the request is successful, will be return domain information page,",
         "operationId": "AuthorityController",
         "responses": {
-          "200": {},
-          "404": {}
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect or not access."
+          },
+          "404": {
+            "description": "page not found"
+          }
         }
       }
     },
     "/v1/auth/domain/post": {
       "post": {
-        "description": "Returns all domain information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
           "application/xml",
@@ -305,6 +337,7 @@
         "tags": [
           "domainController"
         ],
+        "summary": "API support Add domain information",
         "operationId": "postDomainInfo",
         "parameters": [
           {
@@ -339,7 +372,7 @@
     },
     "/v1/auth/domain/row/details": {
       "get": {
-        "description": "Returns all domain information",
+        "description": "根据客户端请求参数domain_id,返回这个域的详细信息.",
         "produces": [
           "application/json",
           "application/xml",
@@ -349,7 +382,262 @@
         "tags": [
           "domainController"
         ],
+        "summary": "返回指定域的详细信息.",
         "operationId": "getDomainDetailsInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "419": {
+            "description": "get domain detailes failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/self/owner": {
+      "get": {
+        "description": "当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "获取用户能够访问到的域信息.",
+        "operationId": "postomainShareControll",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/delete": {
+      "post": {
+        "description": "在用户请求时,需要传入用户账号",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "删除某个域指定域的共享对象",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "DELETE",
+            "name": "_method",
+            "in": "body",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "json格式信息,例如[{Uuid\\:value}]",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/get": {
+      "get": {
+        "description": "客户端在请求中传入域,系统将会查询这个域的共享独享列表.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "返回某个域的共享对象",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "419": {
+            "description": "get domain share information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/page": {
+      "get": {
+        "description": "用户需要首先登录系统, 系统会对用户权限进行校验,校验成功,将会返回共享域管理页面.\n\n用户需要在request中传入domain_id, 系统将会返回这个域的详细信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "返回共享域管理页面",
+        "operationId": "domainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "404": {
+            "description": "page not found"
+          },
+          "419": {
+            "description": "get domain information failed"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/post": {
+      "post": {
+        "description": "首先,系统会校验用户的权限信息,如果用户被授权,则进行字段校验,如果新增的域字段信息格式正确,将会写入数据库.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "新增共享域信息",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/put": {
+      "put": {
+        "description": "在请求更新时,需要传入域id,域的共享对象id,共享模式",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "更新指定域的共享对象",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/unauth": {
+      "get": {
+        "description": "根据传入的domain_id, 查询这个域还没有共享的域信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "返回某个指定的域没有共享的对象",
+        "operationId": "getdomainShareControll",
         "parameters": [
           {
             "type": "string",
@@ -366,235 +654,6 @@
         }
       }
     },
-    "/v1/auth/domain/self/owner": {
-      "get": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "postomainShareControll",
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/delete": {
-      "delete": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "postomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "json formatter",
-            "name": "JSON",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/get": {
-      "get": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "getdomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/page": {
-      "get": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "StaticFiles"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "domainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/post": {
-      "post": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "postomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "target_domain_id",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "auth_level",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/put": {
-      "put": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "postomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "target_domain_id",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "auth_level",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
-    "/v1/auth/domain/share/unauth": {
-      "get": {
-        "description": "get special domain share information",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "tags": [
-          "domainShareController"
-        ],
-        "summary": "Returns all domain information",
-        "operationId": "getdomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "all domain information"
-          }
-        }
-      }
-    },
     "/v1/auth/domain/update": {
       "put": {
         "description": "update domain info , you neet input three arguments, domainId,domainDesc,domainStatus. column domain_id can't update.",
@@ -607,7 +666,7 @@
         "tags": [
           "domainController"
         ],
-        "summary": "API Describe: update domain describe, domain status",
+        "summary": "update domain describe, domain status",
         "operationId": "putDomainInfo",
         "parameters": [
           {
@@ -636,13 +695,19 @@
         "responses": {
           "200": {
             "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "Update domain information failed."
           }
         }
       }
     },
     "/v1/auth/handle/logs": {
       "get": {
-        "description": "get special domain share information",
+        "description": "API只能查询用户所属域的操作日志信息, 数据处理中,采用了分页查询,所以,必须传入2个参数,分别是:\n\noffset: 起始行数\n\nlimit : 最大行数",
         "produces": [
           "application/json",
           "application/xml",
@@ -652,19 +717,19 @@
         "tags": [
           "handleLogsController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询用户所属域中的操作日志信息",
         "operationId": "handleLogsController",
         "parameters": [
           {
             "type": "integer",
-            "description": "domain code number",
+            "description": "起始行数,必须是数字.",
             "name": "offset",
             "in": "query",
             "required": true
           },
           {
             "type": "integer",
-            "description": "domain code number",
+            "description": "最大行数,必须是数字.",
             "name": "limit",
             "in": "query",
             "required": true
@@ -672,44 +737,48 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
           }
         }
       }
     },
     "/v1/auth/handle/logs/download": {
       "get": {
-        "description": "get special domain share information",
+        "description": "API将会返回用户所属域中的所有操作记录信息.所以,在使用这个API时,必须登录系统.",
         "produces": [
           "application/json",
           "application/xml",
           "text/xml",
-          "text/html"
+          "text/html",
+          "application/vnd.ms-excel"
         ],
         "tags": [
           "handleLogsController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "下载日志记录,返回excel格式数据",
         "operationId": "handleLogsController",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
           }
         }
       }
     },
     "/v1/auth/handle/logs/search": {
       "get": {
-        "description": "get special domain share information",
+        "description": "API中会校验用户的权限,如果用户没有登录,将返回权限不足的提示信息\n\n这个API需要提供3个参数,分别是:\n\nUserId    : 用户账号\n\nStartDate : 日志操作开始日期\n\nEndDate   : 日志操作结束日期",
         "produces": [
           "application/json",
           "application/xml",
@@ -719,7 +788,7 @@
         "tags": [
           "handleLogsController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "返回满足用户搜索条件的日志信息",
         "operationId": "handleLogsController",
         "parameters": [
           {
@@ -746,7 +815,13 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
           }
         }
       }

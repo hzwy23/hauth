@@ -27,12 +27,12 @@ type handleLogsController struct {
 
 var HandleLogsCtl = &handleLogsController{}
 
-// Page return views/hauth/handle_logs_page.tpl content
 // swagger:operation GET /v1/auth/HandleLogsPage StaticFiles handleLogsController
 //
-// Returns all domain information
+// Returns user handle logs information page
 //
-// get special domain share information
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
 //
 // ---
 // produces:
@@ -42,7 +42,9 @@ var HandleLogsCtl = &handleLogsController{}
 // - text/html
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
+//   '404':
+//     description: page not found
 func (this *handleLogsController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -60,9 +62,9 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/handle/logs/download handleLogsController handleLogsController
 //
-// Returns all domain information
+// 下载日志记录,返回excel格式数据
 //
-// get special domain share information
+// API将会返回用户所属域中的所有操作记录信息.所以,在使用这个API时,必须登录系统.
 //
 // ---
 // produces:
@@ -70,16 +72,14 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 // - application/xml
 // - text/xml
 // - text/html
-// parameters:
-// - name: domain_id
-//   in: query
-//   description: domain code number
-//   required: true
-//   type: string
-//   format:
+// - application/vnd.ms-excel
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
+//   '403':
+//     description: Insufficient permissions
+//   '421':
+//     description: query logs information failed.
 func (this handleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
@@ -106,12 +106,12 @@ func (this handleLogsController) Download(ctx *context.Context) {
 	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"upload","template","hauthHandleLogsTemplate.xlsx"))
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,422,"创建excel失败.",err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"创建excel失败.",err)
 		return
 	}
 	sheet, ok := file.Sheet["handle_logs"]
 	if !ok {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,422,"获取sheet页失败,没有找打sheet名称为 handle_logs.",)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"获取sheet页失败,没有找打sheet名称为 handle_logs.",)
 		return
 	}
 
@@ -156,10 +156,13 @@ func (this handleLogsController) Download(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/handle/logs handleLogsController handleLogsController
 //
-// Returns all domain information
+// 查询用户所属域中的操作日志信息
 //
-// get special domain share information
+// API只能查询用户所属域的操作日志信息, 数据处理中,采用了分页查询,所以,必须传入2个参数,分别是:
 //
+// offset: 起始行数
+//
+// limit : 最大行数
 // ---
 // produces:
 // - application/json
@@ -169,40 +172,48 @@ func (this handleLogsController) Download(ctx *context.Context) {
 // parameters:
 // - name: offset
 //   in: query
-//   description: domain code number
+//   description: 起始行数,必须是数字.
 //   required: true
 //   type: integer
 //   format:
 // - name: limit
 //   in: query
-//   description: domain code number
+//   description: 最大行数,必须是数字.
 //   required: true
 //   type: integer
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//      description: success
+//   '403':
+//      description: Insufficient permissions
+//   '421':
+//      description: query logs information failed.
 func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
+	// Check the user permissions
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
+	// Get form data from client request.
 	offset := ctx.Request.FormValue("offset")
 	limit := ctx.Request.FormValue("limit")
+
+	// Get user connection information from cookie.
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect())
 		return
 	}
 
 	rst,total,err := this.model.Get(jclaim.Domain_id,offset,limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"查询日志信息失败.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("error_handle_logs_query_failed"))
 		return
 	}
 	hret.WriteBootstrapTableJson(ctx.ResponseWriter,total, rst)
@@ -211,10 +222,17 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/handle/logs/search handleLogsController handleLogsController
 //
-// Returns all domain information
+// 返回满足用户搜索条件的日志信息
 //
-// get special domain share information
+// API中会校验用户的权限,如果用户没有登录,将返回权限不足的提示信息
 //
+// 这个API需要提供3个参数,分别是:
+//
+// UserId    : 用户账号
+//
+// StartDate : 日志操作开始日期
+//
+// EndDate   : 日志操作结束日期
 // ---
 // produces:
 // - application/json
@@ -242,30 +260,37 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
+//   '403':
+//     description: Insufficient permissions
+//   '421':
+//     description: query logs information failed.
 func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
+	// Check the user permissions
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
+	// Get form data from request.
 	userid := ctx.Request.FormValue("UserId")
 	start := ctx.Request.FormValue("StartDate")
 	end := ctx.Request.FormValue("EndDate")
 
+	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
 	rst,err := this.model.Search(jclaim.Domain_id,userid,start,end)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"搜索日志失败.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("error_handle_logs_query_failed"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)

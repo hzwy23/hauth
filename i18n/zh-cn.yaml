@@ -88,6 +88,9 @@
 - id: error_user_role_un_auth
   translation: "查询未授权角色信息失败"
 
+- id: error_handle_logs_query_failed
+  translation: "搜索日志失败"
 
 - id: ca_add_direction_id
   translation: "新增费用方向信息失败"
+
