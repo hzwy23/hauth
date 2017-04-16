@@ -21,6 +21,10 @@ func Disconnect()string{
 	return Get("as_of_date_disconnect")
 }
 
+func PageNotFonud() string{
+	return Get("page_not_found")
+}
+
 // 初始化i18n文件
 func init(){
 	HOME:=os.Getenv("HBIGDATA_HOME")

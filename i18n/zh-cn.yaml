@@ -3,6 +3,9 @@
 - id: as_of_date_no_auth
   translation: "您没有被授权使用这个功能"
 
+- id: page_not_found
+  translation: "您访问的页面不存在"
+
 - id: as_of_date_domain_permission_denied
   translation: "您没有权限访问这个域"
 

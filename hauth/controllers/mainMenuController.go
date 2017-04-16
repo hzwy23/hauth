@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -14,11 +12,69 @@ import (
 
 var homePageMenusModel = new(models.HomePageMenusModel)
 
+// swagger:operation GET /v1/auth/index/entry StaticFiles SubSystemEntry
+//
+// According to the ID number, return subsystem information page
+//
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: Id
+//   in: query
+//   description: subsystem id number.
+//   required: true
+//   type: string
+//   format:
+// responses:
+//   '200':
+//     description: success
+//   '403':
+//     description: disconnect, please login.
+//   '404':
+//     description: page not found
+func SubSystemEntry(ctx *context.Context) {
+	defer hret.HttpPanic()
+	ctx.Request.ParseForm()
+	id := ctx.Request.FormValue("Id")
+
+	// get user connection information from cookie.
+	cookie, _ := ctx.Request.Cookie("Authorization")
+	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	if err != nil {
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		return
+	}
+
+	// get url of the id number.
+	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
+
+	if !hcache.FileIsExist(id) {
+		hcache.RegisterStaticFile(id, url)
+	}
+
+	tpl,err := hcache.GetStaticFile(id)
+	if err != nil {
+		logs.Error(err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,404,i18n.PageNotFonud())
+		return
+	}
+	ctx.ResponseWriter.Write(tpl)
+}
+
 // swagger:operation GET /v1/auth/main/menu HomePageMenus HomePageMenus
 //
-// Returns all domain information
+// If the request is successful, will return the user to be able to access the menu information
 //
-// get special domain share information
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
 //
 // ---
 // produces:
@@ -29,24 +85,29 @@ var homePageMenusModel = new(models.HomePageMenusModel)
 // parameters:
 // - name: TypeId
 //   in: query
-//   description: domain code number
+//   description: The menu type, 1 means home page ,2 means subsystem page
 //   required: true
 //   type: string
 //   format:
 // - name: Id
 //   in: query
-//   description: domain code number
+//   description: This up menu id , the response will return the lower menu information of the up menu id
 //   required: true
 //   type: string
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
+//   '403':
+//     description: disconnect
+//   '421':
+//     description: get menu information failed.
 func HomePageMenus(ctx *context.Context) {
 	defer hret.HttpPanic()
 	typeId := ctx.Request.FormValue("TypeId")
 	Id := ctx.Request.FormValue("Id")
 
+	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
@@ -58,61 +119,8 @@ func HomePageMenus(ctx *context.Context) {
 	ojs, err := homePageMenusModel.Get(Id, typeId, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "please contact sysadmin.query main menu failed.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "please contact sysadmin.query main menu failed.")
 		return
 	}
 	ctx.ResponseWriter.Write(ojs)
-}
-
-// swagger:operation GET /v1/auth/index/entry HomePageMenus HomePageMenus
-//
-// Returns all domain information
-//
-// get special domain share information
-//
-// ---
-// produces:
-// - application/json
-// - application/xml
-// - text/xml
-// - text/html
-// parameters:
-// - name: TypeId
-//   in: query
-//   description: domain code number
-//   required: true
-//   type: string
-//   format:
-// - name: Id
-//   in: query
-//   description: domain code number
-//   required: true
-//   type: string
-//   format:
-// responses:
-//   '200':
-//     description: all domain information
-func SubSystemEntry(ctx *context.Context) {
-	defer hret.HttpPanic()
-	ctx.Request.ParseForm()
-	id := ctx.Request.FormValue("Id")
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
-		return
-	}
-
-	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
-	if !hcache.FileIsExist(id) {
-		hcache.RegisterStaticFile(id, url)
-	}
-	tpl,err := hcache.GetStaticFile(id)
-	if err != nil {
-		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,404,"应用不存在,或者没有注册到平台上.")
-		return
-	}
-	ctx.ResponseWriter.Write(tpl)
 }

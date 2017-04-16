@@ -69,20 +69,23 @@
 <script>
 window.onload = function() {
   // Build a system
-  const ui = SwaggerUIBundle({
-    url: "/static/swagger/swagger.json",
-    dom_id: '#swagger-ui',
-    presets: [
-      SwaggerUIBundle.presets.apis,
-      SwaggerUIStandalonePreset
-    ],
-    plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
-    ],
-    layout: "StandaloneLayout"
-  })
-  console.log(ui)
-  window.ui = ui
+    const ui = SwaggerUIBundle({
+        url: "/static/swagger/swagger.json",
+        dom_id: '#swagger-ui',
+        presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+        ],
+//        plugins: [
+//            SwaggerUIBundle.plugins.DownloadUrl
+//        ],
+        layout: "StandaloneLayout"
+    });
+    window.ui = ui;
+    var explore = document.getElementsByClassName("download-url-wrapper")
+    if (explore.length == 1){
+        explore[0].style.visibility="hidden"
+    }
 }
 </script>
 </body>

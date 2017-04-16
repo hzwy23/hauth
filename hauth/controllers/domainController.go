@@ -21,30 +21,26 @@ type domainController struct {
 
 var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 
-// 获取domain_info配置页面
-// first, get html content from groupcache,
-// if not fount , return 404
-// Page return views/hauth/domain_info.tpl content
-// swagger:route GET /v1/auth/domain/page StaticFiles AuthorityController
+// swagger:operation GET /v1/auth/domain/page StaticFiles AuthorityController
 //
-// Lists Page filtered by some parameters.
+// If the request is successful, will be return domain information page,
 //
-// This will show all available pets by default.
-// You can get the pets that are out of stock
+// The system will check user permissions.
+// So,you must first login system,and then you can send the request.
 //
-//     Consumes:
-//     - application/json
-//     - text/plain
-//
-//     Produces:
-//     - application/json
-//     - text/plain
-//
-//     Schemes: https
-//
-//     Responses:
-//       200:
-//       404:
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// responses:
+//   '200':
+//     description: success
+//   '403':
+//     description: disconnect or not access.
+//   '404':
+//     description: page not found
 func (this *domainController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 

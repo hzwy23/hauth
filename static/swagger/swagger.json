@@ -753,7 +753,7 @@
     },
     "/v1/auth/index/entry": {
       "get": {
-        "description": "get special domain share information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
           "application/xml",
@@ -761,21 +761,14 @@
           "text/html"
         ],
         "tags": [
-          "HomePageMenus"
+          "StaticFiles"
         ],
-        "summary": "Returns all domain information",
-        "operationId": "HomePageMenus",
+        "summary": "According to the ID number, return subsystem information page",
+        "operationId": "SubSystemEntry",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "TypeId",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "domain code number",
+            "description": "subsystem id number.",
             "name": "Id",
             "in": "query",
             "required": true
@@ -783,14 +776,20 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect, please login."
+          },
+          "404": {
+            "description": "page not found"
           }
         }
       }
     },
     "/v1/auth/main/menu": {
       "get": {
-        "description": "get special domain share information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
         "produces": [
           "application/json",
           "application/xml",
@@ -800,19 +799,19 @@
         "tags": [
           "HomePageMenus"
         ],
-        "summary": "Returns all domain information",
+        "summary": "If the request is successful, will return the user to be able to access the menu information",
         "operationId": "HomePageMenus",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
+            "description": "The menu type, 1 means home page ,2 means subsystem page",
             "name": "TypeId",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "domain code number",
+            "description": "This up menu id , the response will return the lower menu information of the up menu id",
             "name": "Id",
             "in": "query",
             "required": true
@@ -820,7 +819,13 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect"
+          },
+          "421": {
+            "description": "get menu information failed."
           }
         }
       }
@@ -1972,7 +1977,7 @@
     },
     "/v1/auth/user/roles/revoke": {
       "post": {
-        "description": "get special domain share information",
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nIf the user is authorized to visit, the system will delete the roles that client request specified.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1982,13 +1987,20 @@
         "tags": [
           "userRolesController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "Delete user has been granted the roles",
         "operationId": "userRolesController",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
+            "description": "Removed the role of the user",
+            "name": "user_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The role of ready to delete",
+            "name": "role_id",
             "in": "query",
             "required": true
           }
