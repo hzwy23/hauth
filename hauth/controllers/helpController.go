@@ -15,9 +15,9 @@ var HelpCtl = &helpController{}
 
 // swagger:operation GET /v1/help/system/help StaticFiles helpController
 //
-// Returns all domain information
+// 系统帮助页面
 //
-// get special domain share information
+// 将会返回系统帮助首页,其中包含了系统管理操作文档,API文档
 //
 // ---
 // produces:

@@ -8,9 +8,9 @@ import (
 
 // swagger:operation GET / StaticFiles IndexPage
 //
-// Returns all domain information
+// 系统首页页面
 //
-// get special domain share information
+// API将会返回系统首页页面给客户端
 //
 // ---
 // produces:

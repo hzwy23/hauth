@@ -3,7 +3,7 @@
   "paths": {
     "/": {
       "get": {
-        "description": "get special domain share information",
+        "description": "API将会返回系统首页页面给客户端",
         "produces": [
           "application/json",
           "application/xml",
@@ -13,7 +13,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "系统首页页面",
         "operationId": "IndexPage",
         "responses": {
           "200": {
@@ -24,7 +24,7 @@
     },
     "/HomePage": {
       "get": {
-        "description": "get special domain share information",
+        "description": "用户登录成功后,将会根据用户主题,返回用户的主菜单页面.",
         "produces": [
           "application/json",
           "application/xml",
@@ -34,7 +34,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "返回用户登录后的主菜单页面",
         "operationId": "IndexPage",
         "responses": {
           "200": {
@@ -45,7 +45,7 @@
     },
     "/login": {
       "post": {
-        "description": "get special domain share information",
+        "description": "客户端发起登录请求到这个API,系统对用户和密码进行校验,成功返回true,如果用户和密码对应不上,返回false",
         "produces": [
           "application/json",
           "application/xml",
@@ -55,7 +55,7 @@
         "tags": [
           "LoginSystem"
         ],
-        "summary": "Returns all domain information",
+        "summary": "系统登录处理服务",
         "operationId": "LoginSystem",
         "parameters": [
           {
@@ -82,7 +82,7 @@
     },
     "/logout": {
       "post": {
-        "description": "get special domain share information",
+        "description": "API处理用户退出系统请求,退出系统后,系统将修改客户端的cookie信息,使其连接过时.",
         "produces": [
           "application/json",
           "application/xml",
@@ -92,7 +92,7 @@
         "tags": [
           "LoginSystem"
         ],
-        "summary": "Returns all domain information",
+        "summary": "安全退出系统",
         "operationId": "LoginSystem",
         "parameters": [
           {
@@ -129,7 +129,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns user handle logs information page",
+        "summary": "操作日志页面",
         "operationId": "handleLogsController",
         "responses": {
           "200": {
@@ -337,7 +337,7 @@
         "tags": [
           "domainController"
         ],
-        "summary": "API support Add domain information",
+        "summary": "Add domain information",
         "operationId": "postDomainInfo",
         "parameters": [
           {
@@ -510,7 +510,7 @@
           "StaticFiles"
         ],
         "summary": "返回共享域管理页面",
-        "operationId": "domainShareControll",
+        "operationId": "DomainShareController",
         "parameters": [
           {
             "type": "string",
@@ -666,7 +666,7 @@
         "tags": [
           "domainController"
         ],
-        "summary": "update domain describe, domain status",
+        "summary": "update domain describe and domain status",
         "operationId": "putDomainInfo",
         "parameters": [
           {
@@ -700,7 +700,7 @@
             "description": "Insufficient permissions"
           },
           "421": {
-            "description": "Update domain information failed."
+            "description": "Post domain information failed."
           }
         }
       }
@@ -907,7 +907,7 @@
     },
     "/v1/auth/passwd/update": {
       "post": {
-        "description": "get special domain share information",
+        "description": "API提供了修改用户自己密码的服务,这个服务,不能删除其他用户的密码",
         "produces": [
           "application/json",
           "application/xml",
@@ -917,7 +917,7 @@
         "tags": [
           "passwdController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "修改用户自己的密码信息",
         "operationId": "passwdController",
         "parameters": [
           {
@@ -951,7 +951,7 @@
     },
     "/v1/auth/relation/domain/org": {
       "get": {
-        "description": "get special domain share information",
+        "description": "根据客户端请求时指定的机构id,获取这个id所有的下属机构信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -961,7 +961,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "返回某个机构的所有下级机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -970,18 +970,25 @@
             "name": "domain_id",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "org_unit_id",
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/config/theme": {
       "put": {
-        "description": "get special domain share information",
+        "description": "更新菜单资源的主题信息,如果这个资源没有主题信息,则新增,否则更新.",
         "produces": [
           "application/json",
           "application/xml",
@@ -991,27 +998,18 @@
         "tags": [
           "themeController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "更新某个资源的主题信息",
         "operationId": "themeController",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/delete": {
-      "delete": {
-        "description": "get special domain share information",
+      "post": {
+        "description": "删除系统中的菜单资源信息,系统会对用户的权限进行校验,只有校验通过,才能删除菜单资源信息.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1021,27 +1019,27 @@
         "tags": [
           "resourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "删除菜单信息",
         "operationId": "getdomainShareControll",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
+            "description": "resource code number",
+            "name": "res_id",
             "in": "query",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "系统会对用户权限进行校验,校验通过,将会返回菜单资源信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1051,7 +1049,7 @@
         "tags": [
           "resourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "返回系统中所有的菜单资源信息",
         "operationId": "getdomainShareControll",
         "parameters": [
           {
@@ -1064,14 +1062,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/delete": {
-      "delete": {
-        "description": "get special domain share information",
+      "post": {
+        "description": "首先系统会校验用户的权限,如果用户拥有删除机构的权限,系统将会根据用户请求的参数,删除响应的机构信息.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1081,7 +1079,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "删除机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1090,18 +1088,25 @@
             "name": "domain_id",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "json format",
+            "name": "JSON",
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/download": {
       "get": {
-        "description": "get special domain share information",
+        "description": "下载某个指定域的所有机构信息. 只能下载用户有权限访问的域中的机构",
         "produces": [
           "application/json",
           "application/xml",
@@ -1111,7 +1116,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "下载机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1124,14 +1129,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "API将会返回指定域中的机构信息,用户在请求这个API时,需要传入domain_id这个字段值",
         "produces": [
           "application/json",
           "application/xml",
@@ -1141,7 +1146,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1154,14 +1159,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/page": {
       "get": {
-        "description": "get special domain share information",
+        "description": "首先系统会检查用户的连接信息,如果用户被授权访问这个页面,将会返回机构配置管理页面内容,否则返回响应的错误住状态.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1171,18 +1176,18 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "机构信息配置管理页面",
         "operationId": "orgController",
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/post": {
       "post": {
-        "description": "get special domain share information",
+        "description": "想指定域中新增机构信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1192,7 +1197,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "新增机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1201,18 +1206,39 @@
             "name": "domain_id",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "Org_unit_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "org desc",
+            "name": "Org_unit_desc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "up org id",
+            "name": "Up_org_id",
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/update": {
       "put": {
-        "description": "get special domain share information",
+        "description": "系统将会更具用户传入的参数,修改指定机构信息.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1222,7 +1248,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "更新机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1235,14 +1261,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/org/upload": {
       "get": {
-        "description": "get special domain share information",
+        "description": "根据客户端导入的excel格式的数据,将机构信息写入到数据库中.\n\n这个上传过程是:增量删除, 一旦出现重复的机构,将会中断上传过程,且数据库会立刻回滚.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1252,7 +1278,7 @@
         "tags": [
           "orgController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "上传机构信息",
         "operationId": "orgController",
         "parameters": [
           {
@@ -1265,14 +1291,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/page": {
       "get": {
-        "description": "get special domain share information",
+        "description": "系统会对请求用户权限进行校验,校验通过,将会返回菜单管理配置页面.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1282,17 +1308,8 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "返回菜单资源管理页面",
         "operationId": "domainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "description": "all domain information"
@@ -1302,7 +1319,7 @@
     },
     "/v1/auth/resource/post": {
       "post": {
-        "description": "get special domain share information",
+        "description": "向系统中新增菜单资源信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1312,27 +1329,18 @@
         "tags": [
           "resourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "新增菜单信息",
         "operationId": "getdomainShareControll",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/query": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询某个指定资源的详细信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1342,27 +1350,27 @@
         "tags": [
           "resourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询指定菜单的详细信息",
         "operationId": "getdomainShareControll",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
+            "description": "resource code number",
+            "name": "res_id",
             "in": "query",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/queryTheme": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询某个菜单资源,某个主题的详细信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1372,7 +1380,7 @@
         "tags": [
           "themeController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询主题信息",
         "operationId": "themeController",
         "parameters": [
           {
@@ -1385,14 +1393,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/resource/update": {
       "put": {
-        "description": "get special domain share information",
+        "description": "API只支持修改菜单的名称",
         "produces": [
           "application/json",
           "application/xml",
@@ -1402,27 +1410,34 @@
         "tags": [
           "resourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "更新菜单信息",
         "operationId": "getdomainShareControll",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
+            "description": "resource code number",
+            "name": "res_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "resource describe",
+            "name": "res_name",
             "in": "query",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/delete": {
-      "delete": {
-        "description": "get special domain share information",
+      "post": {
+        "description": "删除某个指定域中的角色信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1432,7 +1447,7 @@
         "tags": [
           "roleController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "删除角色信息",
         "operationId": "roleController",
         "parameters": [
           {
@@ -1445,14 +1460,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询指定域中的角色信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1462,7 +1477,7 @@
         "tags": [
           "roleController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询角色信息",
         "operationId": "roleController",
         "parameters": [
           {
@@ -1475,14 +1490,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/page": {
       "get": {
-        "description": "get special domain share information",
+        "description": "如果用户被授权访问角色管理页面,则系统返回角色管理页面内容,否则返回404错误",
         "produces": [
           "application/json",
           "application/xml",
@@ -1492,7 +1507,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "角色管理页面",
         "operationId": "roleController",
         "parameters": [
           {
@@ -1505,14 +1520,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/post": {
       "post": {
-        "description": "get special domain share information",
+        "description": "在某个指定的域中,新增角色信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1522,7 +1537,7 @@
         "tags": [
           "roleController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "新增角色信息",
         "operationId": "roleController",
         "parameters": [
           {
@@ -1535,14 +1550,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/put": {
       "put": {
-        "description": "get special domain share information",
+        "description": "更新某个域中的角色信息,角色编码不能更新",
         "produces": [
           "application/json",
           "application/xml",
@@ -1552,7 +1567,7 @@
         "tags": [
           "roleController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "更新角色信息",
         "operationId": "roleController",
         "parameters": [
           {
@@ -1565,14 +1580,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/resource/details": {
       "get": {
-        "description": "get special domain share information",
+        "description": "如果用户被授权,将会返回指定角色资源管理页面.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1582,7 +1597,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "角色菜单资源配置管理页面",
         "operationId": "domainShareControll",
         "parameters": [
           {
@@ -1595,14 +1610,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/resource/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "type_id = 0 表示查询角色拥有的菜单资源, type_id = 1 表示查询角色没有获取的菜单资源",
         "produces": [
           "application/json",
           "application/xml",
@@ -1612,7 +1627,7 @@
         "tags": [
           "roleAndResourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询角色指定的拥有的菜单资源和没有拥有的菜单资源",
         "operationId": "roleAndResourceController",
         "parameters": [
           {
@@ -1625,14 +1640,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/role/resource/rights": {
       "post": {
-        "description": "get special domain share information",
+        "description": "type_id = 0 表示移除某个指定角色的菜单资源.\n\ntype_id = 1 表示给某个指定角色增加菜单资源.",
         "produces": [
           "application/json",
           "application/xml",
@@ -1642,7 +1657,7 @@
         "tags": [
           "roleAndResourceController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "授予角色菜单资源或删除角色菜单资源",
         "operationId": "roleAndResourceController",
         "parameters": [
           {
@@ -1655,14 +1670,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/swagger/page": {
       "get": {
-        "description": "get special domain share information",
+        "description": "返回API信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1672,27 +1687,18 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "API文档页面",
         "operationId": "swaggerController",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/theme/update": {
       "post": {
-        "description": "get special domain share information",
+        "description": "更新用户主题信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1702,27 +1708,27 @@
         "tags": [
           "themeController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "更新用户主题信息",
         "operationId": "themeController",
         "parameters": [
           {
             "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
+            "description": "theme code number",
+            "name": "theme_id",
             "in": "query",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/delete": {
-      "delete": {
-        "description": "get special domain share information",
+      "post": {
+        "description": "删除某个域中的用户信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1732,27 +1738,18 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "删除用户信息",
         "operationId": "userController",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "返回指定域中的用户信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1762,7 +1759,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "获取指定域中用户信息",
         "operationId": "userController",
         "parameters": [
           {
@@ -1775,14 +1772,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/modify/passwd": {
       "put": {
-        "description": "get special domain share information",
+        "description": "修改用户密码",
         "produces": [
           "application/json",
           "application/xml",
@@ -1792,7 +1789,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "修改用户密码",
         "operationId": "userController",
         "parameters": [
           {
@@ -1805,14 +1802,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/modify/status": {
       "put": {
-        "description": "get special domain share information",
+        "description": "修改用户锁状态",
         "produces": [
           "application/json",
           "application/xml",
@@ -1822,7 +1819,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "修改用户锁状态",
         "operationId": "userController",
         "parameters": [
           {
@@ -1835,14 +1832,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/page": {
       "get": {
-        "description": "get special domain share information",
+        "description": "返回用户管理页面",
         "produces": [
           "application/json",
           "application/xml",
@@ -1852,27 +1849,18 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "获取用户管理子页面",
         "operationId": "userController",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "domain code number",
-            "name": "domain_id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/post": {
       "post": {
-        "description": "get special domain share information",
+        "description": "在某个域中新增用户信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1882,7 +1870,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "新增用户信息",
         "operationId": "userController",
         "parameters": [
           {
@@ -1895,14 +1883,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/put": {
       "put": {
-        "description": "get special domain share information",
+        "description": "修改用户信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1912,7 +1900,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "修改用户信息",
         "operationId": "userController",
         "parameters": [
           {
@@ -1925,14 +1913,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/query": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询用户自身信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -1942,7 +1930,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "查询用户自身信息",
         "operationId": "userController",
         "parameters": [
           {
@@ -1955,14 +1943,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/roles/auth": {
       "post": {
-        "description": "get special domain share information",
+        "description": "给指定的用户授予角色",
         "produces": [
           "application/json",
           "application/xml",
@@ -1972,7 +1960,7 @@
         "tags": [
           "userRolesController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "给指定的用户授予角色",
         "operationId": "userRolesController",
         "parameters": [
           {
@@ -1992,7 +1980,7 @@
     },
     "/v1/auth/user/roles/get": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询角色信息",
         "produces": [
           "application/json",
           "application/xml",
@@ -2002,7 +1990,7 @@
         "tags": [
           "userRolesController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "通过user_id用户账号，来查询这个用户拥有的角色信息",
         "operationId": "userRolesController",
         "parameters": [
           {
@@ -2015,14 +2003,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/roles/other": {
       "get": {
-        "description": "get special domain share information",
+        "description": "查询用户没有获取的角色",
         "produces": [
           "application/json",
           "application/xml",
@@ -2032,7 +2020,7 @@
         "tags": [
           "userRolesController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "通过user_id账号，查询这个用户能够访问，但是又没有获取到的角色信息",
         "operationId": "userRolesController",
         "parameters": [
           {
@@ -2082,14 +2070,14 @@
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/auth/user/search": {
       "get": {
-        "description": "get special domain share information",
+        "description": "客户端发起请求时,必须带如下几个参数;\n\norg_id 机构编码\nstatus_id 机构状态\ndomain_id 所属域",
         "produces": [
           "application/json",
           "application/xml",
@@ -2099,7 +2087,7 @@
         "tags": [
           "userController"
         ],
-        "summary": "Returns all domain information",
+        "summary": "搜索用户信息",
         "operationId": "userController",
         "parameters": [
           {
@@ -2108,18 +2096,32 @@
             "name": "domain_id",
             "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "org_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "status code number",
+            "name": "status_id",
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "all domain information"
+            "description": "success"
           }
         }
       }
     },
     "/v1/help/system/help": {
       "get": {
-        "description": "get special domain share information",
+        "description": "将会返回系统帮助首页,其中包含了系统管理操作文档,API文档",
         "produces": [
           "application/json",
           "application/xml",
@@ -2129,7 +2131,7 @@
         "tags": [
           "StaticFiles"
         ],
-        "summary": "Returns all domain information",
+        "summary": "系统帮助页面",
         "operationId": "helpController",
         "responses": {
           "200": {

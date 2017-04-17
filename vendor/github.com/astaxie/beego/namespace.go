@@ -124,7 +124,7 @@ func (n *Namespace) Get(rootpath string, f FilterFunc) *Namespace {
 	return n
 }
 
-// Put same as beego.Put
+// Post same as beego.Post
 // refer: https://godoc.org/github.com/astaxie/beego#Post
 func (n *Namespace) Post(rootpath string, f FilterFunc) *Namespace {
 	n.handlers.Post(rootpath, f)
@@ -318,7 +318,7 @@ func NSGet(rootpath string, f FilterFunc) LinkNamespace {
 	}
 }
 
-// NSPost call Namespace Put
+// NSPost call Namespace Post
 func NSPost(rootpath string, f FilterFunc) LinkNamespace {
 	return func(ns *Namespace) {
 		ns.Post(rootpath, f)

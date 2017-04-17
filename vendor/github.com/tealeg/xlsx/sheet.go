@@ -339,7 +339,7 @@ func (s *Sheet) makeXLSXSheet(refTable *RefTable, styles *xlsxStyleSheet) *xlsxW
 		xSheet.Row = append(xSheet.Row, xRow)
 	}
 
-	// Update sheet format with the freshly determined max levels
+	// Post sheet format with the freshly determined max levels
 	s.SheetFormat.OutlineLevelCol = maxLevelCol
 	s.SheetFormat.OutlineLevelRow = maxLevelRow
 	// .. and then also apply this to the xml worksheet

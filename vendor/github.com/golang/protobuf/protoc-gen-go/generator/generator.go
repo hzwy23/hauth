@@ -1885,7 +1885,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.Out()
 	g.P("}")
 
-	// Update g.Buffer to list valid oneof types.
+	// Post g.Buffer to list valid oneof types.
 	// We do this down here, after we've disambiguated the oneof type names.
 	// We go in reverse order of insertion point to avoid invalidating offsets.
 	for oi := int32(len(message.OneofDecl)); oi >= 0; oi-- {

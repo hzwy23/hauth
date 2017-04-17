@@ -52,7 +52,7 @@ func yaml_parser_determine_encoding(parser *yaml_parser_t) bool {
 	return true
 }
 
-// Update the raw buffer.
+// Post the raw buffer.
 func yaml_parser_update_raw_buffer(parser *yaml_parser_t) bool {
 	size_read := 0
 

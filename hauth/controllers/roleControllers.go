@@ -25,9 +25,9 @@ var RoleCtl = &roleController{
 
 // swagger:operation GET /v1/auth/role/page StaticFiles roleController
 //
-// Returns all domain information
+// 角色管理页面
 //
-// get special domain share information
+// 如果用户被授权访问角色管理页面,则系统返回角色管理页面内容,否则返回404错误
 //
 // ---
 // produces:
@@ -44,7 +44,7 @@ var RoleCtl = &roleController{
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -58,12 +58,11 @@ func (roleController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-// Page return views/hauth/sys_batch_page.tpl content
 // swagger:operation GET /v1/auth/role/get roleController roleController
 //
-// Returns all domain information
+// 查询角色信息
 //
-// get special domain share information
+// 查询指定域中的角色信息
 //
 // ---
 // produces:
@@ -80,7 +79,7 @@ func (roleController) Page(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -118,9 +117,9 @@ func (this roleController) Get(ctx *context.Context) {
 
 // swagger:operation POST /v1/auth/role/post roleController roleController
 //
-// Returns all domain information
+// 新增角色信息
 //
-// get special domain share information
+// 在某个指定的域中,新增角色信息
 //
 // ---
 // produces:
@@ -137,7 +136,7 @@ func (this roleController) Get(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this roleController) Post(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -195,11 +194,11 @@ func (this roleController) Post(ctx *context.Context) {
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new role info successfully.")
 }
 
-// swagger:operation DELETE /v1/auth/role/delete roleController roleController
+// swagger:operation POST /v1/auth/role/delete roleController roleController
 //
-// Returns all domain information
+// 删除角色信息
 //
-// get special domain share information
+// 删除某个指定域中的角色信息
 //
 // ---
 // produces:
@@ -216,7 +215,7 @@ func (this roleController) Post(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this roleController) Delete(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -252,9 +251,9 @@ func (this roleController) Delete(ctx *context.Context) {
 
 // swagger:operation PUT /v1/auth/role/put roleController roleController
 //
-// Returns all domain information
+// 更新角色信息
 //
-// get special domain share information
+// 更新某个域中的角色信息,角色编码不能更新
 //
 // ---
 // produces:
@@ -271,7 +270,7 @@ func (this roleController) Delete(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {

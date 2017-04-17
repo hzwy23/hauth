@@ -40,7 +40,7 @@
 // 	this.TplName = "index.tpl"
 // }
 //
-// func (this *MainController) Put() {
+// func (this *MainController) Post() {
 // 	this.TplName = "index.tpl"
 //
 // 	this.Data["Success"] = cpt.VerifyReq(this.Ctx.Request)

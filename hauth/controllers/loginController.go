@@ -19,9 +19,9 @@ var indexModels = new(models.LoginModels)
 //
 // swagger:operation GET /HomePage StaticFiles IndexPage
 //
-// Returns all domain information
+// 返回用户登录后的主菜单页面
 //
-// get special domain share information
+// 用户登录成功后,将会根据用户主题,返回用户的主菜单页面.
 //
 // ---
 // produces:
@@ -59,9 +59,9 @@ func HomePage(ctx *context.Context) {
 //
 // swagger:operation POST /login LoginSystem LoginSystem
 //
-// Returns all domain information
+// 系统登录处理服务
 //
-// get special domain share information
+// 客户端发起登录请求到这个API,系统对用户和密码进行校验,成功返回true,如果用户和密码对应不上,返回false
 //
 // ---
 // produces:
@@ -128,9 +128,9 @@ func LoginSystem(ctx *context.Context) {
 //
 // swagger:operation POST /logout LoginSystem LoginSystem
 //
-// Returns all domain information
+// 安全退出系统
 //
-// get special domain share information
+// API处理用户退出系统请求,退出系统后,系统将修改客户端的cookie信息,使其连接过时.
 //
 // ---
 // produces:

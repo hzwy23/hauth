@@ -262,9 +262,9 @@ func (p *ControllerRegister) Get(pattern string, f FilterFunc) {
 	p.AddMethod("get", pattern, f)
 }
 
-// Put add post method
+// Post add post method
 // usage:
-//    Put("/api", func(ctx *context.Context){
+//    Post("/api", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func (p *ControllerRegister) Post(pattern string, f FilterFunc) {
@@ -695,6 +695,7 @@ func (p *ControllerRegister) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 	if len(p.filters[BeforeRouter]) > 0 && p.execFilter(context, urlPath, BeforeRouter) {
 		goto Admin
 	}
+
 	// User can define RunController and RunMethod in filter
 	if context.Input.RunController != nil && context.Input.RunMethod != "" {
 		findRouter = true
@@ -710,6 +711,7 @@ func (p *ControllerRegister) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		exception("404", context)
 		goto Admin
 	}
+
 	if splat := context.Input.Param(":splat"); splat != "" {
 		for k, v := range strings.Split(splat, "/") {
 			context.Input.SetParam(strconv.Itoa(k), v)

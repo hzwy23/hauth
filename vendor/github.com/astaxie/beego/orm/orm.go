@@ -40,7 +40,7 @@
 //		id, err := o.Insert(&user)
 //		// update
 //		user.Name = "astaxie"
-//		num, err := o.Update(&user)
+//		num, err := o.Post(&user)
 //		// read one
 //		u := User{Id: user.Id}
 //		err = o.Read(&u)

@@ -19,15 +19,15 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 )
 
-type domainShareControll struct {
+type DomainShareController struct {
 	models *models.DomainShareModel
 }
 
-var DomainShareCtl = domainShareControll{
+var DomainShareCtl = DomainShareController{
 	models: new(models.DomainShareModel),
 }
 
-// swagger:operation GET /v1/auth/domain/share/page StaticFiles domainShareControll
+// swagger:operation GET /v1/auth/domain/share/page StaticFiles DomainShareController
 //
 // 返回共享域管理页面
 //
@@ -57,7 +57,7 @@ var DomainShareCtl = domainShareControll{
 //     description: get domain information failed
 //   '404':
 //     description: page not found
-func (domainShareControll) Page(ctx *context.Context) {
+func (DomainShareController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// Check the user permissions
@@ -112,7 +112,7 @@ func (domainShareControll) Page(ctx *context.Context) {
 //     description: Insufficient permissions
 //   '419':
 //     description: get domain share information failed.
-func (this domainShareControll) Get(ctx *context.Context) {
+func (this DomainShareController) Get(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
@@ -168,7 +168,7 @@ func (this domainShareControll) Get(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this domainShareControll) UnAuth(ctx *context.Context) {
+func (this DomainShareController) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
 	if strings.TrimSpace(domain_id) == "" {
@@ -218,7 +218,7 @@ func (this domainShareControll) UnAuth(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this domainShareControll) Post(ctx *context.Context) {
+func (this DomainShareController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -290,7 +290,7 @@ func (this domainShareControll) Post(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this domainShareControll) Delete(ctx *context.Context) {
+func (this DomainShareController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -355,7 +355,7 @@ func (this domainShareControll) Delete(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this domainShareControll) Put(ctx *context.Context) {
+func (this DomainShareController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {
@@ -419,7 +419,7 @@ func (this domainShareControll) Put(ctx *context.Context) {
 //     description: Insufficient permissions
 //   '421':
 //     description: get domain that user is able to access failed.
-func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
+func (this *DomainShareController) GetAccessDomain(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -455,7 +455,7 @@ func (this *domainShareControll) GetAccessDomain(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this *domainShareControll) GetDomainOwner(ctx *context.Context) {
+func (this *DomainShareController) GetDomainOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")

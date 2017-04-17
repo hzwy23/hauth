@@ -188,7 +188,7 @@ func TestCRUD(t *testing.T) {
 			dbt.Error("no data")
 		}
 
-		// Update
+		// Post
 		res = dbt.mustExec("UPDATE test SET value = ? WHERE value = ?", false, true)
 		count, err = res.RowsAffected()
 		if err != nil {
@@ -198,7 +198,7 @@ func TestCRUD(t *testing.T) {
 			dbt.Fatalf("Expected 1 affected row, got %d", count)
 		}
 
-		// Check Update
+		// Check Post
 		rows = dbt.mustQuery("SELECT value FROM test")
 		if rows.Next() {
 			rows.Scan(&out)

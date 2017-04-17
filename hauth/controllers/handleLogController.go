@@ -29,7 +29,7 @@ var HandleLogsCtl = &handleLogsController{}
 
 // swagger:operation GET /v1/auth/HandleLogsPage StaticFiles handleLogsController
 //
-// Returns user handle logs information page
+// 操作日志页面
 //
 // The system will check user permissions.
 // So,you must first login system,and then you can send the request.

@@ -130,7 +130,7 @@ func (c *Controller) Get() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }
 
-// Put adds a request function to handle POST request.
+// Post adds a request function to handle POST request.
 func (c *Controller) Post() {
 	http.Error(c.Ctx.ResponseWriter, "Method Not Allowed", 405)
 }

@@ -116,7 +116,7 @@ func (this *domainController) Get(ctx *context.Context) {
 
 // swagger:operation POST /v1/auth/domain/post domainController postDomainInfo
 //
-// API support Add domain information
+// Add domain information
 //
 // The system will check user permissions.
 // So,you must first login system,and then you can send the request.
@@ -265,7 +265,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 
 // swagger:operation PUT /v1/auth/domain/update domainController putDomainInfo
 //
-// update domain describe, domain status
+// update domain describe and domain status
 //
 // update domain info , you neet input three arguments, domainId,domainDesc,domainStatus. column domain_id can't update.
 //
@@ -300,8 +300,8 @@ func (this *domainController) Delete(ctx *context.Context) {
 //   '403':
 //     description: Insufficient permissions
 //   '421':
-//     description: Update domain information failed.
-func (this *domainController) Update(ctx *context.Context) {
+//     description: Post domain information failed.
+func (this *domainController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	if !hrpc.BasicAuth(ctx) {

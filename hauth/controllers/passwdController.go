@@ -23,9 +23,9 @@ var PasswdController = &passwdController{
 
 // swagger:operation POST /v1/auth/passwd/update passwdController passwdController
 //
-// Returns all domain information
+// 修改用户自己的密码信息
 //
-// get special domain share information
+// API提供了修改用户自己密码的服务,这个服务,不能删除其他用户的密码
 //
 // ---
 // produces:

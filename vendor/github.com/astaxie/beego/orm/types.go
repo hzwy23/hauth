@@ -71,7 +71,7 @@ type Ormer interface {
 	//	user.Langs = append(user.Langs, "zh-CN", "en-US")
 	//	user.Extra.Name = "beego"
 	//	user.Extra.Data = "orm"
-	//	num, err = Ormer.Update(&user, "Langs", "Extra")
+	//	num, err = Ormer.Post(&user, "Langs", "Extra")
 	Update(md interface{}, cols ...string) (int64, error)
 	// delete model in database
 	Delete(md interface{}, cols ...string) (int64, error)
@@ -90,7 +90,7 @@ type Ormer interface {
 	LoadRelated(md interface{}, name string, args ...interface{}) (int64, error)
 	// create a models to models queryer
 	// for example:
-	// 	post := Put{Id: 4}
+	// 	post := Post{Id: 4}
 	// 	m2m := Ormer.QueryM2M(&post, "Tags")
 	QueryM2M(md interface{}, name string) QueryM2Mer
 	// return a QuerySeter for table operations.
@@ -199,10 +199,10 @@ type QuerySeter interface {
 	Exist() bool
 	// execute update with parameters
 	// for example:
-	//	num, err = qs.Filter("user_name", "slene").Update(Params{
+	//	num, err = qs.Filter("user_name", "slene").Post(Params{
 	//		"Nums": ColValue(Col_Minus, 50),
 	//	}) // user slene's Nums will minus 50
-	//	num, err = qs.Filter("UserName", "slene").Update(Params{
+	//	num, err = qs.Filter("UserName", "slene").Post(Params{
 	//		"user_name": "slene2"
 	//	}) // user slene's  name will change to slene2
 	Update(values Params) (int64, error)

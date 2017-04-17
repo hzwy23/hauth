@@ -21,12 +21,11 @@ var ThemeCtl = &themeController{
 	new(models.ThemeResourceModel),
 }
 
-// 更新用户主题信息
 // swagger:operation POST /v1/auth/theme/update themeController themeController
 //
-// Returns all domain information
+// 更新用户主题信息
 //
-// get special domain share information
+// 更新用户主题信息
 //
 // ---
 // produces:
@@ -35,16 +34,16 @@ var ThemeCtl = &themeController{
 // - text/xml
 // - text/html
 // parameters:
-// - name: domain_id
+// - name: theme_id
 //   in: query
-//   description: domain code number
+//   description: theme code number
 //   required: true
 //   type: string
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
-func (this *themeController) Put(ctx *context.Context) {
+//     description: success
+func (this *themeController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	theme_id := ctx.Request.FormValue("theme_id")
 
@@ -53,7 +52,7 @@ func (this *themeController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
@@ -70,9 +69,9 @@ func (this *themeController) Put(ctx *context.Context) {
 
 // swagger:operation PUT /v1/auth/resource/config/theme themeController themeController
 //
-// Returns all domain information
+// 更新某个资源的主题信息
 //
-// get special domain share information
+// 更新菜单资源的主题信息,如果这个资源没有主题信息,则新增,否则更新.
 //
 // ---
 // produces:
@@ -80,17 +79,10 @@ func (this *themeController) Put(ctx *context.Context) {
 // - application/xml
 // - text/xml
 // - text/html
-// parameters:
-// - name: domain_id
-//   in: query
-//   description: domain code number
-//   required: true
-//   type: string
-//   format:
 // responses:
 //   '200':
-//     description: all domain information
-func (this themeController) ConfigTheme(ctx *context.Context) {
+//     description: success
+func (this themeController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
 		return
@@ -134,9 +126,9 @@ func (this themeController) ConfigTheme(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/resource/queryTheme themeController themeController
 //
-// Returns all domain information
+// 查询主题信息
 //
-// get special domain share information
+// 查询某个菜单资源,某个主题的详细信息
 //
 // ---
 // produces:
@@ -153,7 +145,7 @@ func (this themeController) ConfigTheme(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this themeController) QueryTheme(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	res_id := ctx.Request.FormValue("res_id")
@@ -161,7 +153,7 @@ func (this themeController) QueryTheme(ctx *context.Context) {
 	rst, err := this.mres.GetDetails(res_id, theme_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, error_resource_query_theme, err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_query_theme"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)

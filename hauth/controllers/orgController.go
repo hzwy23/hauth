@@ -32,12 +32,11 @@ var OrgCtl = &orgController{
 	upload:make(chan int,1),
 }
 
-
 // swagger:operation GET /v1/auth/resource/org/page StaticFiles orgController
 //
-// Returns all domain information
+// 机构信息配置管理页面
 //
-// get special domain share information
+// 首先系统会检查用户的连接信息,如果用户被授权访问这个页面,将会返回机构配置管理页面内容,否则返回响应的错误住状态.
 //
 // ---
 // produces:
@@ -47,7 +46,7 @@ var OrgCtl = &orgController{
 // - text/html
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (orgController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -64,9 +63,9 @@ func (orgController) Page(ctx *context.Context) {
 // 获取机构信息
 // swagger:operation GET /v1/auth/resource/org/get orgController orgController
 //
-// Returns all domain information
+// 查询机构信息
 //
-// get special domain share information
+// API将会返回指定域中的机构信息,用户在请求这个API时,需要传入domain_id这个字段值
 //
 // ---
 // produces:
@@ -83,7 +82,7 @@ func (orgController) Page(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -117,11 +116,11 @@ func (this orgController) Get(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-// swagger:operation DELETE /v1/auth/resource/org/delete orgController orgController
+// swagger:operation POST /v1/auth/resource/org/delete orgController orgController
 //
-// Returns all domain information
+// 删除机构信息
 //
-// get special domain share information
+// 首先系统会校验用户的权限,如果用户拥有删除机构的权限,系统将会根据用户请求的参数,删除响应的机构信息.
 //
 // ---
 // produces:
@@ -136,9 +135,15 @@ func (this orgController) Get(ctx *context.Context) {
 //   required: true
 //   type: string
 //   format:
+// - name: JSON
+//   in: query
+//   description: json format
+//   required: true
+//   type: string
+//   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -183,9 +188,9 @@ func (this orgController) Delete(ctx *context.Context) {
 
 // swagger:operation PUT /v1/auth/resource/org/update orgController orgController
 //
-// Returns all domain information
+// 更新机构信息
 //
-// get special domain share information
+// 系统将会更具用户传入的参数,修改指定机构信息.
 //
 // ---
 // produces:
@@ -202,7 +207,7 @@ func (this orgController) Delete(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -280,9 +285,9 @@ func (this orgController) Update(ctx *context.Context) {
 
 // swagger:operation POST /v1/auth/resource/org/post orgController orgController
 //
-// Returns all domain information
+// 新增机构信息
 //
-// get special domain share information
+// 想指定域中新增机构信息
 //
 // ---
 // produces:
@@ -297,19 +302,38 @@ func (this orgController) Update(ctx *context.Context) {
 //   required: true
 //   type: string
 //   format:
+// - name: Org_unit_id
+//   in: query
+//   description: org code number
+//   required: true
+//   type: string
+//   format:
+// - name: Org_unit_desc
+//   in: query
+//   description: org desc
+//   required: true
+//   type: string
+//   format:
+// - name: Up_org_id
+//   in: query
+//   description: up org id
+//   required: true
+//   type: string
+//   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
+
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 
@@ -391,9 +415,9 @@ func (this orgController) orgTree(node []models.SysOrgInfo, id string, d int, re
 
 // swagger:operation GET /v1/auth/relation/domain/org orgController orgController
 //
-// Returns all domain information
+// 返回某个机构的所有下级机构信息
 //
-// get special domain share information
+// 根据客户端请求时指定的机构id,获取这个id所有的下属机构信息
 //
 // ---
 // produces:
@@ -408,9 +432,15 @@ func (this orgController) orgTree(node []models.SysOrgInfo, id string, d int, re
 //   required: true
 //   type: string
 //   format:
+// - name: org_unit_id
+//   in: query
+//   description: org code number
+//   required: true
+//   type: string
+//   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
@@ -436,9 +466,9 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/resource/org/download orgController orgController
 //
-// Returns all domain information
+// 下载机构信息
 //
-// get special domain share information
+// 下载某个指定域的所有机构信息. 只能下载用户有权限访问的域中的机构
 //
 // ---
 // produces:
@@ -455,7 +485,7 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {
@@ -579,9 +609,11 @@ func (this orgController) Download(ctx *context.Context) {
 
 // swagger:operation GET /v1/auth/resource/org/upload orgController orgController
 //
-// Returns all domain information
+// 上传机构信息
 //
-// get special domain share information
+// 根据客户端导入的excel格式的数据,将机构信息写入到数据库中.
+//
+// 这个上传过程是:增量删除, 一旦出现重复的机构,将会中断上传过程,且数据库会立刻回滚.
 //
 // ---
 // produces:
@@ -598,7 +630,7 @@ func (this orgController) Download(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this orgController)Upload(ctx *context.Context){
 	if len(this.upload) != 0 {
 		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "已经有正在导入的任务,请稍等")
@@ -610,7 +642,7 @@ func (this orgController)Upload(ctx *context.Context){
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
 		return
 	}
 

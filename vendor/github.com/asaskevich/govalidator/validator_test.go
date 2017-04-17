@@ -2677,7 +2677,7 @@ func ExampleValidateStruct() {
 		Message  string `valid:"duck,ascii"`
 		AuthorIP string `valid:"ipv4"`
 	}
-	post := &Post{"My Example Put", "duck", "123.234.54.3"}
+	post := &Post{"My Example Post", "duck", "123.234.54.3"}
 
 	//Add your own struct validation tags
 	TagMap["duck"] = Validator(func(str string) bool {

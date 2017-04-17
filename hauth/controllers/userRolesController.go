@@ -59,13 +59,11 @@ func (this *userRolesController) Page(ctx *context.Context) {
 	ctx.ResponseWriter.Write(rst)
 }
 
-// 通过user_id用户账号，来查询这个用户拥有的角色信息
-// @(http request params)  user_id
 // swagger:operation GET /v1/auth/user/roles/get userRolesController userRolesController
 //
-// Returns all domain information
+// 通过user_id用户账号，来查询这个用户拥有的角色信息
 //
-// get special domain share information
+// 查询角色信息
 //
 // ---
 // produces:
@@ -82,7 +80,7 @@ func (this *userRolesController) Page(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	user_id := ctx.Request.FormValue("user_id")
@@ -96,13 +94,11 @@ func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-// 通过user_id账号，查询这个用户能够访问，但是又没有获取到的角色信息
-// @(http request param) user_id
 // swagger:operation GET /v1/auth/user/roles/other userRolesController userRolesController
 //
-// Returns all domain information
+// 通过user_id账号，查询这个用户能够访问，但是又没有获取到的角色信息
 //
-// get special domain share information
+// 查询用户没有获取的角色
 //
 // ---
 // produces:
@@ -138,14 +134,11 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 	hret.WriteJson(ctx.ResponseWriter, rst)
 }
 
-// 给指定的用户授予角色
-// @(http request param) JSON
-// 这个函数接收一个指定的json字符串。
 // swagger:operation POST /v1/auth/user/roles/auth userRolesController userRolesController
 //
-// Returns all domain information
+// 给指定的用户授予角色
 //
-// get special domain share information
+// 给指定的用户授予角色
 //
 // ---
 // produces:
@@ -219,7 +212,7 @@ func (this userRolesController) Auth(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this userRolesController) Revoke(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx) {

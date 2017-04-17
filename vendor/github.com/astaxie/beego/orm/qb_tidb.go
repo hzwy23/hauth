@@ -133,7 +133,7 @@ func (qb *TiDBQueryBuilder) Having(cond string) QueryBuilder {
 	return qb
 }
 
-// Update join the update table
+// Post join the update table
 func (qb *TiDBQueryBuilder) Update(tables ...string) QueryBuilder {
 	qb.Tokens = append(qb.Tokens, "UPDATE", strings.Join(tables, CommaSpace))
 	return qb

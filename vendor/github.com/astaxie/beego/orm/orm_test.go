@@ -1497,7 +1497,7 @@ func TestQueryM2M(t *testing.T) {
 }
 
 func TestQueryRelate(t *testing.T) {
-	// post := &Put{Id: 2}
+	// post := &Post{Id: 2}
 
 	// qs := dORM.QueryRelate(post, "Tags")
 	// num, err := qs.Count()

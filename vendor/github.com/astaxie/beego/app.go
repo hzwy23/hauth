@@ -276,9 +276,9 @@ func Get(rootpath string, f FilterFunc) *App {
 	return BeeApp
 }
 
-// Put used to register router for Put method
+// Post used to register router for Post method
 // usage:
-//    beego.Put("/api", func(ctx *context.Context){
+//    beego.Post("/api", func(ctx *context.Context){
 //          ctx.Output.Body("hello world")
 //    })
 func Post(rootpath string, f FilterFunc) *App {

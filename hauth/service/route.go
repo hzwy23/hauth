@@ -13,8 +13,8 @@ func registerRouter() {
 
 	beego.Any("/logout", controllers.LogoutSystem)
 
-	beego.Post("/v1/auth/theme/update", controllers.ThemeCtl.Put)
-	beego.Put("/v1/auth/resource/config/theme", controllers.ThemeCtl.ConfigTheme)
+	beego.Post("/v1/auth/theme/update", controllers.ThemeCtl.Post)
+	beego.Put("/v1/auth/resource/config/theme", controllers.ThemeCtl.Put)
 	beego.Get("/v1/auth/resource/queryTheme", controllers.ThemeCtl.QueryTheme)
 
 
@@ -29,13 +29,14 @@ func registerRouter() {
 	beego.Get("/v1/auth/domain/get", controllers.DomainCtl.Get)
 	beego.Post("/v1/auth/domain/post", controllers.DomainCtl.Post)
 	beego.Post("/v1/auth/domain/delete", controllers.DomainCtl.Delete)
-	beego.Put("/v1/auth/domain/update", controllers.DomainCtl.Update)
+	beego.Put("/v1/auth/domain/update", controllers.DomainCtl.Put)
 
 	//domain_share_info
 	beego.Get("/v1/auth/domain/share/get", controllers.DomainShareCtl.Get)
 	beego.Post("/v1/auth/domain/share/post", controllers.DomainShareCtl.Post)
 	beego.Put("/v1/auth/domain/share/put", controllers.DomainShareCtl.Put)
 	beego.Post("/v1/auth/domain/share/delete", controllers.DomainShareCtl.Delete)
+
 	beego.Get("/v1/auth/domain/owner", controllers.DomainShareCtl.GetAccessDomain)
 	beego.Get("/v1/auth/domain/self/owner", controllers.DomainShareCtl.GetDomainOwner)
 	beego.Get("/v1/auth/domain/row/details", controllers.DomainCtl.GetDetails)

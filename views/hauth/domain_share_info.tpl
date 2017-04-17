@@ -200,7 +200,7 @@
                     var sel = $('#h-domain-share-info-table').bootstrapTable('getSelections');
                     $.HAjaxRequest({
                         url:"/v1/auth/domain/share/delete",
-                        type:"post",
+                        type:"Post",
                         data:{JSON:JSON.stringify(sel),domain_id:$("#h-domain-share-did").html()},
                         success:function () {
                             $.Notify({

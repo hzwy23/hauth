@@ -44,7 +44,7 @@ func Get(path string) *TestHTTPRequest {
 	return &TestHTTPRequest{*httplib.Get(baseURL + getPort() + path)}
 }
 
-// Put returns test client in POST method
+// Post returns test client in POST method
 func Post(path string) *TestHTTPRequest {
 	return &TestHTTPRequest{*httplib.Post(baseURL + getPort() + path)}
 }

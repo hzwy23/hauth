@@ -91,6 +91,42 @@
 - id: error_handle_logs_query_failed
   translation: "搜索日志失败"
 
+- id: error_resource_query
+  translation: "查询菜单资源信息失败，请重试"
+
+- id: error_resource_query_theme
+  translation: "查询主题信息失败，请重试"
+
+- id: error_resource_exec
+  translation: "执行SQL，提交新增用户信息失败，请联系管理员"
+
+- id: error_resource_type
+  translation: "资源类型不符合要求"
+
+- id: error_resource_update
+  translation: "更新菜单资源名称失败"
+
+- id : error_user_no_auth
+  translation: "没有权限访问这个域中的信息"
+- id : error_user_query
+  translation: "查询域中用户信息失败，请选择域后重新查询"
+- id : error_user_id_check
+  translation: "用户账号，必须有1-30位字母，数字组成"
+- id : error_user_name_check
+  translation: "用户名必须由1-30位汉字，字母，数字组成"
+- id : error_user_passwd_check
+  translation: "密码长度不能为空格，切长度不能小于6位"
+- id : error_user_passwd_encrypt
+  translation: "对密码进行加密失败"
+- id : error_user_email_check
+  translation: "邮箱格式不正确"
+- id : error_user_phone_check
+  translation: "手机号格式不正确"
+- id : error_user_post
+  translation: "新增用户信息失败"
+- id : error_user_modify_passwd
+  translation: "您没有权限修改这个域中的用户信息"
+
 - id: ca_add_direction_id
   translation: "新增费用方向信息失败"
 
