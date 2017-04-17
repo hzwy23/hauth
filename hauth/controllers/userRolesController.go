@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
@@ -169,7 +167,7 @@ func (this userRolesController) Auth(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		http.Redirect(ctx.ResponseWriter, ctx.Request, "/", http.StatusMovedPermanently)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -179,7 +177,7 @@ func (this userRolesController) Auth(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, msg, err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation POST /v1/auth/user/roles/revoke userRolesController userRolesController
@@ -226,7 +224,7 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -236,7 +234,7 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, msg, err)
 		return
 	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
+		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 		return
 	}
 }

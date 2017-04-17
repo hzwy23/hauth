@@ -22,21 +22,21 @@ func Get(req *http.Request,translationID string, args ...interface{}) string {
 
 }
 
-func GetSuccess(req *http.Request) string {
+func Success(req *http.Request) string {
 	return Get(req,"success")
 }
 
-func GetDisconnect(req *http.Request) string {
+func Disconnect(req *http.Request) string {
 	return Get(req,"as_of_date_disconnect")
 }
 
-func GetPageNotFound(req *http.Request) string {
+func PageNotFound(req *http.Request) string {
 	return Get(req,"page_not_found")
 }
 
 // 初始化i18n文件
 func init(){
 	HOME:=os.Getenv("HBIGDATA_HOME")
-	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n/zh-cn.yaml"))
-	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n/en-us.yaml"))
+	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n","zh-cn.yaml"))
+	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n","en-us.yaml"))
 }

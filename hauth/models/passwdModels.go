@@ -4,18 +4,23 @@ import (
 	"github.com/hzwy23/dbobj"
 	"errors"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/astaxie/beego/logs"
 )
 
 type PasswdModels struct {
 }
 
-func (PasswdModels) UpdateMyPasswd(newPd, User_id, oriEn string) error {
+func (PasswdModels) UpdateMyPasswd(newPd, User_id, oriEn string) (string ,error){
 	flag,_,_,_:= hrpc.CheckPasswd(User_id,oriEn)
 	if !flag{
-		return errors.New("原密码不正确，请确认后重新输入")
+		return "error_old_passwd",errors.New("error_old_passwd")
 	}
 	_,err := dbobj.Exec(sys_rdbms_014, newPd, User_id, oriEn)
-	return err
+	if err != nil {
+		logs.Error(err)
+		return "error_passwd_modify",err
+	}
+	return "success",nil
 }
 
 func (PasswdModels) UpdateUserPasswd(newPd, userid string) error {

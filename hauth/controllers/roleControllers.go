@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"net/http"
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
@@ -13,6 +12,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type roleController struct {
@@ -52,7 +52,7 @@ func (roleController) Page(ctx *context.Context) {
 	}
 	rst, err := hcache.GetStaticFile("AsofdateRolePage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
@@ -93,14 +93,14 @@ func (this roleController) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
 	if !hrpc.CheckDomain(ctx,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"您没有权限访问这个域中的角色信息.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -108,7 +108,7 @@ func (this roleController) Get(ctx *context.Context) {
 
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "get role info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_query"), err)
 		return
 	}
 
@@ -154,44 +154,44 @@ func (this roleController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	if !hrpc.CheckDomain(ctx,domainid,"w"){
 		logs.Error("没有权限在这个域中新增角色信息")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "没有权限在这个域中新增角色信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
 
 	//校验
 	if !govalidator.IsWord(roleid) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请输入由1-30位字母,数字组的角色编码")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_id_format"))
 		return
 	}
 	//
 	if govalidator.IsEmpty(rolename) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "角色名称必须是汉字,字母,或者下划线的组合,并且长度不能小于30")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_desc_empty"))
 		return
 	}
 
 	if !govalidator.IsWord(domainid) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请选择域信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
 		return
 	}
 
 	if !govalidator.IsIn(rolestatus,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "请选择角色状态.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_status"))
 		return
 	}
 
 	err = this.models.Post(id, rolename, jclaim.User_id, rolestatus, domainid, roleid)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "add new role info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_add_failed"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "add new role info successfully.")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation POST /v1/auth/role/delete roleController roleController
@@ -228,7 +228,7 @@ func (this roleController) Delete(ctx *context.Context) {
 	err := json.Unmarshal(mjson, &allrole)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "json解析失败，请重新选择需要删除的角色信息", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_json_failed"), err)
 		return
 	}
 
@@ -236,17 +236,17 @@ func (this roleController) Delete(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	err = this.models.Delete(allrole, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, "操作数据库失败。")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, i18n.Get(ctx.Request,"error_role_delete_failed"))
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "删除角色信息成功。")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Success(ctx.Request))
 }
 
 // swagger:operation PUT /v1/auth/role/put roleController roleController
@@ -285,44 +285,44 @@ func (this roleController) Update(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 310, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	did, err := hrpc.CheckDomainByRoleId(Role_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "查询角色信息上边")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_get_domain"))
 		return
 	}
 
 	if !hrpc.CheckDomain(ctx,did,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "您没有权限编辑这个域中的角色信息")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	if !govalidator.IsWord(Role_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色编码不正确")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_id_format"))
 		return
 	}
 
 	if govalidator.IsEmpty(Role_name){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色名称不正确.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_desc_empty"))
 		return
 	}
 
 	if !govalidator.IsIn(Role_status,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"请选择角色状态")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_status"))
 		return
 	}
 
 	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id, did)
 	if err != nil {
 		logs.Error(err.Error())
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, http.StatusExpectationFailed, "update role info failed.", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_update_failed"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "update role info successfully.")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 func init() {

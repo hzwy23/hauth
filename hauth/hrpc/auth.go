@@ -13,11 +13,6 @@ import (
 	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
-const (
-	error_querydb  string = "can not found user info in system."
-	error_maxerror string = "user was forbided, you have continued type password error 6 times."
-	error_password string = "user's password error.please check your password"
-)
 
 type mSysUserSec struct {
 	User_id                 string        `json:"user_id"`
@@ -39,16 +34,16 @@ func CheckPasswd(user_id, user_passwd string) (bool, int, int64, string) {
 	var sec mSysUserSec
 	err := dbobj.QueryRow(sys_rdbms_hrpc_005, user_id).Scan(&sec.User_id, &sec.User_passwd, &sec.User_status, &sec.User_continue_error_cnt)
 	if err != nil {
-		return false, 402, 0, error_querydb
+		return false, 402, 0, "error_querydb"
 	}
 
 	if sec.User_status.Int64 != 0 {
-		return false, 406, sec.User_status.Int64, error_maxerror
+		return false, 406, sec.User_status.Int64, "error_maxerror"
 	}
 
 	if sec.User_continue_error_cnt.Int64 > 6 {
 		forbidUsers(user_id)
-		return false, 403, sec.User_continue_error_cnt.Int64, error_maxerror
+		return false, 403, sec.User_continue_error_cnt.Int64, "error_maxerror"
 	}
 
 	if sec.User_id == user_id && sec.User_passwd == user_passwd {
@@ -56,7 +51,7 @@ func CheckPasswd(user_id, user_passwd string) (bool, int, int64, string) {
 		return true, 200, 0, ""
 	} else {
 		updateContinueErrorCnt(sec.User_continue_error_cnt.Int64+1, user_id)
-		return false, 405, sec.User_continue_error_cnt.Int64 + 1, error_password
+		return false, 405, sec.User_continue_error_cnt.Int64 + 1, "error_password"
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type roleAndResourceController struct {
@@ -55,7 +56,7 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色资源信息失败")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_resource_query"))
 		return
 	}
 	file, _ := template.ParseFiles("./views/hauth/res_role_rel_page.tpl")
@@ -63,7 +64,6 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 	file.Execute(ctx.ResponseWriter, rst)
 }
 
-//
 // swagger:operation GET /v1/auth/role/resource/get roleAndResourceController roleAndResourceController
 //
 // 查询角色指定的拥有的菜单资源和没有拥有的菜单资源
@@ -100,7 +100,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 		rst, err := this.resRoleModel.Get(role_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_get_resource"))
 			return
 		}
 		hret.WriteJson(ctx.ResponseWriter, rst)
@@ -109,7 +109,7 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 		rst, err := this.resRoleModel.UnGetted(role_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "查询角色对应的资源信息失败")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_unget_resource"))
 			return
 		}
 		hret.WriteJson(ctx.ResponseWriter, rst)
@@ -150,12 +150,12 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	type_id := ctx.Request.FormValue("type_id")
 
 	if !govalidator.IsWord(res_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"资源编码不正确.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_resource_res_id"))
 		return
 	}
 
 	if !govalidator.IsWord(role_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"角色编码不正确.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_id_format"))
 		return
 	}
 
@@ -164,10 +164,10 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 		err := this.resRoleModel.Delete(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_delete_failed"))
 			return
 		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, "撤销资源权限成功")
+			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
 		}
 	} else {
@@ -175,10 +175,10 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 		err := this.resRoleModel.Post(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, "删除角色对应的资源信息失败")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_delete_failed"))
 			return
 		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, "撤销资源权限成功")
+			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
 		}
 	}

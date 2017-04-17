@@ -185,7 +185,7 @@ func (this *domainController) Post(ctx *context.Context) {
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -328,7 +328,7 @@ func (this *domainController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -408,7 +408,7 @@ func (this *domainController) GetId(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 

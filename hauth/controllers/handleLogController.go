@@ -54,7 +54,7 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("AsofdateHandleLogPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
@@ -93,25 +93,25 @@ func (this handleLogsController) Download(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 	rst,err := this.model.Download(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"查询日志信息失败.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_get_failed"))
 		return
 	}
 
 	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"upload","template","hauthHandleLogsTemplate.xlsx"))
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"创建excel失败.",err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_open_error"),err)
 		return
 	}
 	sheet, ok := file.Sheet["handle_logs"]
 	if !ok {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,"获取sheet页失败,没有找打sheet名称为 handle_logs.",)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_sheet_error"))
 		return
 	}
 
@@ -206,7 +206,7 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -283,7 +283,7 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 

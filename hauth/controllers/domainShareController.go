@@ -125,7 +125,7 @@ func (this DomainShareController) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
@@ -248,7 +248,7 @@ func (this DomainShareController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -386,7 +386,7 @@ func (this DomainShareController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -426,7 +426,7 @@ func (this *DomainShareController) GetAccessDomain(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -462,7 +462,7 @@ func (this *DomainShareController) GetDomainOwner(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 

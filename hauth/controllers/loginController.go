@@ -12,11 +12,11 @@ import (
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 var indexModels = new(models.LoginModels)
 
-//
 // swagger:operation GET /HomePage StaticFiles IndexPage
 //
 // 返回用户登录后的主菜单页面
@@ -50,13 +50,12 @@ func HomePage(ctx *context.Context) {
 	h, err := template.ParseFiles(url)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "获取首页信息失败", err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_get_login_page"), err)
 		return
 	}
 	h.Execute(ctx.ResponseWriter, jclaim.User_id)
 }
 
-//
 // swagger:operation POST /login LoginSystem LoginSystem
 //
 // 系统登录处理服务
@@ -96,21 +95,21 @@ func LoginSystem(ctx *context.Context) {
 	psd, err := utils.Encrypt(userPasswd)
 	if err != nil {
 		logs.Error("decrypt passwd failed.", psd)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 400, "encrypt user passwd failed.")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 400, i18n.Get(ctx.Request,"error_system"))
 		return
 	}
 
 	domainId, err := indexModels.GetDefaultDomainId(userId)
 	if err != nil {
 		logs.Error(userId, " 用户没有指定的域", err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, "can't get org id of user")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, i18n.Get(ctx.Request,"error_user_no_domain"))
 		return
 	}
 
 	orgid, err := indexModels.GetDefaultOrgId(userId)
 	if err != nil {
 		logs.Error(userId, " 用户没有指定机构", err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 402, "can't get org id of user")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 402, i18n.Get(ctx.Request,"error_user_no_org"))
 		return
 	}
 
@@ -118,9 +117,9 @@ func LoginSystem(ctx *context.Context) {
 		token := hjwt.GenToken(userId, domainId, orgid, 86400)
 		cookie := http.Cookie{Name: "Authorization", Value: token, Path: "/", MaxAge: 86400}
 		http.SetCookie(ctx.ResponseWriter, &cookie)
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, "login successfully.")
+		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
 	} else {
-		emsg := hret.NewHttpErrMsg(code, rmsg, cnt)
+		emsg := hret.NewHttpErrMsg(code, i18n.Get(ctx.Request,rmsg), cnt)
 		hret.WriteHttpErrMsg(ctx.ResponseWriter, emsg)
 	}
 }
@@ -157,5 +156,5 @@ func LoginSystem(ctx *context.Context) {
 func LogoutSystem(ctx *context.Context) {
 	cookie := http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: -1}
 	http.SetCookie(ctx.ResponseWriter, &cookie)
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "logout system safely.")
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"logout"))
 }

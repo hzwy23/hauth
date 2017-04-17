@@ -5,6 +5,7 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type helpController struct {
@@ -37,7 +38,7 @@ func (this helpController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("AsofdateHelpPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, "页面不存在")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
