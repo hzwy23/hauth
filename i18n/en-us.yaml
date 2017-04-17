@@ -288,7 +288,7 @@
   translation: "Mobile phone number format is not correct"
 
 - id: error_user_modify_status
-  translation: "修改用户状态失败"
+  translation: "Update user status error"
 - id: error_user_modify_yourself
   translation: "Modify the user status failed"
 - id: error_user_status_empty
