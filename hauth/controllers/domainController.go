@@ -50,7 +50,7 @@ func (this *domainController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("DomainPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get(ctx.Request,"as_of_date_page_not_exist"))
 		return
 	}
 
@@ -107,7 +107,7 @@ func (this *domainController) Get(ctx *context.Context) {
 	rst, total, err := this.models.GetAll(offset, limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_query"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_query"))
 		return
 	}
 
@@ -164,20 +164,20 @@ func (this *domainController) Post(ctx *context.Context) {
 
 	// validator domain id format
 	if !govalidator.IsWord(domainId) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_id_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
 		return
 	}
 
 	// validator domain describe format. It does not allow null values
 	if govalidator.IsEmpty(domainDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_isempty"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_isempty"))
 		return
 	}
 
 	// validator domain status format
 	// It must be in the 0 and 1
 	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_status_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_status_check"))
 		return
 	}
 
@@ -185,7 +185,7 @@ func (this *domainController) Post(ctx *context.Context) {
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
@@ -194,12 +194,12 @@ func (this *domainController) Post(ctx *context.Context) {
 	err = this.models.Post(domainId, domainDesc, domainStatus, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_add_failed"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_add_failed"), err)
 		return
 	}
 
 	// return success
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation POST /v1/auth/domain/delete domainController deleteDomainInfo
@@ -242,7 +242,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 	err := json.Unmarshal(ijs, &js)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_delete"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_delete"))
 		return
 	}
 
@@ -250,7 +250,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_disconnect"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_disconnect"))
 		return
 	}
 
@@ -260,7 +260,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation PUT /v1/auth/domain/update domainController putDomainInfo
@@ -314,13 +314,13 @@ func (this *domainController) Put(ctx *context.Context) {
 
 	// 校验域名称,不能为空
 	if govalidator.IsEmpty(domainDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_isempty"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_isempty"))
 		return
 	}
 
 	// 校验域状态编码,必须是0或者1
 	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_status_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_status_check"))
 		return
 	}
 
@@ -328,23 +328,23 @@ func (this *domainController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	if !hrpc.CheckDomain(ctx, domainId, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_domain_permission_denied_modify"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	err = this.models.Update(domainDesc, domainStatus, jclaim.User_id, domainId)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_update"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_update"))
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation GET /v1/auth/domain/row/details domainController getDomainDetailsInfo
@@ -378,7 +378,7 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 	rst, err := this.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_details"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_details"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -408,7 +408,7 @@ func (this *domainController) GetId(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 

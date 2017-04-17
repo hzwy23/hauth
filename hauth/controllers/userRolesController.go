@@ -52,7 +52,7 @@ func (this *userRolesController) Page(ctx *context.Context) {
 	// According to the key get the value from the groupCache system
 	rst, err := hcache.GetStaticFile("AuthorityPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get(ctx.Request,"as_of_date_page_not_exist"))
 		return
 	}
 
@@ -88,7 +88,7 @@ func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	rst, err := this.models.GetRolesByUser(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_query"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_query"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -121,14 +121,14 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 	user_id := ctx.Request.FormValue("user_id")
 
 	if user_id == "" {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_no_user"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_no_user"))
 		return
 	}
 
 	rst, err := this.models.GetOtherRoles(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_role_un_auth"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_un_auth"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -226,7 +226,7 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.GetDisconnect(ctx.Request))
 		return
 	}
 

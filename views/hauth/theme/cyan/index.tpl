@@ -28,6 +28,7 @@
 	<script src="/static/nprogress/nprogress.js"></script>
 
 	<script type="text/javascript" src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/jquery-i18n-properties/jquery.i18n.properties.min.js"></script>
 	<script type="text/javascript" src="/static/js/utils.min.js"></script>
 
 
@@ -200,6 +201,14 @@
 
     //调整主菜单的长度和宽度
     $(document).ready(function(){
+        $.i18n.properties({
+            name:'Messages',
+            path:'/static/jquery-i18n-properties/bundle/',
+            mode:'both',
+            language :(navigator.language || navigator.browserLanguage).toLowerCase(),
+            async: true,
+        });
+
         Hutils.initMenu(0,-1,"系统服务","管理会计","公共信息")
         indexObj.adjustLocation()
         indexObj.bindEvents()

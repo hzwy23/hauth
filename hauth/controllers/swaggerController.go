@@ -36,7 +36,7 @@ func (this swaggerController)Page(ctx *context.Context){
 
 	rst, err := hcache.GetStaticFile("SwaggerPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get("as_of_date_page_not_exist"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get(ctx.Request,"as_of_date_page_not_exist"))
 		return
 	}
 

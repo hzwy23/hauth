@@ -104,7 +104,7 @@ func (this userController) Get(ctx *context.Context) {
 	}
 
 	if !hrpc.CheckDomain(ctx,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("error_user_no_auth"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"error_user_no_auth"))
 		return
 	}
 
@@ -112,7 +112,7 @@ func (this userController) Get(ctx *context.Context) {
 	rst, err := this.models.GetDefault(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 410, i18n.Get("error_user_query"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 410, i18n.Get(ctx.Request,"error_user_query"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -154,30 +154,30 @@ func (this userController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	if !hrpc.CheckDomain(ctx,domain_id,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("error_user_no_auth"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_user_no_auth"))
 		return
 	}
 
 
 	if !govalidator.IsWord(userId) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_id_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_id_check"))
 		return
 	}
 	//
 
 	if govalidator.IsEmpty(userDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_name_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_name_check"))
 		return
 	}
 	//
 	password := ctx.Request.FormValue("userPasswd")
 	if govalidator.IsEmpty(password) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_passwd_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_passwd_check"))
 		return
 	}
 
@@ -200,7 +200,7 @@ func (this userController) Post(ctx *context.Context) {
 	userPasswd, err := utils.Encrypt(ctx.Request.FormValue("userPasswd"))
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_passwd_encrypt"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_passwd_encrypt"), err)
 		return
 	}
 
@@ -211,7 +211,7 @@ func (this userController) Post(ctx *context.Context) {
 
 	//
 	if !govalidator.IsEmail(userEmail) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_email_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_email_check"))
 		return
 	}
 
@@ -222,14 +222,14 @@ func (this userController) Post(ctx *context.Context) {
 
 	//
 	if !govalidator.IsMobilePhone(userPhone) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_phone_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_phone_check"))
 		return
 	}
 
 	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId, domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_user_post"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_post"), err)
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
@@ -262,7 +262,7 @@ func (this userController) Delete(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
@@ -389,7 +389,7 @@ func (this userController) Put(ctx *context.Context) {
 
 	if !hrpc.CheckDomain(ctx,did,"w"){
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("error_user_modify_passwd"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"error_user_modify_passwd"))
 		return
 	}
 
@@ -488,7 +488,7 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 		level := hrpc.CheckDomainRights(jclaim.User_id, did)
 		if level != 2 {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("error_user_modify_passwd"))
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_user_modify_passwd"))
 			return
 		}
 	}
@@ -563,7 +563,7 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 
 	if !hrpc.CheckDomain(ctx,did,"w"){
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, i18n.Get("error_user_modify_passwd"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, i18n.Get(ctx.Request,"error_user_modify_passwd"))
 		return
 	}
 

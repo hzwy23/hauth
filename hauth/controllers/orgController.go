@@ -164,7 +164,7 @@ func (this orgController) Delete(ctx *context.Context) {
 		cok, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := hjwt.ParseJwt(cok.Value)
 		if err != nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
@@ -218,7 +218,7 @@ func (this orgController) Update(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, "No Auth")
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 	org_unit_id := ctx.Request.FormValue("Id")
@@ -279,7 +279,7 @@ func (this orgController) Update(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "修改机构信息失败", err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 
@@ -333,7 +333,7 @@ func (this orgController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
@@ -382,7 +382,7 @@ func (this orgController) Post(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "新增机构信息失败.", err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 func (orgController) getOrgTops(node []models.SysOrgInfo) []models.SysOrgInfo {
@@ -642,7 +642,7 @@ func (this orgController)Upload(ctx *context.Context){
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
@@ -700,7 +700,7 @@ func (this orgController)Upload(ctx *context.Context){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,err.Error())
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Success())
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.GetSuccess(ctx.Request))
 }
 
 func init() {

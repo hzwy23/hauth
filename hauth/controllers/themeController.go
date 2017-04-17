@@ -52,7 +52,7 @@ func (this *themeController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
@@ -64,7 +64,7 @@ func (this *themeController) Post(ctx *context.Context) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, "修改主题信息失败", err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success())
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.GetSuccess(ctx.Request))
 }
 
 // swagger:operation PUT /v1/auth/resource/config/theme themeController themeController
@@ -153,7 +153,7 @@ func (this themeController) QueryTheme(ctx *context.Context) {
 	rst, err := this.mres.GetDetails(res_id, theme_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_query_theme"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_query_theme"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)

@@ -70,7 +70,7 @@ func (DomainShareController) Page(ctx *context.Context) {
 	var domain_id = ctx.Request.FormValue("domain_id")
 
 	if !hrpc.CheckDomain(ctx, domain_id, "r") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -78,7 +78,7 @@ func (DomainShareController) Page(ctx *context.Context) {
 	rst, err := DomainCtl.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_get_info_failed"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_get_info_failed"), err)
 		return
 	}
 
@@ -125,14 +125,14 @@ func (this DomainShareController) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
 	if !hrpc.CheckDomain(ctx, domain_id, "r") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_domain_permission_denied"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -140,7 +140,7 @@ func (this DomainShareController) Get(ctx *context.Context) {
 	rst, err := this.models.Get(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_get_info_failed"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_get_info_failed"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -172,13 +172,13 @@ func (this DomainShareController) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
 	if strings.TrimSpace(domain_id) == "" {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_isempty"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_isempty"))
 		return
 	}
 	rst, err := this.models.UnAuth(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_check_unshare"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_check_unshare"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -230,17 +230,17 @@ func (this DomainShareController) Post(ctx *context.Context) {
 	auth_level := ctx.Request.FormValue("auth_level")
 
 	if !hrpc.CheckDomain(ctx, domain_id, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	if !govalidator.IsWord(target_domain_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_target"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_target"))
 		return
 	}
 
 	if !govalidator.IsIn(auth_level, "1", "2") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_mode"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_mode"))
 		return
 	}
 
@@ -248,18 +248,18 @@ func (this DomainShareController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	err = this.models.Post(domain_id, target_domain_id, auth_level, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_failed"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_share_failed"))
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation POST /v1/auth/domain/share/delete domainShareController postomainShareControll
@@ -301,12 +301,12 @@ func (this DomainShareController) Delete(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("domain_id")
 
 	if !govalidator.IsWord(domain_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_id_check"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
 		return
 	}
 
 	if !hrpc.CheckDomain(ctx, domain_id, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
@@ -314,11 +314,11 @@ func (this DomainShareController) Delete(ctx *context.Context) {
 	err := this.models.Delete(js, domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_delete"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_share_delete"), err)
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation PUT /v1/auth/domain/share/put domainShareController postomainShareControll
@@ -367,17 +367,17 @@ func (this DomainShareController) Put(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("domain_id")
 
 	if !hrpc.CheckDomain(ctx, domain_id, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get("as_of_date_domain_permission_denied_modify"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	if !govalidator.IsWord(domain_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_target"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_target"))
 		return
 	}
 
 	if !govalidator.IsIn(level, "1", "2") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_mode"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_mode"))
 		return
 	}
 
@@ -386,18 +386,18 @@ func (this DomainShareController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	err = this.models.Update(uuid, jclaim.User_id, level)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("as_of_date_domain_share_update"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_share_update"))
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get("success"))
+	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
 }
 
 // swagger:operation GET /v1/auth/domain/owner domainShareController postomainShareControll
@@ -426,14 +426,14 @@ func (this *DomainShareController) GetAccessDomain(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	rst, err := this.models.GetList(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domain_getowner"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_getowner"))
 		return
 	}
 
@@ -462,14 +462,14 @@ func (this *DomainShareController) GetDomainOwner(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	rst, err := this.models.GetOwner(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("as_of_date_domains_of_user"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domains_of_user"))
 		return
 	}
 

@@ -1,0 +1,26 @@
+/** -------------------------------------------- */
+/** --- Base ----------------------------------- */
+/** -------------------------------------------- */
+/*body								{background-color: #333; color: #f0f0f0;}*/
+h1, h2, h3, h4, h5, h6 				{color:#777;}
+label								{padding-right: 10px}
+input[type="checkbox"], 
+input[type="radio"],
+input.checkbox,
+input.radio 						{top: 0;}
+:focus { -moz-outline-style: none; }
+a									{color:#555}
+
+
+/** -------------------------------------------- */
+/** --- Others --------------------------------- */
+/** -------------------------------------------- */
+.left                {text-align: left; margin: 10px 20px;}
+h4									{margin: 3px 10px; display: inline}
+h3									{margin-top: 40px;}
+code								{display:none; background-color: #eee;padding:3px; border: 1px solid #ddd; margin-left: 10px}
+code.files							{display:none; width: 500px;}
+code.i18n							{display:inline; margin: 0px;}
+ul li								{margin-left: 10px}
+a.toggle							{font-size: 10px;}
+#langBox							{margin-left: 10px; margin-bottom: 10px;}

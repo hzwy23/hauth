@@ -81,7 +81,7 @@ func (this resourceController) Get(ctx *context.Context) {
 	rst, err := this.models.Get()
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_query"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_query"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -114,7 +114,7 @@ func (this resourceController) Query(ctx *context.Context) {
 	rst, err := this.models.Query(res_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_query"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_query"), err)
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)
@@ -214,7 +214,7 @@ func (this resourceController) Post(ctx *context.Context) {
 		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_exec"), err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)
 			return
 		}
 	case "1":
@@ -258,7 +258,7 @@ func (this resourceController) Post(ctx *context.Context) {
 		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_exec"), err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)
 			return
 		}
 
@@ -283,7 +283,7 @@ func (this resourceController) Post(ctx *context.Context) {
 		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_exec"), err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)
 			return
 		}
 
@@ -299,11 +299,11 @@ func (this resourceController) Post(ctx *context.Context) {
 		err := this.models.PostButton(res_id, res_name, res_attr, res_up_id, res_type)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get("error_resource_exec"), err)
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)
 			return
 		}
 	default:
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("error_resource_type"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_type"))
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")
@@ -395,7 +395,7 @@ func (this resourceController) Update(ctx *context.Context) {
 	err := this.models.Update(res_id, res_name)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get("error_resource_update"), err)
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_update"), err)
 		return
 	}
 	hret.WriteHttpOkMsgs(ctx.ResponseWriter, "success")

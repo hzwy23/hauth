@@ -28,6 +28,7 @@
 	<script src="/static/nprogress/nprogress.js"></script>
 
 	<script type="text/javascript" src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/jquery-i18n-properties/jquery.i18n.properties.min.js"></script>
 	<script type="text/javascript" src="/static/js/utils.min.js"></script>
 
 
@@ -162,15 +163,13 @@
                 var surpd = $("#plat-change-passwd").find('input[name="surepasswd"]').val()
                 if ($.trim(newpd) =="" || $.trim(orapd) == "" || $.trim(surpd)  == "" ){
                     $.Notify({
-                        title:"温馨提示",
-                        message:"不能将密码设置成空格",
+						message:"不能将密码设置成空格",
                         type:"danger",
                     })
                     return
                 }else if(newpd != surpd){
                     $.Notify({
-                        title:"温馨提示",
-                        message:"两次输入的新密码不一致，请确认是否存在多余的空格",
+						message:"两次输入的新密码不一致，请确认是否存在多余的空格",
                         type:"danger",
                     })
                     return
@@ -183,8 +182,8 @@
                     success:function(){
                         $(hmode).remove();
                         $.Notify({
-                            title:"执行成功",
-                            message:"修改密码成功",
+							message:"修改密码成功",
+							type:"success",
                         })
                     },
                 });
@@ -195,9 +194,16 @@
 
     //调整主菜单的长度和宽度
     $(document).ready(function(){
+        $.i18n.properties({
+            name:'Messages',
+            path:'/static/jquery-i18n-properties/bundle/',
+            mode:'both',
+            language :(navigator.language || navigator.browserLanguage).toLowerCase(),
+            async: true,
+        });
         Hutils.initMenu(0,-1,"系统服务","管理会计","公共信息")
-        indexObj.adjustLocation()
-        indexObj.bindEvents()
+        indexObj.adjustLocation();
+        indexObj.bindEvents();
         NProgress.done();
     });
 

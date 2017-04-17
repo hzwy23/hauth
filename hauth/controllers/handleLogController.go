@@ -93,7 +93,7 @@ func (this handleLogsController) Download(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 	rst,err := this.model.Download(jclaim.Domain_id)
@@ -206,14 +206,14 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	rst,total,err := this.model.Get(jclaim.Domain_id,offset,limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("error_handle_logs_query_failed"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_query_failed"))
 		return
 	}
 	hret.WriteBootstrapTableJson(ctx.ResponseWriter,total, rst)
@@ -283,14 +283,14 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect())
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.GetDisconnect(ctx.Request))
 		return
 	}
 
 	rst,err := this.model.Search(jclaim.Domain_id,userid,start,end)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get("error_handle_logs_query_failed"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_query_failed"))
 		return
 	}
 	hret.WriteJson(ctx.ResponseWriter, rst)

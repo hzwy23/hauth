@@ -99,7 +99,7 @@ func BasicAuth(ctx *context.Context) bool {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
 		return false
 	}
 	if jclaim.User_id == "admin" {
@@ -108,11 +108,11 @@ func BasicAuth(ctx *context.Context) bool {
 	cnt := 0
 	err = dbobj.QueryRow(sys_rdbms_hrpc_006, jclaim.User_id, ctx.Request.URL.Path).Scan(&cnt)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
 		return false
 	}
 	if cnt == 0 {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get("as_of_date_no_auth"))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
 		return false
 	}
 	return true

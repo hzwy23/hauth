@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <title>jQuery.i18n.properties: Demo</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="content-script-type" content="text/javascript" />
+      
+      	<!-- JS -->
+      	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+      	<script type="text/javascript" src="jquery.i18n.properties.js"></script>
+      	
+      	<!-- CSS -->
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print">	
+		<!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+      	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection">
+		
+      
+      <script type="text/javascript">
+      	// load I18N bundles
+		jQuery(document).ready(function() {
+			loadBundles('pt_BR');
+					
+			// configure language combo box
+			jQuery('#lang').change(function() {
+				var selection = jQuery('#lang option:selected').val();
+				loadBundles(selection != 'browser' ? selection : null);
+				jQuery('#langBrowser').empty();
+				if(selection == 'browser') {
+					jQuery('#langBrowser').text('('+jQuery.i18n.browserLang()+')');
+				}
+			});
+			
+			// load files just for display purposes...
+			jQuery('h4').each(function() {
+				var file = 'bundle/' + jQuery(this).text();
+				var code = jQuery(this).next().next('code');
+				jQuery.get(file, function(data) {
+					data = data.replace(/\n/mg, '<br/>');
+					code.html(data);
+				});
+			});
+			// ... and configure links to show/hide them
+			jQuery('a.toggle').bind('click', function() {
+			  jQuery(this).next('code').slideToggle();
+				return false;
+			});
+		});
+		
+		function loadBundles(lang) {
+			jQuery.i18n.properties({
+			    name:'Messages', 
+			    path:'bundle/', 
+			    mode:'both',
+			    language:lang, 
+			    callback: function() {
+			        updateExamples();
+			    }
+			});
+		}
+		
+		function updateExamples() {
+			// Accessing values through the map
+			var ex1 = 'msg_hello';
+			var ex2 = 'msg_complex'; var ex2P = 'John';
+			var ex3 = 'msg_url'; var ex3P = 'solution_1';
+			var ex4 = 'inexistent_key';
+            var ex5 = 'msg_multi_placeholder'; var ex5P1 = 'beautiful'; var ex5P2 = 'fishing';
+            var ex6 = 'msg_multi_placeholder_corrected'; var ex6P1 = 'beautiful'; var ex6P2 = 'fishing';
+			jQuery('#mapExamples')
+				.empty()
+				.append('<li><code class="i18n">jQuery.i18n.prop(\''+ex1+'\')</code>  -->  '+jQuery.i18n.prop(ex1)+'</li>')
+				.append('<li><code class="i18n">jQuery.i18n.prop(\''+ex2+'\',\''+ex2P+'\')</code>  -->  '+jQuery.i18n.prop(ex2, ex2P)+'</li>')
+				.append('<li><code class="i18n">jQuery.i18n.prop(\''+ex3+'\',\''+ex3P+'\')</code>  -->  '+jQuery.i18n.prop(ex3, ex3P)+'</li>')
+				.append('<li><code class="i18n">jQuery.i18n.prop(\''+ex4+'\')</code>  -->  '+jQuery.i18n.prop(ex4)+'</li>')
+                .append('<li><code class="i18n">jQuery.i18n.prop(\''+ex5+'\',\''+ex5P1+'\',\''+ex5P2+'\')</code>  -->  '+jQuery.i18n.prop(ex5, ex5P1, ex5P2)+'</li>')
+                .append('<li><code class="i18n">jQuery.i18n.prop(\''+ex6+'\',\''+ex6P1+'\',\''+ex6P2+'\')</code>  -->  '+jQuery.i18n.prop(ex6, ex6P1, ex6P2)+'</li>');
+				
+		
+			// Accessing values through a JS variable
+			var ex21 = 'msg_hello';
+			var ex22 = 'msg_world';
+			var ex23 = 'msg_complex'; var ex23P = 'John'; 
+			var ex24 = 'inexistent_key';
+			jQuery('#varExamples')
+				.empty()
+				.append('<li><code class="i18n">'+ex21+'</code>  -->  '+eval(ex21)+'</li>')
+				.append('<li><code class="i18n">'+ex22+'</code>  -->  '+eval(ex22)+'</li>')
+				.append('<li><code class="i18n">'+ex23+'(\''+ex23P+'\')</code>  -->  '+eval(ex23+'(\''+ex23P+'\')')+'</li>')
+				.append('<li><code class="i18n">'+ex24+'</code>  -->  <small><i>(browser would report a missing JS symbol)</i></small></li>');
+		}
+      </script>
+   </HEAD>
+   
+   <BODY>
+      <h2>jQuery.i18n.properties :: Demo</h2>
+      
+      <div class="left">
+        <h3>I18N Bundles</h3>
+        <h4>Messages.properties</h4>
+  	    <a href="#" class="toggle">[toggle contents]</a>
+        <code class="files"></code><br/>
+        
+        <h4>Messages_pt.properties</h4>
+        <a href="#" class="toggle">[toggle contents]</a>
+        <code class="files"></code><br/>
+        
+        <h4>Messages_pt_BR.properties</h4>
+        <a href="#" class="toggle">[toggle contents]</a>
+        <code class="files"></code><p/><p/><p/>
+        
+        
+        <h3>Examples</h3>
+        <div id="langBox">
+  	      Language:
+  	      <select id="lang">
+  			<option value="browser">Indicated by the browser</option>
+  			<option value="en">en</option>
+  			<option value="pt">pt</option>
+  			<option value="pt_BR" selected>pt_BR</option>
+  		  </select>
+  		  <span id="langBrowser"></span>
+  	  </div>
+        
+        <h4>Accessing values through the map</h4>
+        <ul id="mapExamples"></ul>
+        
+        <h4>Accessing values through a JS variable</h4>
+        <ul id="varExamples"></ul>
+      </div>
+   </BODY>
+</HTML>
