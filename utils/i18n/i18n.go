@@ -19,7 +19,6 @@ func Get(req *http.Request,translationID string, args ...interface{}) string {
 		T,_ = i18n.Tfunc("zh-cn")
 	}
 	return T(translationID,args...)
-
 }
 
 func Success(req *http.Request) string {
@@ -32,6 +31,14 @@ func Disconnect(req *http.Request) string {
 
 func PageNotFound(req *http.Request) string {
 	return Get(req,"page_not_found")
+}
+
+func ReadDomainInsufficient(req *http.Request,domain_id string) string {
+	return Get(req,"read_domain_insufficient",domain_id)
+}
+
+func WriteDomainInsufficient(req *http.Request,domain_id string) string {
+	return Get(req,"write_domain_insufficient",domain_id)
 }
 
 // 初始化i18n文件

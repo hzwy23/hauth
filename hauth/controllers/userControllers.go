@@ -103,7 +103,7 @@ func (this userController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.DomainAuth(ctx.Request,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"error_user_no_auth"))
 		return
 	}
@@ -158,7 +158,7 @@ func (this userController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.DomainAuth(ctx.Request,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_user_no_auth"))
 		return
 	}
@@ -387,7 +387,7 @@ func (this userController) Put(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,did,"w"){
+	if !hrpc.DomainAuth(ctx.Request,did,"w"){
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"error_user_modify_passwd"))
 		return
@@ -561,7 +561,7 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,did,"w"){
+	if !hrpc.DomainAuth(ctx.Request,did,"w"){
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 401, i18n.Get(ctx.Request,"error_user_modify_passwd"))
 		return

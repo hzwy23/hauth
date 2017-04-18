@@ -6,6 +6,17 @@
 - id: page_not_found
   translation: "您访问的页面不存在"
 
+- id: read_domain_insufficient
+  translation: "您没有被授权读取这个域[{{.Domain_id}}]中的信息"
+- id: write_domain_insufficient
+  translation: "您没有被授权在这个域[{{.Domain_id}}]中新增,修改,删除信息."
+
+- id: error_sql_begin
+  translation: "开启事物处理失败"
+
+- id: error_unmarsh_json
+  translation: "解析json格式数据失败,请联系管理员"
+
 - id: as_of_date_domain_permission_denied
   translation: "您没有权限访问这个域"
 
@@ -300,4 +311,36 @@
 
 - id: ca_add_direction_id
   translation: "新增费用方向信息失败"
+- id: ca_error_query_amart_group_rules
+  translation: "查询规则组中分摊规则信息失败"
 
+- id: ca_error_delete_amart_group_config
+  translation: "删除分摊规则组中的分摊规则失败"
+
+- id: ca_error_submit_amart_group_config
+  translation: "提交删除规则组中的分摊规则请求失败"
+
+- id: ca_error_add_amart_group_config
+  translation: "在分摊规则组中新增分摊规则失败"
+
+- id: ca_error_update_amart_group_config
+  translation: "在分摊规则组中更新分摊规则失败"
+- id: ca_error_query_dispatch
+  translation: "查询分摊批次信息失败."
+- id: ca_error_add_dispatch
+  translation: "新增批次信息失败"
+
+
+- id: ca_error_put_dispatch
+  translation: "修改批次信息失败"
+- id: ca_error_delete_dispatch
+  translation: "修改批次信息失败"
+- id: ca_error_dispatch_running
+  translation: "批次运行中,不能被修改"
+- id: ca_error_dispatch_history
+  translation: "删除批次历史信息失败"
+
+- id: ca_error_cost_query
+  translation: "查询费用信息失败"
+- id: ca_error_driver_query
+  translation: "查询动因信息失败"

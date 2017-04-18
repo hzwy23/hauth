@@ -99,7 +99,7 @@ func (this roleController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"r"){
+	if !hrpc.DomainAuth(ctx.Request,domain_id,"r"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
@@ -158,7 +158,7 @@ func (this roleController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,domainid,"w"){
+	if !hrpc.DomainAuth(ctx.Request,domainid,"w"){
 		logs.Error("没有权限在这个域中新增角色信息")
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
@@ -296,7 +296,7 @@ func (this roleController) Update(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx,did,"w"){
+	if !hrpc.DomainAuth(ctx.Request,did,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}

@@ -100,7 +100,7 @@ func (this orgController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx, domain_id, "r") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
@@ -168,7 +168,7 @@ func (this orgController) Delete(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx,domain_id,"w"){
+	if !hrpc.DomainAuth(ctx.Request,domain_id,"w"){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -231,7 +231,7 @@ func (this orgController) Update(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx, did, "w") {
+	if !hrpc.DomainAuth(ctx.Request, did, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -340,7 +340,7 @@ func (this orgController) Post(ctx *context.Context) {
 	up_org_id := ctx.Request.FormValue("Up_org_id")
 	domain_id := ctx.Request.FormValue("Domain_id")
 
-	if !hrpc.CheckDomain(ctx, domain_id, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -504,7 +504,7 @@ func (this orgController) Download(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx, domain_id, "r") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
@@ -685,7 +685,7 @@ func (this orgController)Upload(ctx *context.Context){
 			one.Up_org_id = utils.JoinCode(one.Domain_id,val.Cells[2].Value)
 			one.Create_user = jclaim.User_id
 
-			if !hrpc.CheckDomain(ctx, one.Domain_id, "w") {
+			if !hrpc.DomainAuth(ctx.Request, one.Domain_id, "w") {
 				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 				return
 			}

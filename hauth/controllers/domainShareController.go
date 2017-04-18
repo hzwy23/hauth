@@ -69,7 +69,7 @@ func (DomainShareController) Page(ctx *context.Context) {
 	// config this domain to others
 	var domain_id = ctx.Request.FormValue("domain_id")
 
-	if !hrpc.CheckDomain(ctx, domain_id, "r") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
@@ -131,7 +131,7 @@ func (this DomainShareController) Get(ctx *context.Context) {
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.CheckDomain(ctx, domain_id, "r") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
 		return
 	}
@@ -229,7 +229,7 @@ func (this DomainShareController) Post(ctx *context.Context) {
 	target_domain_id := ctx.Request.FormValue("target_domain_id")
 	auth_level := ctx.Request.FormValue("auth_level")
 
-	if !hrpc.CheckDomain(ctx, domain_id, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -305,7 +305,7 @@ func (this DomainShareController) Delete(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx, domain_id, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
@@ -366,7 +366,7 @@ func (this DomainShareController) Put(ctx *context.Context) {
 	level := ctx.Request.FormValue("auth_level")
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if !hrpc.CheckDomain(ctx, domain_id, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 420, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}

@@ -6,6 +6,18 @@
 - id: page_not_found
   translation: "The page you visit does not exist"
 
+- id: read_domain_insufficient
+  translation: "You do not have permission to access this domain [{{.Domain_id}}]"
+- id: write_domain_insufficient
+  translation: "You have no authorized to modify any information in the domain [{{.Domain_id}}]"
+
+- id: error_sql_begin
+  translation: "Start transaction failure"
+
+- id: error_unmarsh_json
+  translation: "Parsing the json format data failed, please contact your administrator"
+
+
 - id: as_of_date_domain_permission_denied
   translation: "You do not have permission to access this domain"
 
@@ -296,3 +308,20 @@
 
 - id: ca_add_direction_id
   translation: "Add new cost direction information failure"
+
+- id: ca_error_query_amart_group_rules
+  translation: "查询规则组中分摊规则信息失败"
+
+- id: ca_error_delete_amart_group_config
+  translation: "删除分摊规则组中的分摊规则失败"
+
+- id: ca_error_submit_amart_group_config
+  translation: "提交删除规则组中的分摊规则请求失败"
+
+- id: ca_error_add_amart_group_config
+  translation: "在分摊规则组中新增分摊规则失败"
+
+- id: ca_error_update_amart_group_config
+  translation: "在分摊规则组中更新分摊规则失败"
+- id: ca_error_query_dispatch
+  translation: "查询分摊批次信息失败."

@@ -11,6 +11,7 @@ import (
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/asofdate/utils/i18n"
+	"net/http"
 )
 
 
@@ -116,9 +117,9 @@ func BasicAuth(ctx *context.Context) bool {
 // 返回值是-1 表示没有读写权限
 // 返回值是1 表示有读取权限，没有写入权限
 // 返回值是2 表示有读写权限
-func DomainAuth(ctx *context.Context, domain_id string) int {
+func CheckDomainAuthLevel(req *http.Request, domain_id string) int {
 	level := -1
-	cookie, _ := ctx.Request.Cookie("Authorization")
+	cookie, _ := req.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
@@ -139,8 +140,8 @@ func DomainAuth(ctx *context.Context, domain_id string) int {
 // 第一个参数是上下文 context
 // 第二个参数是用户想要访问的域
 // 第三个参数是用户想要的权限，分两种情况，r 表示只读， w 表示读写
-func CheckDomain(ctx *context.Context, domain_id string, pattern string) bool {
-	level := DomainAuth(ctx, domain_id)
+func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
+	level := CheckDomainAuthLevel(req, domain_id)
 	switch pattern {
 	case "r":
 		if level != -1 {

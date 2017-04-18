@@ -332,7 +332,7 @@ func (this *domainController) Put(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.CheckDomain(ctx, domainId, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domainId, "w") {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 		return
 	}
