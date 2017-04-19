@@ -45,32 +45,31 @@ func (this ThemeResourceModel) GetDetails(res_id string, theme_id string) ([]the
 	return rst, err
 }
 
-func (this ThemeResourceModel) Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id string) error {
+func (this ThemeResourceModel) Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id,res_open_type string) error {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
-	_,err := dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
+	_,err := dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id,res_open_type, theme_id, res_id)
 	return err
 }
 
 
-func (this ThemeResourceModel) Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id string) (string, error) {
-	res_type := "0"
-	err := dbobj.QueryRow(sys_rdbms_013, res_id).Scan(&res_type)
-	if err != nil {
-		logs.Error(err)
-		return error_resource_queryType, err
-	}
+func (this ThemeResourceModel) Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id,res_type string) (string, error) {
 
-	_,err = dbobj.Exec(sys_rdbms_008, theme_id, res_id, res_url, res_type, res_by_color, res_class, res_group_id, res_img, res_sort_id)
+	_,err := dbobj.Exec(sys_rdbms_008, theme_id, res_id, res_url, res_type, res_by_color, res_class, res_group_id, res_img, res_sort_id)
 
 	return error_resource_addTheme, err
 
 }
 
-func (this ThemeResourceModel) CheckThemeExists(theme_id string, res_id string) int {
-	cnt := 0
+func (this ThemeResourceModel) CheckThemeExists(theme_id string, res_id string) (int,string) {
+	cnt := -1
 	err := dbobj.QueryRow(sys_rdbms_006, theme_id, res_id).Scan(&cnt)
 	if err != nil {
-		return -1
+		return -1,""
 	}
-	return cnt
+	res_type := "4"
+	err = dbobj.QueryRow(sys_rdbms_013,res_id).Scan(&res_type)
+	if err != nil {
+		return -1,""
+	}
+	return cnt,res_type
 }

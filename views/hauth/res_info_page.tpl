@@ -64,15 +64,16 @@
                 <table class="table table-bordered table-condensed" style="margin-top: 20px;">
                     <tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>
                     <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源编码</td>
-                        <td id="h-resource-show-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源描述</td>
-                        <td id="h-resource-show-name" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-name" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">上级资源编码</td>
-                        <td id="h-resource-show-up-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-up-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源属性</td>
-                        <td id="h-resource-show-attr-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-attr-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源类别</td>
-                        <td id="h-resource-show-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td>
+                        <td id="h-resource-show-type-id" style="display: none;"></td></tr>
                 </table>
             </div>
         </div>
@@ -99,21 +100,25 @@
                 <table class="table table-bordered table-condensed" style="margin-top: 20px;">
                     <tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题编码</td>
-                        <td id="h-resource-show-theme-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-theme-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题名称</td>
-                        <td id="h-resource-show-theme-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-theme-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
+                    <tr style="height: 36px;line-height: 36px; display: none;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>
+                        <td id="h-resource-show-res-res-type" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>
+                        <td id="h-resource-show-res-res-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源色彩</td>
-                        <td id="h-resource-show-res-bg-color" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-bg-color" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源样式</td>
-                        <td id="h-resource-show-res-class" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-class" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">图标</td>
-                        <td id="h-resource-show-res-img" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-img" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">路由</td>
-                        <td id="h-resource-show-res-url" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-url" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">分组号</td>
-                        <td id="h-resource-show-res-group-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-group-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                     <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">组内排序号</td>
-                        <td id="h-resource-show-res-sort-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
+                        <td id="h-resource-show-res-sort-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
                 </table>
             </div>
         </div>
@@ -148,6 +153,7 @@
                 header:"新增资源",
                 body:$("#res_input_form").html(),
                 height:"460px",
+                width:"744px",
                 callback:function (hmode) {
                     $.HAjaxRequest({
                         url:"/v1/auth/resource/post",
@@ -178,6 +184,7 @@
                     $("#h-res-add-res-img").parent().parent().show();
                     $("#h-res-add-res-class").parent().parent().show();
                     $("#h-res-add-res-url").parent().parent().show();
+                    $("#h-res-modify-res-open-type").parent().parent().show();
                     break;
                 case "1":
                     // 子页面系统
@@ -205,6 +212,7 @@
                     $("#h-res-add-res-img").parent().parent().show();
                     $("#h-res-add-res-class").parent().parent().show();
                     $("#h-res-add-res-url").parent().parent().show();
+                    $("#h-res-modify-res-open-type").parent().parent().show();
                     break;
                 case "2":
                     // 功能按钮
@@ -232,6 +240,7 @@
                     $("#h-res-add-res-img").parent().parent().hide();
                     $("#h-res-add-res-class").parent().parent().hide();
                     $("#h-res-add-res-url").parent().parent().show();
+                    $("#h-res-modify-res-open-type").parent().parent().hide();
                     break;
                 case "4":
                     // 虚拟节点
@@ -258,6 +267,7 @@
                     $("#h-res-add-res-img").parent().parent().hide();
                     $("#h-res-add-res-class").parent().parent().hide();
                     $("#h-res-add-res-url").parent().parent().hide();
+                    $("#h-res-modify-res-open-type").parent().parent().hide();
                     break;
             }
         },
@@ -274,6 +284,8 @@
                     $("#h-resource-show-res-url").html("-")
                     $("#h-resource-show-res-group-id").html("-")
                     $("#h-resource-show-res-sort-id").html("-")
+                    $("#h-resource-show-res-res-type").html("-")
+                    $("#h-resource-show-res-res-type-desc").html("-")
                 } else {
                     $(e).each(function(index,element){
                         $("#h-resource-show-theme-id").html(element.theme_id)
@@ -284,6 +296,15 @@
                         $("#h-resource-show-res-url").html(element.res_url)
                         $("#h-resource-show-res-group-id").html(element.group_id)
                         $("#h-resource-show-res-sort-id").html(element.sort_id)
+
+                        $("#h-resource-show-res-res-type").html(element.res_type)
+                        if (element.res_type == "0") {
+                            $("#h-resource-show-res-res-type-desc").html("内嵌页面")
+                        } else if (element.res_type == "1") {
+                            $("#h-resource-show-res-res-type-desc").html("新建选项卡")
+                        } else {
+                            $("#h-resource-show-res-res-type-desc").html("")
+                        }
                     })
                 }
             })
@@ -319,19 +340,22 @@
                                     $("#h-resource-show-up-id").html(element.res_up_id)
                                     $("#h-resource-show-attr-desc").html(element.res_attr_desc)
                                     $("#h-resource-show-type-desc").html(element.res_type_desc)
+                                    $("#h-resource-show-type-id").html(element.res_type)
                                 })
                             })
                             var theme_id = $("#h-resource-theme-style-code").val();
                             $.getJSON("/v1/auth/resource/queryTheme",{res_id:id,theme_id:theme_id},function (e) {
                                 if (e.length==0){
-                                    $("#h-resource-show-theme-id").html("-")
-                                    $("#h-resource-show-theme-desc").html("-")
-                                    $("#h-resource-show-res-bg-color").html("-")
-                                    $("#h-resource-show-res-class").html("-")
-                                    $("#h-resource-show-res-img").html("-")
-                                    $("#h-resource-show-res-url").html("-")
-                                    $("#h-resource-show-res-group-id").html("-")
-                                    $("#h-resource-show-res-sort-id").html("-")
+                                    $("#h-resource-show-theme-id").html("-");
+                                    $("#h-resource-show-theme-desc").html("-");
+                                    $("#h-resource-show-res-bg-color").html("-");
+                                    $("#h-resource-show-res-class").html("-");
+                                    $("#h-resource-show-res-img").html("-");
+                                    $("#h-resource-show-res-url").html("-");
+                                    $("#h-resource-show-res-group-id").html("-");
+                                    $("#h-resource-show-res-sort-id").html("-");
+                                    $("#h-resource-show-res-res-type").html("-");
+                                    $("#h-resource-show-res-res-type-desc").html("-");
                                 } else {
                                     $(e).each(function(index,element){
                                         $("#h-resource-show-theme-id").html(element.theme_id)
@@ -342,6 +366,14 @@
                                         $("#h-resource-show-res-url").html(element.res_url)
                                         $("#h-resource-show-res-group-id").html(element.group_id)
                                         $("#h-resource-show-res-sort-id").html(element.sort_id)
+                                        $("#h-resource-show-res-res-type").html(element.res_type)
+                                        if (element.res_type == "0") {
+                                            $("#h-resource-show-res-res-type-desc").html("内嵌页面")
+                                        } else if (element.res_type == "1") {
+                                            $("#h-resource-show-res-res-type-desc").html("新建选项卡")
+                                        } else {
+                                            $("#h-resource-show-res-res-type-desc").html("")
+                                        }
                                     })
                                 }
                             })
@@ -352,6 +384,13 @@
         },
         edit:function(){
             var res_id = $("#h-resource-show-id").html();
+            if (res_id == "-" || res_id == "") {
+                $.Notify({
+                    message:"请在菜单资源中选择需要编辑的菜单",
+                    type:"warning",
+                });
+                return
+            }
             var res_name = $("#h-resource-show-name").html();
             if ( res_id == "" ){
                 $.Notify({
@@ -389,6 +428,21 @@
         },
         configTheme:function(){
 
+            var res_type = $("#h-resource-show-type-id").html();
+            if (res_type == "4") {
+                $.Notify({
+                    message:"虚拟节点不允许编辑",
+                    type:"warning",
+                });
+                return
+            } else if (res_type == "") {
+                $.Notify({
+                    message:"请在菜单资源树中,选择需要设置主题的菜单",
+                    type:"warning",
+                });
+                return
+            }
+
             $.Hmodal({
                 header:"配置主题信息",
                 body:$("#res_modify_theme_form").html(),
@@ -403,6 +457,7 @@
                     var res_by_color = $("#h-res-modify-res-bg-color").val()
                     var res_group_id = $("#h-res-modify-group-id").val()
                     var res_sort_id = $("#h-res-modify-sort-id").val()
+                    var res_type = $("#h-res-modify-res-type").val()
 
                     $.HAjaxRequest({
                         url:"/v1/auth/resource/config/theme",
@@ -416,6 +471,7 @@
                             res_by_color:res_by_color,
                             res_group_id:res_group_id,
                             res_sort_id:res_sort_id,
+                            res_openType:res_type,
                         },
                         success:function(){
                             $(hmode).remove()
@@ -435,22 +491,35 @@
                     var res_url = $("#h-resource-show-res-url").html()
                     var res_group_id = $("#h-resource-show-res-group-id").html()
                     var res_sort_id = $("#h-resource-show-res-sort-id").html()
+                    var open_type = $("#h-resource-show-res-res-type").html();
+
+                    if (res_type == "2") {
+                        $("#h-res-modify-res-class").parent().parent().hide()
+                        $("#h-res-modify-res-img").parent().parent().hide()
+                        $("#h-res-modify-res-bg-color").parent().parent().hide()
+                        $("#h-res-modify-group-id").parent().parent().hide()
+                        $("#h-res-modify-sort-id").parent().parent().hide()
+                        $("#h-res-modify-res-type").parent().parent().hide()
+                    } else {
+                        $("#h-res-modify-res-class").Hselect({
+                            height:"30px",
+                            value:res_class,
+                        });
+                        $("#h-res-modify-res-type").Hselect({
+                            height: "30px",
+                            value: open_type,
+                        });
+                        $("#h-res-modify-res-img").val(res_img)
+                        $("#h-res-modify-res-bg-color").val(res_by_color)
+                        $("#h-res-modify-group-id").val(res_group_id)
+                        $("#h-res-modify-sort-id").val(res_sort_id)
+                    }
 
                     $("#h-res-modify-theme-id").Hselect({
                         height:"30px",
                         value:theme_id,
                     });
-                    $("#h-res-modify-res-class").Hselect({
-                        height:"30px",
-                        value:res_class,
-                    });
-
                     $("#h-res-modify-res-url").val(res_url)
-                    $("#h-res-modify-res-img").val(res_img)
-                    $("#h-res-modify-res-bg-color").val(res_by_color)
-                    $("#h-res-modify-group-id").val(res_group_id)
-                    $("#h-res-modify-sort-id").val(res_sort_id)
-
                 },
             })
         },
@@ -494,6 +563,17 @@
                 </select>
             </div>
         </div>
+
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">打开方式：</label>
+            <div class="col-sm-12">
+                <select id="h-res-modify-res-open-type" name="res_open_type" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="0">内嵌页面</option>
+                    <option value="1">新建选项卡</option>
+                </select>
+            </div>
+        </div>
+
         <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
             <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">资源编码：</label>
             <div class="col-sm-12">
@@ -595,6 +675,15 @@
                     <option value="tile">小方块图形</option>
                     <option value="tile tile-wide">长方形图形</option>
                     <option value="tile tile-large">大方块图形</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="margin-top: 8px;">
+            <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">打开方式：</label>
+            <div class="col-sm-12">
+                <select id="h-res-modify-res-type" name="res_type" class="form-control" style="height: 30px; line-height: 30px;">
+                    <option value="0">内嵌页面</option>
+                    <option value="1">新建选项卡</option>
                 </select>
             </div>
         </div>

@@ -15,14 +15,15 @@ type HomePageMenusModel struct {
 }
 
 type homePageMenuData struct {
-	Res_id       string
-	Res_name     string
-	Res_url      string
-	Res_bg_color string
-	Res_class    string
-	Res_img      string
-	Group_id     string
-	Res_up_id    string
+	Res_id        string
+	Res_name      string
+	Res_url       string
+	Res_bg_color  string
+	Res_class     string
+	Res_img       string
+	Group_id      string
+	Res_up_id     string
+	Res_open_type string
 }
 
 func (this HomePageMenusModel) Get(id, typeId, useId string) ([]byte, error) {
@@ -55,7 +56,7 @@ func (this HomePageMenusModel) Get(id, typeId, useId string) ([]byte, error) {
 	}
 
 	// 获取角色拥有的资源信息
-	role_resource,err := this.mrs.Gets(role_list,id)
+	role_resource,err := this.mrs.Gets(role_list,id,typeId)
 	if err != nil {
 		logs.Error(err)
 		return nil,err
@@ -69,7 +70,7 @@ func (this HomePageMenusModel) Get(id, typeId, useId string) ([]byte, error) {
 	// 获取角色拥有的资源信息
 	var rst []homePageMenuData
 	for _,t_res := range theme_resource {
-		if val,ok := mres[t_res.Res_id]; ok && t_res.Res_type == typeId {
+		if val,ok := mres[t_res.Res_id]; ok {
 			var one homePageMenuData
 			one.Res_id = t_res.Res_id
 			one.Res_up_id = val.Res_up_id
@@ -79,6 +80,7 @@ func (this HomePageMenusModel) Get(id, typeId, useId string) ([]byte, error) {
 			one.Res_class = t_res.Res_class
 			one.Res_img = t_res.Res_img
 			one.Res_url = t_res.Res_url
+			one.Res_open_type = t_res.Res_type
 			rst = append(rst,one)
 		}
 	}

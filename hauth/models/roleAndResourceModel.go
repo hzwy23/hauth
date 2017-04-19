@@ -236,6 +236,17 @@ func (this RoleAndResourceModel) Gets(roles []string,res_id ...string)([]resData
 			logs.Error(err)
 			return nil,err
 		}
+	} else if len(res_id) == 2 {
+		tmp,err := this.mres.GetChildren(res_id[0])
+		if err != nil {
+			logs.Error(err)
+			return nil,err
+		}
+		for _, val := range tmp {
+			if val.Res_type == res_id[1] {
+				rst_res = append(rst_res,val)
+			}
+		}
 	} else {
 		var err error
 		rst_res,err = this.mres.Get()

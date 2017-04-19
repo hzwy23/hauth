@@ -66,8 +66,7 @@ li {
     user-select:none
 }
 .h-modal-content{
-    border:#009966 solid 2px;
-    border-radius:5px;
+    background-color: #fafafa;
 }
 .h-modal-title{
     text-overflow:ellipsis;

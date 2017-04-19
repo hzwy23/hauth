@@ -79,7 +79,7 @@ func (ResourceModel) Query(res_id string) ([]resData, error) {
 }
 
 // 新增资源
-func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id string) error {
+func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id,res_open_type string) error {
 	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
 	tx, err := dbobj.Begin()
 	if err != nil {
@@ -96,7 +96,7 @@ func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme
 	}
 
 	// update sys_theme_value
-	_, err = tx.Exec(sys_rdbms_073, theme_id, res_id, res_url, res_type, res_bg_color, res_class, group_id, res_img, sort_id)
+	_, err = tx.Exec(sys_rdbms_073, theme_id, res_id, res_url, res_open_type, res_bg_color, res_class, group_id, res_img, sort_id)
 	if err != nil {
 		logs.Error(err)
 		tx.Rollback()

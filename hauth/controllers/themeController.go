@@ -96,30 +96,39 @@ func (this themeController) Put(ctx *context.Context) {
 	res_by_color := ctx.Request.FormValue("res_by_color")
 	res_group_id := ctx.Request.FormValue("res_group_id")
 	res_sort_id := ctx.Request.FormValue("res_sort_id")
+	res_open_type := ctx.Request.FormValue("res_openType")
 
 	if govalidator.IsNull(res_sort_id) {
 		res_sort_id = "0"
 	}
 
-	flag := this.mres.CheckThemeExists(theme_id, res_id)
-	if flag <= 0 {
-		// 没有这个主题的配置信息,新增主题信息
-		msg, err := this.mres.Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id)
-		if err != nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)
+	flag,res_type := this.mres.CheckThemeExists(theme_id, res_id)
+	if govalidator.IsIn(res_type,"0","1","2") {
+		if flag == 0 {
+			// 没有这个主题的配置信息,新增主题信息
+			msg, err := this.mres.Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id,res_open_type)
+			if err != nil {
+				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)
+				return
+			}
+			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			return
+		} else if flag > 0{
+			// 更新主题信息
+			err := this.mres.Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id,res_open_type)
+			if err != nil {
+				logs.Error(err)
+				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"), err)
+				return
+			}
+			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			return
+		} else {
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"))
 			return
 		}
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
-		return
 	} else {
-		// 新增主题配置信息
-		err := this.mres.Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id)
-		if err != nil {
-			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"), err)
-			return
-		}
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_theme_virtual_forbid"))
 		return
 	}
 }

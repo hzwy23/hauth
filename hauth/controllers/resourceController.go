@@ -153,6 +153,8 @@ func (this resourceController) Post(ctx *context.Context) {
 	res_bg_color := ctx.Request.FormValue("res_bg_color")
 	group_id := ctx.Request.FormValue("group_id")
 	sort_id := ctx.Request.FormValue("sort_id")
+	res_open_type := ctx.Request.FormValue("res_open_type")
+
 	res_attr := "1"
 	if res_type == "0" || res_type == "4" {
 		res_attr = "0"
@@ -211,7 +213,14 @@ func (this resourceController) Post(ctx *context.Context) {
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_sort"))
 			return
 		}
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
+
+		if govalidator.IsEmpty(res_open_type) {
+			logs.Error("打开方式不能为空")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_open_type"))
+			return
+		}
+
+		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id,res_open_type)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)
@@ -255,7 +264,13 @@ func (this resourceController) Post(ctx *context.Context) {
 			return
 		}
 
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
+		if govalidator.IsEmpty(res_open_type) {
+			logs.Error("打开方式不能为空")
+			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_open_type"))
+			return
+		}
+
+		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id,res_open_type)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_resource_exec"), err)
@@ -280,7 +295,9 @@ func (this resourceController) Post(ctx *context.Context) {
 		group_id = ""
 		res_class = ""
 		res_bg_color = ""
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id)
+		res_open_type = ""
+		res_open_type = ""
+		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id,res_open_type)
 		if err != nil {
 			logs.Error(err)
 			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_exec"), err)

@@ -255,6 +255,11 @@
 - id: error_resource_up_id
   translation: "菜单上级编码不能为空"
 
+- id: error_resource_open_type
+  translation: "菜单打开方式不能为空"
+- id: error_theme_virtual_forbid
+  translation: "虚拟节点不能设置主题信息"
+
 - id: error_role_query
   translation: "查询角色信息失败"
 
@@ -344,3 +349,8 @@
   translation: "查询费用信息失败"
 - id: ca_error_driver_query
   translation: "查询动因信息失败"
+
+- id: ca_error_driver_id_format
+  translation: "动因编码必须由1-30位字母或数字组成"
+- id: ca_error_driver_desc_format
+  translation: "动因名称不能为空"

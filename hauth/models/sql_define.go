@@ -6,14 +6,14 @@ var (
 	sys_rdbms_003 = `select i.domain_id from sys_user_info t inner join sys_org_info i on t.org_unit_id = i.org_unit_id where t.user_id = ?`
 	sys_rdbms_004 = `select domain_id from sys_role_info where role_id = ?`
 	sys_rdbms_005 = `update sys_resource_info set res_name = ? where res_id = ?`
-	sys_rdbms_006 = `select count(*) as cnt from sys_theme_value where theme_id = ? and res_id = ?`
+	sys_rdbms_006 = `select count(*) from sys_theme_value where theme_id = ? and res_id = ?`
 	sys_rdbms_007 = `delete from sys_user_info where user_id = ?`
 	sys_rdbms_008 = `insert into sys_theme_value(uuid,theme_id,res_id,res_url,res_type,res_bg_color,res_class,group_id,res_img,sort_id) value(uuid(),?,?,?,?,?,?,?,?,?)`
-	sys_rdbms_009 = `update sys_theme_value set res_url = ?, res_bg_color = ?, res_class = ?, res_img = ?, group_id = ?, sort_id = ? where theme_id = ? and res_id = ?`
+	sys_rdbms_009 = `update sys_theme_value set res_url = ?, res_bg_color = ?, res_class = ?, res_img = ?, group_id = ?, sort_id = ?, res_type = ? where theme_id = ? and res_id = ?`
 	sys_rdbms_010 = `select user_id,user_passwd,status_id,continue_error_cnt from sys_sec_user where user_id = ?`
-	sys_rdbms_011 = `select distinct t2.res_url from sys_user_theme t1 inner join sys_theme_value t2 on t1.theme_id = t2.theme_id where t1.user_id = ? and t2.res_id = ? and t2.res_type = '0'`
+	sys_rdbms_011 = `select distinct t2.res_url from sys_user_theme t1 inner join sys_theme_value t2 on t1.theme_id = t2.theme_id inner join sys_resource_info t3 on t2.res_id = t3.res_id where t1.user_id = ? and t2.res_id = ? and t3.res_type = '0'`
 	sys_rdbms_012 = `select uuid,user_id,handle_time,client_ip,status_code,method,url,data from sys_handle_logs t where t.domain_id = ? order by handle_time desc`
-	sys_rdbms_013 = `select res_type from sys_theme_value where theme_id = '1001' and res_id = ?`
+	sys_rdbms_013 = `select res_type from sys_resource_info where res_id = ?`
 	sys_rdbms_014 = `update sys_sec_user set user_passwd = ? where user_id = ? and user_passwd = ?`
 	sys_rdbms_015 = `update sys_sec_user set user_passwd = ? where user_id = ?`
 	sys_rdbms_016 = `update sys_sec_user set status_id = ? ,continue_error_cnt = '0' where user_id = ?`
@@ -22,7 +22,7 @@ var (
 	sys_rdbms_019 = `insert into sys_sec_user(user_id,user_passwd,status_id) values(?,?,?)`
 	sys_rdbms_020 = `update sys_sec_user set user_passwd = ? where user_id = ?`
 	sys_rdbms_021 = `update sys_user_info t set t.user_name = ?, t.user_phone = ?, t.user_email = ? ,t.user_maintance_date = now(), t.user_maintance_user = ?,t.org_unit_id = ? where t.user_id = ?`
-	sys_rdbms_022 = `select count(*) from sys_user_info t inner join sys_role_user_relation r on t.user_id = r.user_id inner join sys_role_resource_relat e on r.role_id = e.role_id inner join sys_theme_value v on e.res_id = v.res_id inner join sys_user_theme m on v.theme_id = m.theme_id and t.user_id = m.user_id where t.user_id = ? and v.res_url = ?`
+	sys_rdbms_022 = `select count(*) from sys_role_user_relation r inner join sys_role_resource_relat e on r.role_id = e.role_id inner join sys_theme_value v on e.res_id = v.res_id inner join sys_user_theme m on v.theme_id = m.theme_id and r.user_id = m.user_id where r.user_id = ? and v.res_url = ?`
 	sys_rdbms_023 = `select t.user_id,t.user_name,a.status_desc,t.user_create_date, t.user_owner,t.user_email,t.user_phone,i.org_unit_id,i.org_unit_desc,di.domain_id,di.domain_name,t.user_maintance_date,t.user_maintance_user,u.status_id from sys_user_info t inner join sys_sec_user u on t.user_id = u.user_id inner join sys_user_status_attr a on u.status_id = a.status_id inner join sys_org_info i on i.org_unit_id = t.org_unit_id inner join sys_domain_info di on i.domain_id = di.domain_id where t.user_id = ?`
 	sys_rdbms_024 = `update sys_user_theme set theme_id = ? where user_id = ?`
 	sys_rdbms_025 = `select t.domain_id as project_id, t.domain_name as project_name, s.domain_status_name  as status_name, t.domain_create_date  as maintance_date, t.domain_owner as user_id,t.domain_maintance_date,t.domain_maintance_user from sys_domain_info t inner join sys_domain_status_attr s on t.domain_status_id = s.domain_status_id`
