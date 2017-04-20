@@ -41,9 +41,14 @@ func WriteDomainInsufficient(req *http.Request,domain_id string) string {
 	return Get(req,"write_domain_insufficient",domain_id)
 }
 
+func I18nRegister(file string) {
+	i18n.LoadTranslationFile(file)
+}
+
 // 初始化i18n文件
 func init(){
+	// register system default i18n file
 	HOME:=os.Getenv("HBIGDATA_HOME")
-	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n","zh-cn.yaml"))
-	i18n.LoadTranslationFile(filepath.Join(HOME,"i18n","en-us.yaml"))
+	i18n.LoadTranslationFile(filepath.Join(HOME,"views","i18n","zh-cn.yaml"))
+	i18n.LoadTranslationFile(filepath.Join(HOME,"views","i18n","en-us.yaml"))
 }

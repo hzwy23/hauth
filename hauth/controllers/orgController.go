@@ -518,7 +518,7 @@ func (this orgController) Download(ctx *context.Context) {
 
 	var sheet *xlsx.Sheet
 	HOME := os.Getenv("HBIGDATA_HOME")
-	file, err := xlsx.OpenFile(filepath.Join(HOME, "upload","template","hauthOrgExportTemplate.xlsx"))
+	file, err := xlsx.OpenFile(filepath.Join(HOME, "views","uploadTemplate","hauthOrgExportTemplate.xlsx"))
 	if err != nil {
 		file = xlsx.NewFile()
 		sheet, err = file.AddSheet("机构信息")
@@ -674,6 +674,7 @@ func (this orgController)Upload(ctx *context.Context){
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_sheet"))
 		return
 	}
+
 	var data []models.SysOrgInfo
 	for index, val := range sheet.Rows {
 		if index > 0 {
@@ -692,6 +693,7 @@ func (this orgController)Upload(ctx *context.Context){
 			data = append(data,one)
 		}
 	}
+
 	err = this.models.Upload(data)
 	if err != nil {
 		logs.Error(err)

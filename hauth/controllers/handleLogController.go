@@ -103,7 +103,7 @@ func (this handleLogsController) Download(ctx *context.Context) {
 		return
 	}
 
-	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"upload","template","hauthHandleLogsTemplate.xlsx"))
+	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"views","uploadTemplate","hauthHandleLogsTemplate.xlsx"))
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_open_error"),err)
