@@ -42,7 +42,7 @@ CREATE TABLE `sys_domain_info` (
 
 LOCK TABLES `sys_domain_info` WRITE;
 /*!40000 ALTER TABLE `sys_domain_info` DISABLE KEYS */;
-INSERT INTO `sys_domain_info` VALUES ('demo','演示域','0','2017-04-12 22:01:44','admin','2017-04-12 22:01:44','admin'),('devops_product','FTP测试域','0','2017-03-21 09:31:01','admin','2017-04-12 22:13:14','ftpadmin'),('helloworld','helloworld','0','2017-04-16 17:50:56','admin','2017-04-20 19:23:06','admin'),('mas','管理会计','0','2017-03-01 10:58:18','admin','2017-04-11 22:08:03','ftpadmin'),('product','生产环境','0','2017-04-12 22:02:00','admin','2017-04-12 22:02:00','admin'),('vertex_root','系统顶级域空间','0','2016-12-26 16:43:19','sys','2017-03-13 19:44:37','demo');
+INSERT INTO `sys_domain_info` VALUES ('demo','演示域','1','2017-04-12 22:01:44','admin','2017-04-20 23:39:35','admin'),('devops_product','FTP测试域','1','2017-03-21 09:31:01','admin','2017-04-20 23:47:19','admin'),('helloworld','helloworld','1','2017-04-16 17:50:56','admin','2017-04-20 23:39:23','admin'),('mas','管理会计','0','2017-03-01 10:58:18','admin','2017-04-11 22:08:03','ftpadmin'),('product','生产环境','1','2017-04-12 22:02:00','admin','2017-04-20 23:39:30','admin'),('vertex_root','系统顶级域空间','0','2016-12-26 16:43:19','sys','2017-03-13 19:44:37','demo');
 /*!40000 ALTER TABLE `sys_domain_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,6 @@ CREATE TABLE `sys_org_info` (
   `org_unit_id` varchar(66) NOT NULL,
   `org_unit_desc` varchar(300) NOT NULL,
   `up_org_id` varchar(66) NOT NULL,
-  `org_status_id` char(1) NOT NULL,
   `domain_id` varchar(30) NOT NULL,
   `create_date` date NOT NULL,
   `maintance_date` date NOT NULL,
@@ -176,9 +175,7 @@ CREATE TABLE `sys_org_info` (
   `maintance_user` varchar(30) NOT NULL,
   `code_number` varchar(66) NOT NULL,
   PRIMARY KEY (`org_unit_id`),
-  KEY `FK_REFERENCE_15` (`org_status_id`),
   KEY `pk_sys_org_info_03_idx` (`domain_id`),
-  CONSTRAINT `FK_REFERENCE_15` FOREIGN KEY (`org_status_id`) REFERENCES `sys_org_status_attr` (`org_status_id`),
   CONSTRAINT `fk_sys_org_info_01` FOREIGN KEY (`domain_id`) REFERENCES `sys_domain_info` (`domain_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -189,32 +186,8 @@ CREATE TABLE `sys_org_info` (
 
 LOCK TABLES `sys_org_info` WRITE;
 /*!40000 ALTER TABLE `sys_org_info` DISABLE KEYS */;
-INSERT INTO `sys_org_info` VALUES ('devops_product_join_1111000011','FTP测试','root_vertex_system','0','devops_product','2017-03-21','2017-03-21','admin','admin','1111000011'),('devops_product_join_43142354','测试案例123','devops_product_join_1111000011','0','devops_product','2017-04-12','2017-04-13','ftpadmin','admin','43142354'),('devops_product_join_43214','他人委托人','devops_product_join_1111000011','0','devops_product','2017-04-13','2017-04-13','ftpadmin','admin','43214'),('mas_join_234fda','攀枝花市分行','mas_join_5233454','0','mas','2017-03-14','2017-03-14','admin','admin','234fda'),('mas_join_34124','工商银行','root_vertex_system','0','mas','2017-03-01','2017-03-01','admin','admin','34124'),('mas_join_45246543','武汉市分行','mas_join_512345423','0','mas','2017-03-01','2017-04-05','admin','demo','45246543'),('mas_join_4542346','孝感市分行','mas_join_512345423','0','mas','2017-03-01','2017-04-19','admin','demo','4542346'),('mas_join_512345423','湖北省分行','mas_join_34124','0','mas','2017-03-01','2017-04-05','admin','demo','512345423'),('mas_join_5233454','四川省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','5233454'),('mas_join_aefd','欧洲分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','aefd'),('mas_join_fdafdg','贵州省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fdafdg'),('mas_join_fdaga','重庆市分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fdaga'),('mas_join_fdagqe','宁夏省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fdagqe'),('mas_join_fdasfd','上海市分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fdasfd'),('mas_join_fdsagd','泸州市分行','mas_join_5233454','0','mas','2017-03-14','2017-03-14','admin','admin','fdsagd'),('mas_join_feqhda','海南省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','feqhda'),('mas_join_ffadg','安徽省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','ffadg'),('mas_join_fgasdbc','台湾省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fgasdbc'),('mas_join_fgasdf','成都市分行','mas_join_5233454','0','mas','2017-03-14','2017-03-14','admin','admin','fgasdf'),('mas_join_fgdasdf','南充市分行','mas_join_5233454','0','mas','2017-03-14','2017-03-14','admin','admin','fgdasdf'),('mas_join_fhadf','香港特别行政区分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','fhadf'),('mas_join_gasdh3','雅安市分行','mas_join_5233454','0','mas','2017-03-14','2017-03-14','admin','admin','gasdh3'),('mas_join_reqggfdas','江西省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','reqggfdas'),('mas_join_rqreg','北京市分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','rqreg'),('mas_join_trwt','湖南省分行','mas_join_34124','0','mas','2017-03-14','2017-03-14','admin','admin','trwt'),('vertex_root_join_vertex_root','终结者','root_vertex_system','0','vertex_root','2016-01-01','2016-01-01','sys','sys','vertex_root');
+INSERT INTO `sys_org_info` VALUES ('demo_join_234fda','攀枝花市分行','demo_join_5233454','demo','2017-04-20','2017-04-20','admin','admin','234fda'),('demo_join_34124','工商银行','demo_join_root_vertex_system','demo','2017-04-20','2017-04-20','admin','admin','34124'),('demo_join_45246543','武汉市分行','demo_join_512345423','demo','2017-04-20','2017-04-20','admin','admin','45246543'),('demo_join_4542346','孝感市分行','demo_join_512345423','demo','2017-04-20','2017-04-20','admin','admin','4542346'),('demo_join_512345423','湖北省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','512345423'),('demo_join_5233454','四川省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','5233454'),('demo_join_aefd','欧洲分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','aefd'),('demo_join_fdafdg','贵州省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fdafdg'),('demo_join_fdaga','重庆市分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fdaga'),('demo_join_fdagqe','宁夏省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fdagqe'),('demo_join_fdasfd','上海市分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fdasfd'),('demo_join_fdsagd','泸州市分行','demo_join_5233454','demo','2017-04-20','2017-04-20','admin','admin','fdsagd'),('demo_join_feqhda','海南省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','feqhda'),('demo_join_ffadg','安徽省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','ffadg'),('demo_join_fgasdbc','台湾省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fgasdbc'),('demo_join_fgasdf','成都市分行','demo_join_5233454','demo','2017-04-20','2017-04-20','admin','admin','fgasdf'),('demo_join_fgdasdf','南充市分行','demo_join_5233454','demo','2017-04-20','2017-04-20','admin','admin','fgdasdf'),('demo_join_fhadf','香港特别行政区分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','fhadf'),('demo_join_gasdh3','雅安市分行','demo_join_5233454','demo','2017-04-20','2017-04-20','admin','admin','gasdh3'),('demo_join_reqggfdas','江西省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','reqggfdas'),('demo_join_rqreg','北京市分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','rqreg'),('demo_join_trwt','湖南省分行','demo_join_34124','demo','2017-04-20','2017-04-20','admin','admin','trwt'),('devops_product_join_1111000011','FTP测试','root_vertex_system','devops_product','2017-03-21','2017-03-21','admin','admin','1111000011'),('devops_product_join_43142354','测试案例','devops_product_join_1111000011','devops_product','2017-04-12','2017-04-20','ftpadmin','admin','43142354'),('devops_product_join_43214','他人委托人','devops_product_join_1111000011','devops_product','2017-04-13','2017-04-13','ftpadmin','admin','43214'),('mas_join_234fda','攀枝花市分行','mas_join_5233454','mas','2017-03-14','2017-04-20','admin','admin','234fda'),('mas_join_34124','工商银行','root_vertex_system','mas','2017-03-01','2017-03-01','admin','admin','34124'),('mas_join_45246543','武汉市分行','mas_join_512345423','mas','2017-03-01','2017-04-20','admin','admin','45246543'),('mas_join_4542346','孝感市分行','mas_join_512345423','mas','2017-03-01','2017-04-19','admin','demo','4542346'),('mas_join_512345423','湖北省分行','mas_join_34124','mas','2017-03-01','2017-04-05','admin','demo','512345423'),('mas_join_5233454','四川省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','5233454'),('mas_join_aefd','欧洲分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','aefd'),('mas_join_fdafdg','贵州省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fdafdg'),('mas_join_fdaga','重庆市分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fdaga'),('mas_join_fdagqe','宁夏省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fdagqe'),('mas_join_fdasfd','上海市分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fdasfd'),('mas_join_fdsagd','泸州市分行','mas_join_5233454','mas','2017-03-14','2017-03-14','admin','admin','fdsagd'),('mas_join_feqhda','海南省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','feqhda'),('mas_join_ffadg','安徽省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','ffadg'),('mas_join_fgasdbc','台湾省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fgasdbc'),('mas_join_fgasdf','成都市分行','mas_join_5233454','mas','2017-03-14','2017-03-14','admin','admin','fgasdf'),('mas_join_fgdasdf','南充市分行','mas_join_5233454','mas','2017-03-14','2017-03-14','admin','admin','fgdasdf'),('mas_join_fhadf','香港特别行政区分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','fhadf'),('mas_join_gasdh3','雅安市分行','mas_join_5233454','mas','2017-03-14','2017-03-14','admin','admin','gasdh3'),('mas_join_reqggfdas','江西省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','reqggfdas'),('mas_join_rqreg','北京市分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','rqreg'),('mas_join_trwt','湖南省分行','mas_join_34124','mas','2017-03-14','2017-03-14','admin','admin','trwt'),('vertex_root_join_vertex_root','系统管理组','root_vertex_system','vertex_root','2016-01-01','2017-04-20','sys','admin','vertex_root');
 /*!40000 ALTER TABLE `sys_org_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_org_status_attr`
---
-
-DROP TABLE IF EXISTS `sys_org_status_attr`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_org_status_attr` (
-  `org_status_id` char(1) NOT NULL,
-  `org_status_desc` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`org_status_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_org_status_attr`
---
-
-LOCK TABLES `sys_org_status_attr` WRITE;
-/*!40000 ALTER TABLE `sys_org_status_attr` DISABLE KEYS */;
-INSERT INTO `sys_org_status_attr` VALUES ('0','正常'),('1','禁用');
-/*!40000 ALTER TABLE `sys_org_status_attr` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -326,7 +299,7 @@ CREATE TABLE `sys_role_info` (
 
 LOCK TABLES `sys_role_info` WRITE;
 /*!40000 ALTER TABLE `sys_role_info` DISABLE KEYS */;
-INSERT INTO `sys_role_info` VALUES ('devops_product_join_43124','43243','ftpadmin','2017-04-13 00:30:15','0','devops_product','2017-04-13 00:30:15','ftpadmin','43124'),('devops_product_join_454235','543254','ftpadmin','2017-04-13 00:31:47','0','devops_product','2017-04-13 00:31:47','ftpadmin','454235'),('devops_product_join_ftpadmin','FTP管理员角色','admin','2017-03-21 09:43:36','0','devops_product','2017-03-21 09:43:36','admin','ftpadmin'),('mas_join_1245435','4312543','caadmin','2017-03-29 10:33:27','0','mas','2017-04-05 22:21:13','demo','1245435'),('mas_join_43234','432342','demo','2017-04-05 21:44:40','0','mas','2017-04-05 21:44:40','demo','43234'),('mas_join_54325653','4324235','caadmin','2017-03-29 10:33:39','0','mas','2017-03-29 10:33:39','caadmin','54325653'),('mas_join_5434325','432654','caadmin','2017-03-29 10:33:46','0','mas','2017-03-29 10:33:46','caadmin','5434325'),('mas_join_653432','5423654','caadmin','2017-03-29 10:29:39','0','mas','2017-03-29 10:29:39','caadmin','653432'),('mas_join_cademo','成本分摊演示角色','admin','2017-03-07 10:36:45','0','mas','2017-03-07 10:36:45','admin','cademo'),('mas_join_ftpdemo','内部资金转移定价演示角色','admin','2017-03-07 10:36:59','0','mas','2017-03-07 10:36:59','admin','ftpdemo'),('mas_join_masadmin','管理会计管理员','admin','2017-03-14 14:44:34','0','mas','2017-03-14 14:44:34','admin','masadmin'),('vertex_root_join_sysadmin','超级管理员','admin','2016-01-01 00:00:00','0','vertex_root','2016-12-16 00:00:00','admin','sysadmin');
+INSERT INTO `sys_role_info` VALUES ('devops_product_join_43124','43243','ftpadmin','2017-04-13 00:30:15','0','devops_product','2017-04-13 00:30:15','ftpadmin','43124'),('devops_product_join_454235','543254','ftpadmin','2017-04-13 00:31:47','0','devops_product','2017-04-13 00:31:47','ftpadmin','454235'),('devops_product_join_ftpadmin','FTP管理员角色','admin','2017-03-21 09:43:36','0','devops_product','2017-03-21 09:43:36','admin','ftpadmin'),('mas_join_1245435','4312543','caadmin','2017-03-29 10:33:27','1','mas','2017-04-20 23:20:54','admin','1245435'),('mas_join_43234','432342','demo','2017-04-05 21:44:40','1','mas','2017-04-20 23:20:59','admin','43234'),('mas_join_54325653','4324235','caadmin','2017-03-29 10:33:39','1','mas','2017-04-20 23:21:04','admin','54325653'),('mas_join_5434325','432654','caadmin','2017-03-29 10:33:46','1','mas','2017-04-20 23:21:08','admin','5434325'),('mas_join_653432','5423654','caadmin','2017-03-29 10:29:39','1','mas','2017-04-20 23:21:12','admin','653432'),('mas_join_cademo','成本分摊演示角色','admin','2017-03-07 10:36:45','0','mas','2017-04-20 23:11:32','admin','cademo'),('mas_join_ftpdemo','内部资金转移定价演示角色','admin','2017-03-07 10:36:59','0','mas','2017-03-07 10:36:59','admin','ftpdemo'),('mas_join_masadmin','管理会计管理员','admin','2017-03-14 14:44:34','1','mas','2017-04-20 23:10:08','admin','masadmin'),('vertex_root_join_sysadmin','超级管理员','admin','2016-01-01 00:00:00','0','vertex_root','2016-12-16 00:00:00','admin','sysadmin');
 /*!40000 ALTER TABLE `sys_role_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -576,7 +549,7 @@ CREATE TABLE `sys_user_theme` (
 
 LOCK TABLES `sys_user_theme` WRITE;
 /*!40000 ALTER TABLE `sys_user_theme` DISABLE KEYS */;
-INSERT INTO `sys_user_theme` VALUES ('admin','1001'),('caadmin','1004'),('demo','1004'),('demo2','1001'),('demo3','1001'),('demo4','1001'),('demo5','1001'),('demo6','1001'),('ftpadmin','1004'),('test8','1001'),('test9','1001');
+INSERT INTO `sys_user_theme` VALUES ('admin','1004'),('caadmin','1004'),('demo','1004'),('demo2','1001'),('demo3','1001'),('demo4','1001'),('demo5','1001'),('demo6','1001'),('ftpadmin','1004'),('test8','1001'),('test9','1001');
 /*!40000 ALTER TABLE `sys_user_theme` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -593,4 +566,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-20 19:35:28
+-- Dump completed on 2017-04-20 23:53:10
