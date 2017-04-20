@@ -97,10 +97,12 @@ func (this *domainController) Get(ctx *context.Context) {
 
 	ctx.Request.ParseForm()
 
+	// 权限控制
 	if !hrpc.BasicAuth(ctx) {
 		return
 	}
 
+	// 获取便宜量, 分页查询
 	offset := ctx.Request.FormValue("offset")
 	limit := ctx.Request.FormValue("limit")
 

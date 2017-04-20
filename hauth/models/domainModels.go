@@ -3,9 +3,10 @@ package models
 import (
 	"errors"
 
+	"database/sql"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 type ProjectMgr struct {
@@ -24,7 +25,7 @@ type domainDataModel struct {
 	Owner_list []ProjectMgr `json:"owner_list"`
 }
 
-func (this ProjectMgr)Get()([]ProjectMgr,error){
+func (this ProjectMgr) Get() ([]ProjectMgr, error) {
 	var rst []ProjectMgr
 	rows, err := dbobj.Query(sys_rdbms_025)
 	defer rows.Close()
@@ -39,7 +40,7 @@ func (this ProjectMgr)Get()([]ProjectMgr,error){
 		logs.Error("query data error.", dbobj.GetErrorMsg(err))
 		return nil, err
 	}
-	return rst,nil
+	return rst, nil
 }
 
 func (ProjectMgr) GetAll(offset, limit string) ([]ProjectMgr, int64, error) {
@@ -57,17 +58,53 @@ func (ProjectMgr) GetAll(offset, limit string) ([]ProjectMgr, int64, error) {
 		logs.Error("query data error.", dbobj.GetErrorMsg(err))
 		return nil, 0, err
 	}
+
+	// 查询总共行数,返回给客户端
 	var total int64 = 0
 	dbobj.QueryRow(sys_rdbms_081).Scan(&total)
 
 	return rst, total, nil
 }
 
+// 获取指定域的详细信息
 func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 	var rst ProjectMgr
-	err := dbobj.QueryRow(sys_rdbms_084, domain_id).Scan(&rst.Project_id,
-		&rst.Project_name, &rst.Project_status, &rst.Maintance_date, &rst.User_id, &rst.Domain_maintance_date, &rst.Domain_maintance_user)
-	return rst, err
+
+	row, err := dbobj.Query(sys_rdbms_084,domain_id)
+	if err != nil {
+		logs.Error(err)
+		return rst, err
+	}
+	for row.Next() {
+		var domain_id sql.NullString
+		var domain_desc sql.NullString
+		var domain_status sql.NullString
+		var modify_date sql.NullString
+		var modify_user sql.NullString
+		var create_date sql.NullString
+		var create_user sql.NullString
+		err := row.Scan(&domain_id,
+			&domain_desc,
+			&domain_status,
+			&create_date,
+			&create_user,
+			&modify_date,
+			&modify_user)
+		if err != nil {
+			logs.Error(err)
+			return rst,err
+		}
+
+		rst.Project_id = domain_status.String
+		rst.Project_name = domain_desc.String
+		rst.Project_status = domain_status.String
+		rst.Maintance_date = create_date.String
+		rst.User_id = create_user.String
+		rst.Domain_maintance_date = modify_date.String
+		rst.Domain_maintance_user = modify_user.String
+		return rst,nil
+	}
+	return rst,errors.New("域信息不存在")
 }
 
 func (ProjectMgr) Post(domain_id, domain_desc, domain_status, user_id, did string) error {
@@ -123,6 +160,6 @@ func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) erro
 }
 
 func (ProjectMgr) Update(domainDesc, domainStatus, user_id, domainId string) error {
-	_,err := dbobj.Exec(sys_rdbms_038, domainDesc, domainStatus, user_id, domainId)
+	_, err := dbobj.Exec(sys_rdbms_038, domainDesc, domainStatus, user_id, domainId)
 	return err
 }
