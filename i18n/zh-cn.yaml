@@ -354,3 +354,6 @@
   translation: "动因编码必须由1-30位字母或数字组成"
 - id: ca_error_driver_desc_format
   translation: "动因名称不能为空"
+
+- id: common_error_gl_account_get
+  translation: "查询科目信息失败"
