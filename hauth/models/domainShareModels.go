@@ -124,7 +124,7 @@ func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
 
 	var dslice []ProjectMgr
 	for _,val := range rst {
-		if _,ok := dmap[val.Project_id]; ok {
+		if _,ok := dmap[val.Project_id]; ok && val.Domain_status_cd == "0"{
 			dslice = append(dslice,val)
 		}
 	}

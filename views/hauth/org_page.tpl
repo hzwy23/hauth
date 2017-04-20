@@ -76,7 +76,6 @@
                         <th data-field="code_number">机构编码</th>
                         <th data-field="org_desc">机构描述</th>
                         <th data-field="up_org_id" data-formatter="OrgObj.upOrgId">上级机构编码</th>
-                        <th data-align="center" data-field="status_desc">机构状态</th>
                         <th data-align="center" data-field="create_date">创建日期</th>
                         <th data-align="center" data-field="create_user">创建人</th>
                         <th data-align="center" data-field="modify_date">修改日期</th>
@@ -174,7 +173,7 @@
             $.Hmodal({
                 body:$("#org_modify_form").html(),
                 header:"修改机构信息",
-                height:"300px",
+                height:"360px",
                 preprocess:function () {
                     /*
                      * 初始化下拉框中机构信息
@@ -200,14 +199,6 @@
                             value:row[0].up_org_id,
                             height:"30px",
                         });
-                    });
-
-                    /*
-                     * 使用Hselect插件，修饰select选择框。
-                     * */
-                    $("#h-modify-status").Hselect({
-                        height:"30px",
-                        value:row[0].status_id,
                     });
 
                     /*
@@ -345,7 +336,11 @@
         upload:function(param){
             $.Hupload({
                 url:"/v1/auth/resource/org/upload",
-                domain_id:$("#h-org-domain-list").val(),
+                header:"导入机构信息",
+                callback:function () {
+                    var domain_id = $("#h-org-domain-list").val();
+                    OrgObj.tree(domain_id)
+                },
             })
         },
         tree:function(domain_id){
@@ -460,31 +455,20 @@
 </script>
 
 <script type="text/html" id="org_modify_form">
-    <form class="row" id="h-org-modify-info">
+    <form id="h-org-modify-info">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                <label class="h-label" style="width:100%;">组织部门代码：</label>
-                <input id="h-modify-org-code" readonly="readonly" placeholder="user id" name="Org_unit_id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;background-color: transparent">
-                <input id="h-modify-org-id" readonly="readonly" placeholder="user id" name="Id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;background-color: transparent;display: none;">
-            </div>
-            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                <label class="h-label" style="width: 100%;">组织部门名称：</label>
-                <input id="h-modify-org-name" placeholder="user name" type="text" class="form-control" name="Org_unit_desc" style="width: 100%;height: 30px;line-height: 30px;">
-            </div>
+            <label class="h-label" style="width:100%;">组织部门代码：</label>
+            <input id="h-modify-org-code" readonly="readonly" placeholder="user id" name="Org_unit_id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;background-color: transparent">
+            <input id="h-modify-org-id" readonly="readonly" placeholder="user id" name="Id" type="text" class="form-control" style="width: 100%;height: 30px;line-height: 30px;background-color: transparent;display: none;">
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 8px;">
-            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                <label class="h-label" style="width: 100%;">上级组织部门代码：</label>
-                <select id="h-modify-org-up-id" name="Up_org_id" style="width: 100%;height: 30px;line-height: 30px;">
-                </select>
-            </div>
-            <div class="form-group-sm col-sm-6 col-md-6 col-lg-6">
-                <label class="h-label" style="width: 100%;">机构状态：</label>
-                <select id="h-modify-status" name="Status_cd" style="width: 100%;height: 30px;line-height: 30px;">
-                    <option value="0">正常</option>
-                    <option value="1">失效</option>
-                </select>
-            </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 18px;">
+            <label class="h-label" style="width: 100%;">组织部门名称：</label>
+            <input id="h-modify-org-name" placeholder="user name" type="text" class="form-control" name="Org_unit_desc" style="width: 100%;height: 30px;line-height: 30px;">
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 18px;">
+            <label class="h-label" style="width: 100%;">上级组织部门代码：</label>
+            <select id="h-modify-org-up-id" name="Up_org_id" style="width: 100%;height: 30px;line-height: 30px;">
+            </select>
         </div>
     </form>
 </script>

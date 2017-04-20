@@ -16,8 +16,7 @@ type ProjectMgr struct {
 	User_id               string `json:"create_user_id"`
 	Domain_maintance_date string `json:"domain_modify_date"`
 	Domain_maintance_user string `json:"domain_modify_user"`
-	Domain_dept           string `json:"domain_dept"`
-	Domain_up_id          string `json:"domain_up_id"`
+	Domain_status_cd      string `json:"domain_status_cd"`
 }
 
 type domainDataModel struct {

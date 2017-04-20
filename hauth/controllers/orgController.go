@@ -222,7 +222,6 @@ func (this orgController) Update(ctx *context.Context) {
 	org_unit_id := ctx.Request.FormValue("Id")
 	org_unit_desc := ctx.Request.FormValue("Org_unit_desc")
 	up_org_id := ctx.Request.FormValue("Up_org_id")
-	org_status_id := ctx.Request.FormValue("Status_cd")
 
 	did, err := hrpc.CheckDomainByOrgId(org_unit_id)
 	if err != nil {
@@ -239,11 +238,6 @@ func (this orgController) Update(ctx *context.Context) {
 	// 校验输入信息
 	if govalidator.IsEmpty(org_unit_desc) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_id_desc_empty"))
-		return
-	}
-
-	if !govalidator.IsIn(org_status_id, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_status_empty"))
 		return
 	}
 
@@ -271,7 +265,7 @@ func (this orgController) Update(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Update(org_unit_desc, up_org_id, org_status_id, jclaim.User_id, org_unit_id, did)
+	err = this.models.Update(org_unit_desc, up_org_id, jclaim.User_id, org_unit_id, did)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_modify"), err)
@@ -346,7 +340,6 @@ func (this orgController) Post(ctx *context.Context) {
 	}
 
 	id := utils.JoinCode(domain_id, org_unit_id)
-	org_status_id := "0"
 
 	if !govalidator.IsWord(org_unit_id) {
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_id_format"))
@@ -368,13 +361,7 @@ func (this orgController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !govalidator.IsIn(org_status_id, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_status_empty"))
-		return
-	}
-
-	err = this.models.Post(org_unit_id, org_unit_desc, up_org_id, org_status_id,
-		domain_id, jclaim.User_id, jclaim.User_id, id)
+	err = this.models.Post(org_unit_id, org_unit_desc, up_org_id, domain_id, jclaim.User_id, jclaim.User_id, id)
 	if err != nil {
 		logs.Error(err)
 		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_add"), err)
@@ -538,8 +525,6 @@ func (this orgController) Download(ctx *context.Context) {
 			cell3.Value = "上级编码"
 			cell9 := row.AddCell()
 			cell9.Value = "所属域"
-			cell4 := row.AddCell()
-			cell4.Value = "机构状态"
 
 			cell5 := row.AddCell()
 			cell5.Value = "创建日期"
@@ -576,25 +561,21 @@ func (this orgController) Download(ctx *context.Context) {
 		cell9.Value = v.Domain_id
 		cell9.SetStyle(sheet.Rows[1].Cells[3].GetStyle())
 
-		cell4 := row.AddCell()
-		cell4.Value = v.Org_status_desc
-		cell4.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
-
 		cell5 := row.AddCell()
 		cell5.Value = v.Create_date
-		cell5.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
+		cell5.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
 
 		cell6 := row.AddCell()
 		cell6.Value = v.Create_user
-		cell6.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
+		cell6.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
 
 		cell7 := row.AddCell()
 		cell7.Value = v.Maintance_date
-		cell7.SetStyle(sheet.Rows[1].Cells[7].GetStyle())
+		cell7.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
 
 		cell8 := row.AddCell()
 		cell8.Value = v.Maintance_user
-		cell8.SetStyle(sheet.Rows[1].Cells[8].GetStyle())
+		cell8.SetStyle(sheet.Rows[1].Cells[7].GetStyle())
 
 	}
 

@@ -43,6 +43,10 @@
 	<!--bootstrap switch-->
 	<link rel="stylesheet" href="/static/bootstrap-switch-master/dist/css/bootstrap3/bootstrap-switch.min.css"/>
 	<script src="/static/bootstrap-switch-master/dist/js/bootstrap-switch.min.js"></script>
+
+	<!--webupload-->
+	<link rel="stylesheet" href="/static/webuploader/dist/webuploader.css"/>
+	<script src="/static/webuploader/dist/webuploader.min.js"></script>
 </head>
 
 <body style="overflow: hidden" class="theme-bg-color">

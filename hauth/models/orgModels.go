@@ -16,8 +16,6 @@ type SysOrgInfo struct {
 	Org_unit_id     string `json:"org_id"`
 	Org_unit_desc   string `json:"org_desc"`
 	Up_org_id       string `json:"up_org_id"`
-	Org_status_id   string `json:"status_id"`
-	Org_status_desc string `json:"status_desc"`
 	Domain_id       string `json:"domain_id"`
 	Create_date     string `json:"create_date"`
 	Maintance_date  string `json:"modify_date"`
@@ -86,16 +84,15 @@ func (this OrgModel) Delete(mjs []SysOrgInfo,domain_id string) error {
 	return nil
 }
 
-func (OrgModel) Update(org_unit_desc, up_org_id, org_status_id, maintance_user, org_unit_id,domain_id string) error {
+func (OrgModel) Update(org_unit_desc, up_org_id, maintance_user, org_unit_id,domain_id string) error {
 	defer hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",domain_id))
-	_,err := dbobj.Exec(sys_rdbms_069, org_unit_desc, up_org_id, org_status_id, maintance_user, org_unit_id)
+	_,err := dbobj.Exec(sys_rdbms_069, org_unit_desc, up_org_id, maintance_user, org_unit_id)
 	return err
 }
 
-func (OrgModel) Post(org_unit_id, org_unit_desc, up_org_id, org_status_id, domain_id, create_user, maintance_user, id string) error {
+func (OrgModel) Post(org_unit_id, org_unit_desc, up_org_id, domain_id, create_user, maintance_user, id string) error {
 	defer hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",domain_id))
-	_,err := dbobj.Exec(sys_rdbms_043, org_unit_id, org_unit_desc, up_org_id, org_status_id,
-		domain_id, create_user, maintance_user, id)
+	_,err := dbobj.Exec(sys_rdbms_043, org_unit_id, org_unit_desc, up_org_id, domain_id, create_user, maintance_user, id)
 	return err
 }
 
@@ -142,7 +139,7 @@ func (this OrgModel)Upload(data []SysOrgInfo) error {
 	}
 	for _,val := range data {
 		hcache.Delete(hcache.GenKey("ASOFDATEORGINFO",val.Domain_id))
-		_,err = tx.Exec(sys_rdbms_043,val.Code_number,val.Org_unit_desc,val.Up_org_id,"0",val.Domain_id,val.Create_user,val.Create_user,val.Org_unit_id)
+		_,err = tx.Exec(sys_rdbms_043,val.Code_number,val.Org_unit_desc,val.Up_org_id,val.Domain_id,val.Create_user,val.Create_user,val.Org_unit_id)
 		if err != nil {
 			logs.Error(err)
 			tx.Rollback()

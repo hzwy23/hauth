@@ -26,6 +26,7 @@ type userRoleData struct {
 	Role_id     string `json:"role_id"`
 	Code_number string `json:"code_number"`
 	Role_name   string `json:"role_name"`
+	Role_status string `json:"role_status"`
 }
 
 // 根据用户id,获取这个用户已经拥有的角色
