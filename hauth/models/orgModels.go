@@ -125,6 +125,10 @@ func (this OrgModel)dfs(node []SysOrgInfo,org_id string ,rst *[]SysOrgInfo) {
 	for _, val := range node {
 		if val.Up_org_id == org_id {
 			*rst = append(*rst,val)
+			if val.Org_unit_id == val.Up_org_id {
+				logs.Error("当前机构与上级机构编码一致,逻辑错误,退出递归")
+				return
+			}
 			this.dfs(node,val.Org_unit_id,rst)
 		}
 	}

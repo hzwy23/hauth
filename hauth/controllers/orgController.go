@@ -686,6 +686,11 @@ func (this orgController)Upload(ctx *context.Context){
 			one.Up_org_id = utils.JoinCode(one.Domain_id,val.Cells[2].Value)
 			one.Create_user = jclaim.User_id
 
+			if one.Org_unit_id == one.Up_org_id {
+				hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"as_of_date_up_org_equal_org_id"))
+				return
+			}
+
 			if !hrpc.DomainAuth(ctx.Request, one.Domain_id, "w") {
 				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
 				return

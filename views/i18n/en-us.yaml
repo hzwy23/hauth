@@ -75,6 +75,8 @@
 - id: as_of_date_domain_mode
   translation: "Please select a Shared schema"
 
+- id: as_of_date_up_org_equal_org_id
+  translation: "当前机构上上级机构编码一致,禁止导入"
 
 - id: as_of_date_domain_share_failed
   translation: "Authorization domain sharing failure"

@@ -80,6 +80,8 @@
 - id: as_of_date_domain_mode
   translation: "请选择共享模式"
 
+- id: as_of_date_up_org_equal_org_id
+  translation: "当前机构上上级机构编码一致,禁止导入"
 
 - id: as_of_date_domain_share_failed
   translation: "授权域共享失败"
