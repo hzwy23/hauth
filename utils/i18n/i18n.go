@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/astaxie/beego/logs"
 )
 
 // 从i18n配置文件中获取id对应的翻译值.
@@ -41,8 +42,11 @@ func WriteDomainInsufficient(req *http.Request,domain_id string) string {
 	return Get(req,"write_domain_insufficient",domain_id)
 }
 
-func I18nRegister(file string) {
-	i18n.LoadTranslationFile(file)
+func Register(file string) {
+	err := i18n.LoadTranslationFile(file)
+	if err != nil {
+		logs.Error(err)
+	}
 }
 
 // 初始化i18n文件
