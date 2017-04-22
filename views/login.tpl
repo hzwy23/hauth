@@ -197,7 +197,7 @@
     };
 
     function  OpenGithub() {
-
+        window.open("https://github.com/hzwy23/asofdate")
     };
 
     function Hregister(){
