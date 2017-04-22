@@ -1,16 +1,15 @@
 **如果觉得项目还不错,请Star一个, 项目在不断的添加新动能,如需稳定版本,请在release中获取.**
+
 [Release](https://github.com/hzwy23/asofdate/releases)
 
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
-
-`
+```golang
 go get github.com/hzwy23/asofdate
-
-## 上边命令,将会在GOPATH/bin目录中生成asofate可执行文件,由于系统运行需要配置文件和静态页面
-## 所系请将GOPATH/bin的asofdate可执行文件,复制到$GOPATH/src/github.com/hzwy23/asofdate目录中
-## 或者使用项目中提供的build.sh脚本编译,再次生成可执行文件.
-## 请按照下边的操作,导入数据库.
-`
+#上边命令,将会在GOPATH/bin目录中生成asofate可执行文件,由于系统运行需要配置文件和静态页面
+#所系请将GOPATH/bin的asofdate可执行文件,复制到$GOPATH/src/github.com/hzwy23/asofdate目录中
+#或者使用项目中提供的build.sh脚本编译,再次生成可执行文件.
+#请按照下边的操作,导入数据库.
+```
 
 ## asofdate项目简介
 每一个项目,都有截止日期,为了实现快速开发目标,我们以beego为基础，开发出了一款快速开发平台。这个平台内部集成了菜单管理、用户管理、角色管理、授权管理、日志管理、机构管理、路由管理、域定义管理等等。在这个平台的基础上，可以快速的开发自己的应用,以响应瞬息万变的市场需求。
