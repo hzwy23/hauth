@@ -49,13 +49,13 @@
             <div id="h-login-form" class="pull-left" style="display: none; height: 50px; line-height: 50px;">
                 <form id='inputZoon' class="navbar-form navbar-right" style="height: 35px;line-height: 35px;">
                     <div class="form-group input-group-sm">
-                        <input name="username" value="demo" type="text" class="form-control"
+                        <input name="username" value="admin" type="text" class="form-control"
                                placeholder="账号">
                     </div>
                     &nbsp;
                     &nbsp;
                     <div class="form-group input-group-sm">
-                        <input name="password" value="123456" type="password" class="form-control"
+                        <input name="password" value='hzwy23' type="password" class="form-control"
                                placeholder="密码">
                     </div>
                     &nbsp;
@@ -126,7 +126,8 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="/static/js/utils.js"></script>
+<script type="text/javascript" src="/static/jquery-i18n-properties/jquery.i18n.properties.min.js"></script>
+<script type="text/javascript" src="/static/js/utils.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-notify.min.js"></script>
 <script>
     NProgress.start();
@@ -201,7 +202,6 @@
 
     function Hregister(){
         $.Notify({
-            title:"温馨提示：",
             message:"演示环境，暂不支持用户注册",
             type:"info"
         })
@@ -215,6 +215,14 @@
     });
 
     $(document).ready(function () {
+        $.i18n.properties({
+            name:'Messages',
+            path:'/static/jquery-i18n-properties/bundle/',
+            mode:'both',
+            language :(navigator.language || navigator.browserLanguage).toLowerCase(),
+            async: true,
+        });
+
         var $body = $(".container-fluid");
         $body.height(document.documentElement.clientHeight)
 //        $body.css("background-image","url('/static/images/index_bg.png')");
