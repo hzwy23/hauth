@@ -1,6 +1,6 @@
 **如果觉得项目还不错,请Star一个, 项目在不断的添加新动能,如需稳定版本,请在release中获取.**
 
-[Release](https://github.com/hzwy23/asofdate/releases)
+[Asofdate Project Release](https://github.com/hzwy23/asofdate/releases)
 
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
 ```golang
