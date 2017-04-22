@@ -55,7 +55,7 @@
                     &nbsp;
                     &nbsp;
                     <div class="form-group input-group-sm">
-                        <input name="password" value='hzwy23' type="password" class="form-control"
+                        <input name="password" value="hzwy23" type="password" class="form-control"
                                placeholder="密码">
                     </div>
                     &nbsp;
@@ -197,7 +197,7 @@
     };
 
     function  OpenGithub() {
-        window.open("https://github.com/hzwy23/asofdate")
+
     };
 
     function Hregister(){
