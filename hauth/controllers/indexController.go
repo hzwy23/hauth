@@ -25,7 +25,7 @@ import (
 func IndexPage(ctx *context.Context) {
 	rst, err := hcache.GetStaticFile("AsofdateIndexPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)

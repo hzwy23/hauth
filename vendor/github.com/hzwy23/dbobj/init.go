@@ -10,7 +10,7 @@ import (
 
 func init() {
 	HOME := os.Getenv("HBIGDATA_HOME")
-	filedir := filepath.Join(HOME, "conf/system.properties")
+	filedir := filepath.Join(HOME, "conf","system.properties")
 	conf, err := utils.GetConfig(filedir)
 	if err != nil {
 		panic("init database failed.")

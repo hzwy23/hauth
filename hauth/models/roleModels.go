@@ -3,12 +3,12 @@ package models
 import (
 	"errors"
 
-	"github.com/hzwy23/asofdate/utils/logs"
-	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"time"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils"
+	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/dbobj"
+	"time"
 )
 
 type RoleModel struct {
@@ -31,27 +31,31 @@ type RoleInfo struct {
 // 查询某一个角色的具体信息
 func (this RoleModel) GetRow(role_id string) (RoleInfo, error) {
 	var rst RoleInfo
-	domain_id := utils.SplitDomain(role_id)
-	ret,err := this.Get(domain_id)
-	if err !=nil {
+	domain_id, err := utils.SplitDomain(role_id)
+	if err != nil {
 		logs.Error(err)
-		return rst,err
+		return rst, err
+	}
+	ret, err := this.Get(domain_id)
+	if err != nil {
+		logs.Error(err)
+		return rst, err
 	}
 
 	for _, val := range ret {
 		if val.Role_id == role_id {
-			return val,nil
+			return val, nil
 		}
 	}
 	return rst, errors.New("no found")
 }
 
 func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
-	key := hcache.GenKey("ROLEMODELS",domain_id)
-	if hcache.IsExist(key){
+	key := hcache.GenKey("ROLEMODELS", domain_id)
+	if hcache.IsExist(key) {
 		logs.Debug("get data from cache.")
-		rst , _ := hcache.Get(key).([]RoleInfo)
-		return rst,nil
+		rst, _ := hcache.Get(key).([]RoleInfo)
+		return rst, nil
 	}
 	rows, err := dbobj.Query(sys_rdbms_028, domain_id)
 	defer rows.Close()
@@ -62,13 +66,13 @@ func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
 
 	var rst []RoleInfo
 	err = dbobj.Scan(rows, &rst)
-	hcache.Put(key,rst,720*time.Minute)
+	hcache.Put(key, rst, 720*time.Minute)
 	return rst, err
 }
 
 func (RoleModel) Post(id, rolename, user_id, rolestatus, domainid, roleid string) error {
-	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domainid))
-	_,err := dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
+	defer hcache.Delete(hcache.GenKey("ROLEMODELS", domainid))
+	_, err := dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
 	return err
 }
 
@@ -83,13 +87,13 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 	for _, val := range allrole {
 
 		if val.Domain_id != domain_id && user_id != "admin" {
-			level := hrpc.CheckDomainRights(user_id, val.Domain_id)
+			level := hrpc.GetDomainAuth(user_id, val.Domain_id)
 			if level != 2 {
 				tx.Rollback()
 				return errors.New("您没有权限删除这个域中的角色信息")
 			}
 		}
-		hcache.Delete(hcache.GenKey("ROLEMODELS",val.Domain_id))
+		hcache.Delete(hcache.GenKey("ROLEMODELS", val.Domain_id))
 		_, err := tx.Exec(sys_rdbms_027, val.Role_id)
 		if err != nil {
 			logs.Error(err)
@@ -101,8 +105,8 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 	return tx.Commit()
 }
 
-func (RoleModel) Update(Role_name, Role_status, Role_id, User_id,domain_id string) error {
-	defer hcache.Delete(hcache.GenKey("ROLEMODELS",domain_id))
-	_,err := dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
+func (RoleModel) Update(Role_name, Role_status, Role_id, User_id, domain_id string) error {
+	defer hcache.Delete(hcache.GenKey("ROLEMODELS", domain_id))
+	_, err := dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
 	return err
 }

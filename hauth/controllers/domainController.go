@@ -50,13 +50,12 @@ func (this *domainController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("DomainPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get(ctx.Request,"as_of_date_page_not_exist"))
+		hret.Error(ctx.ResponseWriter, 404, i18n.Get(ctx.Request, "as_of_date_page_not_exist"))
 		return
 	}
 
 	ctx.ResponseWriter.Write(rst)
 }
-
 
 // swagger:operation GET /v1/auth/domain/get domainController getDomainInfo
 //
@@ -109,11 +108,11 @@ func (this *domainController) Get(ctx *context.Context) {
 	rst, total, err := this.models.GetAll(offset, limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_query"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_query"))
 		return
 	}
 
-	hret.WriteBootstrapTableJson(ctx.ResponseWriter, total, rst)
+	hret.BootstrapTableJson(ctx.ResponseWriter, total, rst)
 }
 
 // swagger:operation POST /v1/auth/domain/post domainController postDomainInfo
@@ -166,20 +165,20 @@ func (this *domainController) Post(ctx *context.Context) {
 
 	// validator domain id format
 	if !govalidator.IsWord(domainId) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_id_check"))
 		return
 	}
 
 	// validator domain describe format. It does not allow null values
 	if govalidator.IsEmpty(domainDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_isempty"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_isempty"))
 		return
 	}
 
 	// validator domain status format
 	// It must be in the 0 and 1
 	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_status_check"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_status_check"))
 		return
 	}
 
@@ -187,7 +186,7 @@ func (this *domainController) Post(ctx *context.Context) {
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -196,12 +195,12 @@ func (this *domainController) Post(ctx *context.Context) {
 	err = this.models.Post(domainId, domainDesc, domainStatus, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_add_failed"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_add_failed"), err)
 		return
 	}
 
 	// return success
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
+	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
 }
 
 // swagger:operation POST /v1/auth/domain/delete domainController deleteDomainInfo
@@ -244,7 +243,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 	err := json.Unmarshal(ijs, &js)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_delete"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_delete"))
 		return
 	}
 
@@ -252,17 +251,17 @@ func (this *domainController) Delete(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_disconnect"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_disconnect"))
 		return
 	}
 
 	err = this.models.Delete(js, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, err.Error())
+		hret.Error(ctx.ResponseWriter, 421, err.Error())
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
+	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
 }
 
 // swagger:operation PUT /v1/auth/domain/update domainController putDomainInfo
@@ -316,13 +315,13 @@ func (this *domainController) Put(ctx *context.Context) {
 
 	// 校验域名称,不能为空
 	if govalidator.IsEmpty(domainDesc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_isempty"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_isempty"))
 		return
 	}
 
 	// 校验域状态编码,必须是0或者1
 	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_status_check"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_status_check"))
 		return
 	}
 
@@ -330,23 +329,23 @@ func (this *domainController) Put(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	if !hrpc.DomainAuth(ctx.Request, domainId, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	err = this.models.Update(domainDesc, domainStatus, jclaim.User_id, domainId)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_update"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_update"))
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
+	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
 }
 
 // swagger:operation GET /v1/auth/domain/row/details domainController getDomainDetailsInfo
@@ -380,10 +379,10 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 	rst, err := this.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_details"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_details"))
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation GET /v1/auth/domain/id domainController getDomainId
@@ -410,11 +409,11 @@ func (this *domainController) GetId(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	hret.WriteJson(ctx.ResponseWriter, jclaim.Domain_id)
+	hret.Json(ctx.ResponseWriter, jclaim.Domain_id)
 }
 
 func init() {

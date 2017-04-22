@@ -1,29 +1,25 @@
 package controllers
 
 import (
-
-
 	"github.com/astaxie/beego/context"
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
-
 
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 
-	"github.com/tealeg/xlsx"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/i18n"
-	"path/filepath"
+	"github.com/tealeg/xlsx"
 	"os"
+	"path/filepath"
 )
 
 type handleLogsController struct {
 	model models.HandleLogMode
 }
-
 
 var HandleLogsCtl = &handleLogsController{}
 
@@ -54,7 +50,7 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("AsofdateHandleLogPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
@@ -93,25 +89,25 @@ func (this handleLogsController) Download(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
-	rst,err := this.model.Download(jclaim.Domain_id)
+	rst, err := this.model.Download(jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_get_failed"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_handle_logs_get_failed"))
 		return
 	}
 
-	file,err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"),"views","uploadTemplate","hauthHandleLogsTemplate.xlsx"))
+	file, err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"), "views", "uploadTemplate", "hauthHandleLogsTemplate.xlsx"))
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_open_error"),err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_handle_logs_open_error"), err)
 		return
 	}
 	sheet, ok := file.Sheet["handle_logs"]
 	if !ok {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_sheet_error"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_handle_logs_sheet_error"))
 		return
 	}
 
@@ -124,7 +120,6 @@ func (this handleLogsController) Download(ctx *context.Context) {
 		cell2 := row.AddCell()
 		cell2.Value = v.Handle_time
 		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
-
 
 		cell3 := row.AddCell()
 		cell3.Value = v.Client_ip
@@ -206,19 +201,18 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	rst,total,err := this.model.Get(jclaim.Domain_id,offset,limit)
+	rst, total, err := this.model.Get(jclaim.Domain_id, offset, limit)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_query_failed"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_handle_logs_query_failed"))
 		return
 	}
-	hret.WriteBootstrapTableJson(ctx.ResponseWriter,total, rst)
+	hret.BootstrapTableJson(ctx.ResponseWriter, total, rst)
 }
-
 
 // swagger:operation GET /v1/auth/handle/logs/search handleLogsController handleLogsController
 //
@@ -283,17 +277,17 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	rst,err := this.model.Search(jclaim.Domain_id,userid,start,end)
+	rst, err := this.model.Search(jclaim.Domain_id, userid, start, end)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_handle_logs_query_failed"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_handle_logs_query_failed"))
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 func init() {

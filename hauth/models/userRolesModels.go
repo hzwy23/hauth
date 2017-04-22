@@ -5,9 +5,9 @@ import (
 
 	"errors"
 
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
 )
 
 const (
@@ -72,7 +72,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 	}
 
 	for _, val := range rst {
-		did, err := hrpc.CheckDomainByUserId(val.User_id)
+		did, err := hrpc.GetDomainId(val.User_id)
 		if err != nil {
 			logs.Error(err)
 			tx.Rollback()
@@ -80,7 +80,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 		}
 
 		if domain_id != did && user_id != "admin" {
-			level := hrpc.CheckDomainRights(user_id, did)
+			level := hrpc.GetDomainAuth(user_id, did)
 			if level != 2 {
 				tx.Rollback()
 				return error_user_role_no_auth, errors.New(error_user_role_no_auth)
@@ -99,16 +99,16 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 
 // 移除这个用户拥有的角色信息
 func (UserRolesModel) Revoke(user_id string, role_id string, uid, did string) (string, error) {
-	u_domain_id, err := hrpc.CheckDomainByUserId(user_id)
+	u_domain_id, err := hrpc.GetDomainId(user_id)
 	if err != nil {
 		return error_user_role_no_auth, err
 	}
 	if u_domain_id != did && uid != "admin" {
-		level := hrpc.CheckDomainRights(uid, u_domain_id)
+		level := hrpc.GetDomainAuth(uid, u_domain_id)
 		if level != 2 {
 			return error_user_role_no_auth, errors.New(error_user_role_no_auth)
 		}
 	}
-	_,err = dbobj.Exec(sys_rdbms_097, user_id, role_id)
+	_, err = dbobj.Exec(sys_rdbms_097, user_id, role_id)
 	return error_user_role_commit, err
 }

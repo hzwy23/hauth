@@ -1,9 +1,13 @@
 package utils
 
-import "strings"
+import (
+	"strings"
+	"errors"
+)
 
 const (
 	splitstr = "_join_"
+	no_split_str = "no separator"
 )
 
 func JoinCode(domain_id ,code_number string)string{
@@ -16,21 +20,21 @@ func CheckSplit(str string ) bool {
 }
 
 // 返回编码信息的Code number
-func SplitCode(id string) string {
+func SplitCode(id string) (string,error) {
 	tmp := strings.Split(id,splitstr)
 	if len(tmp) == 2{
-		return tmp[1]
+		return tmp[1],nil
 	} else {
-		return id
+		return id,errors.New(no_split_str)
 	}
 }
 
 // 返回编码信息的domain id
-func SplitDomain(id string)string {
+func SplitDomain(id string) (string,error) {
 	tmp := strings.Split(id,splitstr)
-	if len(tmp)==2{
-		return tmp[0]
+	if len(tmp) == 2{
+		return tmp[0],nil
 	} else {
-		return id
+		return id,errors.New(no_split_str)
 	}
 }

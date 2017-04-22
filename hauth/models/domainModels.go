@@ -70,7 +70,7 @@ func (ProjectMgr) GetAll(offset, limit string) ([]ProjectMgr, int64, error) {
 func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 	var rst ProjectMgr
 
-	row, err := dbobj.Query(sys_rdbms_084,domain_id)
+	row, err := dbobj.Query(sys_rdbms_084, domain_id)
 	if err != nil {
 		logs.Error(err)
 		return rst, err
@@ -92,7 +92,7 @@ func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 			&modify_user)
 		if err != nil {
 			logs.Error(err)
-			return rst,err
+			return rst, err
 		}
 
 		rst.Project_id = domain_status.String
@@ -102,9 +102,9 @@ func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 		rst.User_id = create_user.String
 		rst.Domain_maintance_date = modify_date.String
 		rst.Domain_maintance_user = modify_user.String
-		return rst,nil
+		return rst, nil
 	}
-	return rst,errors.New("域信息不存在")
+	return rst, errors.New("域信息不存在")
 }
 
 func (ProjectMgr) Post(domain_id, domain_desc, domain_status, user_id, did string) error {
@@ -142,7 +142,7 @@ func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) erro
 		}
 
 		if user_id != "admin" {
-			level := hrpc.CheckDomainRights(user_id, val.Project_id)
+			level := hrpc.GetDomainAuth(user_id, val.Project_id)
 			if level != 2 {
 				tx.Rollback()
 				logs.Error("您没有权限删除这个域")

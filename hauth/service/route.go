@@ -13,12 +13,11 @@ func registerRouter() {
 
 	beego.Any("/logout", controllers.LogoutSystem)
 
+	beego.Get("/", controllers.IndexPage)
+
 	beego.Post("/v1/auth/theme/update", controllers.ThemeCtl.Post)
 	beego.Put("/v1/auth/resource/config/theme", controllers.ThemeCtl.Put)
 	beego.Get("/v1/auth/resource/queryTheme", controllers.ThemeCtl.QueryTheme)
-
-
-	beego.Get("/", controllers.IndexPage)
 
 	beego.Get("/v1/auth/index/entry", controllers.SubSystemEntry)
 	beego.Get("/v1/auth/main/menu", controllers.HomePageMenus)
@@ -96,7 +95,6 @@ func registerRouter() {
 	// help
 	beego.Get("/v1/help/system/help", controllers.HelpCtl.Page)
 	///////////////////////////////////////////////////////////////////////////
-
 	beego.Get("/v1/auth/HandleLogsPage", controllers.HandleLogsCtl.Page)
 	beego.Get("/v1/auth/domain/page", controllers.DomainCtl.Page)
 	beego.Get("/v1/auth/batch/page", controllers.UserRolesCtl.Page)
@@ -105,5 +103,4 @@ func registerRouter() {
 	beego.Get("/v1/auth/user/page", controllers.UserCtl.Page)
 	beego.Get("/v1/auth/role/page", controllers.RoleCtl.Page)
 	beego.Get("/v1/auth/swagger/page", controllers.SwaggerCtl.Page)
-
 }

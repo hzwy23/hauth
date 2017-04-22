@@ -7,13 +7,12 @@ import (
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
-	"github.com/hzwy23/asofdate/utils/i18n"
 	"net/http"
 )
-
 
 type mSysUserSec struct {
 	User_id                 string        `json:"user_id"`
@@ -61,7 +60,7 @@ func CheckPasswd(user_id, user_passwd string) (bool, int, int64, string) {
 // -1   : have no right to handle the domain
 // 1    : can read the domain info
 // 2    : can read and wirte the domain info
-func CheckDomainRights(user_id string, domain_id string) int {
+func GetDomainAuth(user_id string, domain_id string) int {
 	var cnt = -1
 	err := dbobj.QueryRow(sys_rdbms_hrpc_001, domain_id, user_id).Scan(&cnt)
 	if err != nil {
@@ -71,31 +70,18 @@ func CheckDomainRights(user_id string, domain_id string) int {
 	return cnt
 }
 
-func CheckDomainByOrgId(org_unit_id string) (string, error) {
-	domain_id := ""
-	err := dbobj.QueryRow(sys_rdbms_hrpc_002, org_unit_id).Scan(&domain_id)
-	return domain_id, err
-}
-
-func CheckDomainByUserId(user_id string) (string, error) {
+func GetDomainId(user_id string) (string, error) {
 	domain_id := ""
 	err := dbobj.QueryRow(sys_rdbms_hrpc_003, user_id).Scan(&domain_id)
 	return domain_id, err
 }
 
-func CheckDomainByRoleId(role_id string) (string, error) {
-	domain_id := ""
-	err := dbobj.QueryRow(sys_rdbms_hrpc_004, role_id).Scan(&domain_id)
-	return domain_id, err
-}
-
 func BasicAuth(ctx *context.Context) bool {
-
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_no_auth"))
 		return false
 	}
 	if jclaim.User_id == "admin" {
@@ -104,36 +90,14 @@ func BasicAuth(ctx *context.Context) bool {
 	cnt := 0
 	err = dbobj.QueryRow(sys_rdbms_hrpc_006, jclaim.User_id, ctx.Request.URL.Path).Scan(&cnt)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_no_auth"))
 		return false
 	}
 	if cnt == 0 {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_no_auth"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_no_auth"))
 		return false
 	}
 	return true
-}
-
-// 返回值是-1 表示没有读写权限
-// 返回值是1 表示有读取权限，没有写入权限
-// 返回值是2 表示有读写权限
-func CheckDomainAuthLevel(req *http.Request, domain_id string) int {
-	level := -1
-	cookie, _ := req.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		return level
-	}
-
-	// if the user is not admin, and user_id is not owner this domain_id
-	// check share info. or not
-	if jclaim.User_id != "admin" && jclaim.Domain_id != domain_id {
-		level = CheckDomainRights(jclaim.User_id, domain_id)
-		return level
-	} else {
-		return 2
-	}
 }
 
 // 检查用户对指定的域的权限
@@ -141,7 +105,7 @@ func CheckDomainAuthLevel(req *http.Request, domain_id string) int {
 // 第二个参数是用户想要访问的域
 // 第三个参数是用户想要的权限，分两种情况，r 表示只读， w 表示读写
 func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
-	level := CheckDomainAuthLevel(req, domain_id)
+	level := checkDomainAuthLevel(req, domain_id)
 	switch pattern {
 	case "r":
 		if level != -1 {
@@ -157,5 +121,27 @@ func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
 		}
 	default:
 		return false
+	}
+}
+
+// 返回值是-1 表示没有读写权限
+// 返回值是1 表示有读取权限，没有写入权限
+// 返回值是2 表示有读写权限
+func checkDomainAuthLevel(req *http.Request, domain_id string) int {
+	level := -1
+	cookie, _ := req.Cookie("Authorization")
+	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	if err != nil {
+		logs.Error(err)
+		return level
+	}
+
+	// if the user is not admin, and user_id is not owner this domain_id
+	// check share info. or not
+	if jclaim.User_id != "admin" && jclaim.Domain_id != domain_id {
+		level = GetDomainAuth(jclaim.User_id, domain_id)
+		return level
+	} else {
+		return 2
 	}
 }

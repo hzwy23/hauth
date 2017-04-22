@@ -75,11 +75,11 @@ func QueryRow(sql string, args ...interface{}) *sql.Row {
 	return dbobj.QueryRow(sql, args...)
 }
 
-func Exec(sql string, args ...interface{}) (sql.Result,error) {
+func Exec(sql string, args ...interface{}) (sql.Result, error) {
 	if dbobj == nil {
 		err := InitDB(Default)
 		if err != nil {
-			return nil,errors.New("connect database failed.")
+			return nil, errors.New("connect database failed.")
 		}
 		return dbobj.Exec(sql, args...)
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 type DomainShareModel struct {
-	md  ProjectMgr
+	md ProjectMgr
 }
 
 type dsModel struct {
@@ -55,16 +55,16 @@ func (DomainShareModel) UnAuth(domain_id string) ([]dusModel, error) {
 }
 
 func (DomainShareModel) Post(domain_id, target_domain_id, auth_level, user_id string) error {
-	_,err := dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
+	_, err := dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
 	return err
 }
 
 func (DomainShareModel) Update(uuid, user_id, auth_level string) error {
-	_,err := dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
+	_, err := dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
 	return err
 }
 
-func (DomainShareModel) Delete(js string,domain_id string) error {
+func (DomainShareModel) Delete(js string, domain_id string) error {
 	var rst []dsModel
 
 	err := json.Unmarshal([]byte(js), &rst)
@@ -79,7 +79,7 @@ func (DomainShareModel) Delete(js string,domain_id string) error {
 	}
 
 	for _, val := range rst {
-		_,err := dbobj.Exec(sys_rdbms_087, val.Uuid,domain_id)
+		_, err := dbobj.Exec(sys_rdbms_087, val.Uuid, domain_id)
 		if err != nil {
 			tx.Rollback()
 			logs.Error(err)
@@ -90,42 +90,42 @@ func (DomainShareModel) Delete(js string,domain_id string) error {
 }
 
 // 获取这个有哪些域把共享给了指定的这个域
-func (this DomainShareModel)get(domain_id string)([]ProjectMgr,error){
+func (this DomainShareModel) get(domain_id string) ([]ProjectMgr, error) {
 	var rst []ProjectMgr
-	rows,err := dbobj.Query(sys_rdbms_034,domain_id)
+	rows, err := dbobj.Query(sys_rdbms_034, domain_id)
 	if err != nil {
 		logs.Error(err)
-		return nil,err
+		return nil, err
 	}
-	err = dbobj.Scan(rows,&rst)
-	return rst,err
+	err = dbobj.Scan(rows, &rst)
+	return rst, err
 }
 
 func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
 	// 获取所有的域信息
-	rst,err := this.md.Get()
+	rst, err := this.md.Get()
 	if err != nil {
 		logs.Error(err)
-		return nil,err
+		return nil, err
 	}
 
 	// 获取指定域能够访问到的域信息
-	ret,err := this.get(domain_id)
+	ret, err := this.get(domain_id)
 	if err != nil {
 		logs.Error(err)
-		return nil,err
+		return nil, err
 	}
 
-	var dmap  = make(map[string]bool)
-	dmap[domain_id]=true
+	var dmap = make(map[string]bool)
+	dmap[domain_id] = true
 	for _, val := range ret {
-		dmap[val.Project_id]=true
+		dmap[val.Project_id] = true
 	}
 
 	var dslice []ProjectMgr
-	for _,val := range rst {
-		if _,ok := dmap[val.Project_id]; ok && val.Domain_status_cd == "0"{
-			dslice = append(dslice,val)
+	for _, val := range rst {
+		if _, ok := dmap[val.Project_id]; ok && val.Domain_status_cd == "0" {
+			dslice = append(dslice, val)
 		}
 	}
 	return dslice, nil
@@ -135,10 +135,10 @@ func (this DomainShareModel) GetOwner(domain_id string) (domainDataModel, error)
 
 	var ret domainDataModel
 
-	rst,err := this.GetList(domain_id)
+	rst, err := this.GetList(domain_id)
 	if err != nil {
 		logs.Error(err)
-		return ret,err
+		return ret, err
 	}
 
 	ret.Domain_id = domain_id

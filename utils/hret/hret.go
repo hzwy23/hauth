@@ -25,29 +25,7 @@ type HttpErrMsg struct {
 	Version       string      `json:"version"`
 }
 
-func NewHttpErrMsg(code int, msg string, details interface{}) HttpErrMsg {
-	return HttpErrMsg{
-		Error_code:    code,
-		Error_msg:     msg,
-		Error_details: details,
-		Version:       "v1.0",
-	}
-}
-
-func WriteHttpErrMsg(w http.ResponseWriter, herr HttpErrMsg) {
-	herr.Version = "v1.0"
-	ijs, err := json.Marshal(herr)
-	if err != nil {
-		logs.Error(err)
-		w.WriteHeader(http.StatusExpectationFailed)
-		w.Write([]byte(`{error_code:` + strconv.Itoa(herr.Error_code) + `,error_msg:"` + herr.Error_msg + `",error_details:"format json type info failed."}`))
-		return
-	}
-	w.WriteHeader(herr.Error_code)
-	w.Write(ijs)
-}
-
-func WriteJson(w http.ResponseWriter, data interface{})([]byte,error) {
+func Json(w http.ResponseWriter, data interface{}) ([]byte, error) {
 	ijs, err := json.Marshal(data)
 	if err != nil {
 		logs.Error(err)
@@ -57,35 +35,23 @@ func WriteJson(w http.ResponseWriter, data interface{})([]byte,error) {
 	}
 	if string(ijs) == "null" {
 		w.Write([]byte("[]"))
-		return ijs,nil
+		return ijs, nil
 	}
-	_,err = w.Write(ijs)
-	return ijs,err
+	_, err = w.Write(ijs)
+	return ijs, err
 }
 
-func WriteHttpErrMsgs(w http.ResponseWriter, code int, msg string, details ...interface{}) {
+func Error(w http.ResponseWriter, code int, msg string, details ...interface{}) {
 	e := HttpErrMsg{
 		Error_code:    code,
 		Error_msg:     msg,
 		Error_details: details,
 	}
 
-	WriteHttpErrMsg(w, e)
+	writHttpError(w, e)
 }
 
-func WriteHttpOkMsg(w http.ResponseWriter, ok HttpOkMsg) {
-	ojs, err := json.Marshal(ok)
-	if err != nil {
-		logs.Error(err.Error())
-		w.WriteHeader(http.StatusExpectationFailed)
-		w.Write([]byte(`{error_code:` + strconv.Itoa(http.StatusExpectationFailed) + `,error_msg:"format json type info failed.",error_details:"format json type info failed."}`))
-		return
-	}
-	w.Write(ojs)
-	return
-}
-
-func WriteHttpOkMsgs(w http.ResponseWriter, v interface{}) {
+func Success(w http.ResponseWriter, v interface{}) {
 	ok := HttpOkMsg{
 		Version:    "v1.0",
 		Reply_code: 200,
@@ -103,7 +69,7 @@ func WriteHttpOkMsgs(w http.ResponseWriter, v interface{}) {
 	return
 }
 
-func WriteBootstrapTableJson(w http.ResponseWriter, total int64, v interface{}) {
+func BootstrapTableJson(w http.ResponseWriter, total int64, v interface{}) {
 	ok := HttpOkMsg{
 		Version:    "v1.0",
 		Reply_code: 200,
@@ -122,13 +88,26 @@ func WriteBootstrapTableJson(w http.ResponseWriter, total int64, v interface{}) 
 	w.Write(ijs)
 }
 
-type HttpPanicFunc func()
+type httpPanicFunc func()
 
 // HttpPanic user for stop panic up.
-func HttpPanic(f ...HttpPanicFunc) {
+func HttpPanic(f ...httpPanicFunc) {
 	if r := recover(); r != nil {
 		for _, val := range f {
 			val()
 		}
 	}
+}
+
+func writHttpError(w http.ResponseWriter, herr HttpErrMsg) {
+	herr.Version = "v1.0"
+	ijs, err := json.Marshal(herr)
+	if err != nil {
+		logs.Error(err)
+		w.WriteHeader(http.StatusExpectationFailed)
+		w.Write([]byte(`{error_code:` + strconv.Itoa(herr.Error_code) + `,error_msg:"` + herr.Error_msg + `",error_details:"format json type info failed."}`))
+		return
+	}
+	w.WriteHeader(herr.Error_code)
+	w.Write(ijs)
 }

@@ -16,19 +16,19 @@ import (
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/tealeg/xlsx"
+	"io/ioutil"
 	"os"
 	"path/filepath"
-	"io/ioutil"
 )
 
 type orgController struct {
 	models *models.OrgModel
-	upload   chan int
+	upload chan int
 }
 
 var OrgCtl = &orgController{
 	models: new(models.OrgModel),
-	upload:make(chan int,1),
+	upload: make(chan int, 1),
 }
 
 // swagger:operation GET /v1/auth/resource/org/page StaticFiles orgController
@@ -53,7 +53,7 @@ func (orgController) Page(ctx *context.Context) {
 	}
 	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
@@ -94,24 +94,24 @@ func (this orgController) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
 	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied"))
 		return
 	}
 
 	rst, err := this.models.Get(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 417, i18n.Get(ctx.Request,"error_query_org_info"))
+		hret.Error(ctx.ResponseWriter, 417, i18n.Get(ctx.Request, "error_query_org_info"))
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation POST /v1/auth/resource/org/delete orgController orgController
@@ -154,7 +154,7 @@ func (this orgController) Delete(ctx *context.Context) {
 	err := json.Unmarshal([]byte(orgList), &mjs)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_delete_org_info"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_delete_org_info"), err)
 		return
 	}
 
@@ -162,26 +162,25 @@ func (this orgController) Delete(ctx *context.Context) {
 		cok, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := hjwt.ParseJwt(cok.Value)
 		if err != nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.DomainAuth(ctx.Request,domain_id,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
-
-	err = this.models.Delete(mjs,domain_id)
+	err = this.models.Delete(mjs, domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, err.Error())
+		hret.Error(ctx.ResponseWriter, 418, err.Error())
 		return
 	}
 
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation PUT /v1/auth/resource/org/update orgController orgController
@@ -216,51 +215,51 @@ func (this orgController) Update(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 	org_unit_id := ctx.Request.FormValue("Id")
 	org_unit_desc := ctx.Request.FormValue("Org_unit_desc")
 	up_org_id := ctx.Request.FormValue("Up_org_id")
 
-	did, err := hrpc.CheckDomainByOrgId(org_unit_id)
+	did, err := utils.SplitDomain(org_unit_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_get_domain_by_orgid"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.NoSeparator(ctx.Request, org_unit_id))
 		return
 	}
 
 	if !hrpc.DomainAuth(ctx.Request, did, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	// 校验输入信息
 	if govalidator.IsEmpty(org_unit_desc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_id_desc_empty"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_id_desc_empty"))
 		return
 	}
 
 	if !govalidator.IsWord(org_unit_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_id_format"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_id_format"))
 		return
 	}
 
 	if !govalidator.IsWord(up_org_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_up_id_empty"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_up_id_empty"))
 		return
 	}
 
 	check, err := this.models.GetSubOrgInfo(did, org_unit_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_sub_query"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_sub_query"))
 		return
 	}
 
 	for _, val := range check {
 		if val.Org_unit_id == up_org_id {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_up_id_complex"))
+			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_up_id_complex"))
 			return
 		}
 	}
@@ -268,12 +267,11 @@ func (this orgController) Update(ctx *context.Context) {
 	err = this.models.Update(org_unit_desc, up_org_id, jclaim.User_id, org_unit_id, did)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_modify"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_modify"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
+	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
 }
-
 
 // swagger:operation POST /v1/auth/resource/org/post orgController orgController
 //
@@ -325,7 +323,7 @@ func (this orgController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -335,39 +333,39 @@ func (this orgController) Post(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("Domain_id")
 
 	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
 	id := utils.JoinCode(domain_id, org_unit_id)
 
 	if !govalidator.IsWord(org_unit_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_id_format"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_id_format"))
 		return
 	}
 
 	if govalidator.IsEmpty(org_unit_desc) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_id_desc_empty"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_id_desc_empty"))
 		return
 	}
 
 	if !govalidator.IsWord(domain_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_id_check"))
 		return
 	}
 
 	if !govalidator.IsWord(up_org_id) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_up_id_empty"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_up_id_empty"))
 		return
 	}
 
 	err = this.models.Post(org_unit_id, org_unit_desc, up_org_id, domain_id, jclaim.User_id, jclaim.User_id, id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_add"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_add"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"success"))
+	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
 }
 
 func (orgController) getOrgTops(node []models.SysOrgInfo) []models.SysOrgInfo {
@@ -432,21 +430,21 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 
 	org_unit_id := ctx.Request.FormValue("org_unit_id")
 
-	did, err := hrpc.CheckDomainByOrgId(org_unit_id)
+	did, err := utils.SplitDomain(org_unit_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_get_domain_by_orgid"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.NoSeparator(ctx.Request, org_unit_id))
 		return
 	}
 
 	rst, err := this.models.GetSubOrgInfo(did, org_unit_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_org_sub_query"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_sub_query"))
 		return
 	}
 
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation GET /v1/auth/resource/org/download orgController orgController
@@ -485,33 +483,33 @@ func (this orgController) Download(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403,i18n.Disconnect(ctx.Request))
+			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
 	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied"))
 		return
 	}
 
 	rst, err := this.models.Get(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 417, i18n.Get(ctx.Request,"error_query_org_info"))
+		hret.Error(ctx.ResponseWriter, 417, i18n.Get(ctx.Request, "error_query_org_info"))
 		return
 	}
 
 	var sheet *xlsx.Sheet
 	HOME := os.Getenv("HBIGDATA_HOME")
-	file, err := xlsx.OpenFile(filepath.Join(HOME, "views","uploadTemplate","hauthOrgExportTemplate.xlsx"))
+	file, err := xlsx.OpenFile(filepath.Join(HOME, "views", "uploadTemplate", "hauthOrgExportTemplate.xlsx"))
 	if err != nil {
 		file = xlsx.NewFile()
 		sheet, err = file.AddSheet("机构信息")
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_sheet"))
+			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_sheet"))
 			return
 		}
 
@@ -539,7 +537,7 @@ func (this orgController) Download(ctx *context.Context) {
 	} else {
 		sheet = file.Sheet["机构信息"]
 		if sheet == nil {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_sheet"))
+			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_sheet"))
 			return
 		}
 	}
@@ -554,7 +552,7 @@ func (this orgController) Download(ctx *context.Context) {
 		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
 
 		cell3 := row.AddCell()
-		cell3.Value = utils.SplitCode(v.Up_org_id)
+		cell3.Value, _ = utils.SplitCode(v.Up_org_id)
 		cell3.SetStyle(sheet.Rows[1].Cells[2].GetStyle())
 
 		cell9 := row.AddCell()
@@ -610,9 +608,9 @@ func (this orgController) Download(ctx *context.Context) {
 // responses:
 //   '200':
 //     description: success
-func (this orgController)Upload(ctx *context.Context){
+func (this orgController) Upload(ctx *context.Context) {
 	if len(this.upload) != 0 {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Get(ctx.Request,"error_org_upload_wait"))
+		hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "error_org_upload_wait"))
 		return
 	}
 
@@ -621,7 +619,7 @@ func (this orgController)Upload(ctx *context.Context){
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -635,14 +633,14 @@ func (this orgController)Upload(ctx *context.Context){
 	fd, _, err := ctx.Request.FormFile("file")
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_read_upload_file"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_read_upload_file"))
 		return
 	}
 
-	result,err := ioutil.ReadAll(fd)
+	result, err := ioutil.ReadAll(fd)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_org_read_upload_file"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_read_upload_file"))
 		return
 	}
 
@@ -652,7 +650,7 @@ func (this orgController)Upload(ctx *context.Context){
 	sheet, ok := file.Sheet["机构信息"]
 	if !ok {
 		logs.Error("没有找到'机构信息'这个sheet页")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_org_sheet"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_sheet"))
 		return
 	}
 
@@ -663,30 +661,30 @@ func (this orgController)Upload(ctx *context.Context){
 			one.Code_number = val.Cells[0].Value
 			one.Org_unit_desc = val.Cells[1].Value
 			one.Domain_id = val.Cells[3].Value
-			one.Org_unit_id = utils.JoinCode(one.Domain_id,one.Code_number)
-			one.Up_org_id = utils.JoinCode(one.Domain_id,val.Cells[2].Value)
+			one.Org_unit_id = utils.JoinCode(one.Domain_id, one.Code_number)
+			one.Up_org_id = utils.JoinCode(one.Domain_id, val.Cells[2].Value)
 			one.Create_user = jclaim.User_id
 
 			if one.Org_unit_id == one.Up_org_id {
-				hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"as_of_date_up_org_equal_org_id"))
+				hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_up_org_equal_org_id"))
 				return
 			}
 
 			if !hrpc.DomainAuth(ctx.Request, one.Domain_id, "w") {
-				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+				hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 				return
 			}
-			data = append(data,one)
+			data = append(data, one)
 		}
 	}
 
 	err = this.models.Upload(data)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,err.Error())
+		hret.Error(ctx.ResponseWriter, 421, err.Error())
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 func init() {

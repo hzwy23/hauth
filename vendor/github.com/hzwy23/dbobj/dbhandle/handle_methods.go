@@ -24,7 +24,7 @@ type DbObj interface {
 	QueryRow(sql string, args ...interface{}) *sql.Row
 
 	// Execute
-	Exec(sql string, args ...interface{}) (sql.Result,error)
+	Exec(sql string, args ...interface{}) (sql.Result, error)
 
 	// Begin transaction
 	Begin() (*sql.Tx, error)
@@ -38,7 +38,6 @@ type DbObj interface {
 	// GetDetails Message info
 	GetErrorMsg(err error) string
 }
-
 
 // Function: register database instance
 // Time: 2016-06-15
@@ -55,4 +54,3 @@ func Register(dsn string, f instance) {
 	}
 	Adapter[dsn] = f
 }
-

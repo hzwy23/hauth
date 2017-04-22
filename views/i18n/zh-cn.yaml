@@ -232,3 +232,5 @@
   translation: "禁止修改自身的用户状态"
 - id: error_user_status_empty
   translation: "请选择用户状态"
+- id: as_of_date_no_separator
+  translation: "唯一主键 {{.Id}} 中,不含分隔符,格式不正确"

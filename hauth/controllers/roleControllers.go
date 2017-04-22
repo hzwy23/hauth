@@ -7,16 +7,17 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/logs"
-	"github.com/hzwy23/asofdate/utils/token/hjwt"
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils"
+	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/asofdate/utils/token/hjwt"
 )
 
 type roleController struct {
-	models        models.RoleModel
+	models models.RoleModel
 }
 
 var RoleCtl = &roleController{
@@ -52,7 +53,7 @@ func (roleController) Page(ctx *context.Context) {
 	}
 	rst, err := hcache.GetStaticFile("AsofdateRolePage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)
@@ -93,14 +94,14 @@ func (this roleController) Get(ctx *context.Context) {
 		jclaim, err := hjwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
 		}
 		domain_id = jclaim.Domain_id
 	}
 
-	if !hrpc.DomainAuth(ctx.Request,domain_id,"r"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "r") {
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied"))
 		return
 	}
 
@@ -108,11 +109,11 @@ func (this roleController) Get(ctx *context.Context) {
 
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_query"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_query"), err)
 		return
 	}
 
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation POST /v1/auth/role/post roleController roleController
@@ -154,44 +155,44 @@ func (this roleController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request,domainid,"w"){
+	if !hrpc.DomainAuth(ctx.Request, domainid, "w") {
 		logs.Error("没有权限在这个域中新增角色信息")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied"))
 		return
 	}
 
 	//校验
 	if !govalidator.IsWord(roleid) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_id_format"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_id_format"))
 		return
 	}
 	//
 	if govalidator.IsEmpty(rolename) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_desc_empty"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_desc_empty"))
 		return
 	}
 
 	if !govalidator.IsWord(domainid) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"as_of_date_domain_id_check"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_id_check"))
 		return
 	}
 
-	if !govalidator.IsIn(rolestatus,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_status"))
+	if !govalidator.IsIn(rolestatus, "0", "1") {
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_status"))
 		return
 	}
 
 	err = this.models.Post(id, rolename, jclaim.User_id, rolestatus, domainid, roleid)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_add_failed"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_add_failed"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation POST /v1/auth/role/delete roleController roleController
@@ -228,7 +229,7 @@ func (this roleController) Delete(ctx *context.Context) {
 	err := json.Unmarshal(mjson, &allrole)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_json_failed"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_json_failed"), err)
 		return
 	}
 
@@ -236,17 +237,17 @@ func (this roleController) Delete(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	err = this.models.Delete(allrole, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 418, i18n.Get(ctx.Request,"error_role_delete_failed"))
+		hret.Error(ctx.ResponseWriter, 418, i18n.Get(ctx.Request, "error_role_delete_failed"))
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter,i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation PUT /v1/auth/role/put roleController roleController
@@ -285,44 +286,43 @@ func (this roleController) Update(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	did, err := hrpc.CheckDomainByRoleId(Role_id)
+	did, err := utils.SplitDomain(Role_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_get_domain"))
+		hret.Error(ctx.ResponseWriter, 420, i18n.NoSeparator(ctx.Request, Role_id))
+	}
+
+	if !hrpc.DomainAuth(ctx.Request, did, "w") {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request,did,"w"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"as_of_date_domain_permission_denied_modify"))
+	if !govalidator.IsWord(Role_id) {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_id_format"))
 		return
 	}
 
-	if !govalidator.IsWord(Role_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_id_format"))
+	if govalidator.IsEmpty(Role_name) {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_desc_empty"))
 		return
 	}
 
-	if govalidator.IsEmpty(Role_name){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_desc_empty"))
-		return
-	}
-
-	if !govalidator.IsIn(Role_status,"0","1"){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_status"))
+	if !govalidator.IsIn(Role_status, "0", "1") {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_status"))
 		return
 	}
 
 	err = this.models.Update(Role_name, Role_status, Role_id, jclaim.User_id, did)
 	if err != nil {
 		logs.Error(err.Error())
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_role_update_failed"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_update_failed"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 func init() {

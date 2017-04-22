@@ -5,7 +5,7 @@ import (
 	"github.com/astaxie/beego/context"
 )
 
-func StartHauth(){
+func StartHauth() {
 	// 开启消息，
 	// 将80端口的请求，重定向到443上
 	go RedictToHtpps()

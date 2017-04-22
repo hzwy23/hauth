@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/utils/hret"
 	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
@@ -12,7 +12,6 @@ type helpController struct {
 }
 
 var HelpCtl = &helpController{}
-
 
 // swagger:operation GET /v1/help/system/help StaticFiles helpController
 //
@@ -38,7 +37,7 @@ func (this helpController) Page(ctx *context.Context) {
 
 	rst, err := hcache.GetStaticFile("AsofdateHelpPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(rst)

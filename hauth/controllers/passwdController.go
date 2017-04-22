@@ -9,9 +9,9 @@ import (
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
-	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type passwdController struct {
@@ -65,52 +65,52 @@ func (this passwdController) PostModifyPasswd(ctx *context.Context) {
 	surePasswd := ctx.Request.FormValue("surepasswd")
 
 	if oriPasswd == newPasswd {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_passwd_same"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_same"))
 		return
 	}
 
 	if newPasswd != surePasswd {
 		logs.Error("new passwd confirm failed. please check your new password and confirm password")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_passwd_confirm_failed"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_confirm_failed"))
 		return
 	}
 
 	if len(strings.TrimSpace(newPasswd)) != len(newPasswd) {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_passwd_blank"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_blank"))
 		return
 	}
 
 	if len(strings.TrimSpace(newPasswd)) < 6 || len(strings.TrimSpace(newPasswd)) > 30 {
 		logs.Error("新密码长度不能小于6位,且不能大于30位")
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_passwd_short"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_short"))
 		return
 	}
 
 	oriEn, err := utils.Encrypt(oriPasswd)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421,  i18n.Get(ctx.Request,"error_password_encrpty"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
 		return
 	}
 
 	newPd, err := utils.Encrypt(newPasswd)
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_password_encrpty"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
 		return
 	}
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	err_msg,err := this.p.UpdateMyPasswd(newPd, jclaim.User_id, oriEn)
+	err_msg, err := this.p.UpdateMyPasswd(newPd, jclaim.User_id, oriEn)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,err_msg),err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, err_msg), err)
 		return
 	}
 	http.SetCookie(ctx.ResponseWriter, &http.Cookie{Name: "Authorization", Value: "", Path: "/", MaxAge: -1})
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }

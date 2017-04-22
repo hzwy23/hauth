@@ -1,14 +1,14 @@
 package controllers
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"html/template"
-	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/asofdate/utils/i18n"
 )
 
 type roleAndResourceController struct {
@@ -56,7 +56,7 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_resource_query"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_resource_query"))
 		return
 	}
 	file, _ := template.ParseFiles("./views/hauth/res_role_rel_page.tpl")
@@ -100,19 +100,19 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 		rst, err := this.resRoleModel.Get(role_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_get_resource"))
+			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_get_resource"))
 			return
 		}
-		hret.WriteJson(ctx.ResponseWriter, rst)
+		hret.Json(ctx.ResponseWriter, rst)
 	} else if type_id == "1" {
 		// 查询角色没有获取到的资源信息
 		rst, err := this.resRoleModel.UnGetted(role_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_unget_resource"))
+			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_unget_resource"))
 			return
 		}
-		hret.WriteJson(ctx.ResponseWriter, rst)
+		hret.Json(ctx.ResponseWriter, rst)
 	}
 }
 
@@ -149,13 +149,13 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	role_id := ctx.Request.FormValue("role_id")
 	type_id := ctx.Request.FormValue("type_id")
 
-	if !govalidator.IsWord(res_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_resource_res_id"))
+	if !govalidator.IsWord(res_id) {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_res_id"))
 		return
 	}
 
-	if !govalidator.IsWord(role_id){
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_role_id_format"))
+	if !govalidator.IsWord(role_id) {
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_id_format"))
 		return
 	}
 
@@ -164,10 +164,10 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 		err := this.resRoleModel.Delete(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_delete_failed"))
+			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_delete_failed"))
 			return
 		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
 		}
 	} else {
@@ -175,10 +175,10 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 		err := this.resRoleModel.Post(role_id, res_id)
 		if err != nil {
 			logs.Error(err)
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_role_delete_failed"))
+			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_role_delete_failed"))
 			return
 		} else {
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
 		}
 	}

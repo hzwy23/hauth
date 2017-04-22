@@ -1,6 +1,5 @@
 package hrpc
 
-
 var (
 	sys_rdbms_hrpc_001 = `select f.authorization_level from sys_user_info t inner join sys_org_info i on t.org_unit_id = i.org_unit_id inner join sys_domain_share_info f on f.domain_id = ? and i.domain_id = f.target_domain_id where t.user_id = ?`
 	sys_rdbms_hrpc_002 = `select t.domain_id from sys_org_info t where t.org_unit_id  = ?`

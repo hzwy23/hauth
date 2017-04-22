@@ -3,9 +3,9 @@ package models
 import (
 	"errors"
 
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/dbobj"
-	"github.com/hzwy23/asofdate/hauth/hcache"
 	"time"
 )
 
@@ -38,11 +38,11 @@ type resData struct {
 
 // 查询所有的资源信息
 func (ResourceModel) Get() ([]resData, error) {
-	key := hcache.GenKey("RESOURCEMODELS","ALLRES")
-	if hcache.IsExist(key){
+	key := hcache.GenKey("RESOURCEMODELS", "ALLRES")
+	if hcache.IsExist(key) {
 		logs.Debug("get data from cache")
-		rst , _ := hcache.Get(key).([]resData)
-		return rst,nil
+		rst, _ := hcache.Get(key).([]resData)
+		return rst, nil
 	}
 	rows, err := dbobj.Query(sys_rdbms_071)
 	if err != nil {
@@ -51,19 +51,19 @@ func (ResourceModel) Get() ([]resData, error) {
 	}
 	var rst []resData
 	err = dbobj.Scan(rows, &rst)
-	hcache.Put(key,rst,720*time.Minute)
+	hcache.Put(key, rst, 720*time.Minute)
 	return rst, err
 }
 
-func (this ResourceModel)GetChildren(res_id string )([]resData,error){
-	rst,err := this.Get()
+func (this ResourceModel) GetChildren(res_id string) ([]resData, error) {
+	rst, err := this.Get()
 	if err != nil {
 		logs.Error(err)
-		return nil,err
+		return nil, err
 	}
 	var ret []resData
-	this.dfs(rst,res_id,&ret)
-	return ret,nil
+	this.dfs(rst, res_id, &ret)
+	return ret, nil
 }
 
 // 所有指定资源的详细信息
@@ -79,8 +79,8 @@ func (ResourceModel) Query(res_id string) ([]resData, error) {
 }
 
 // 新增资源
-func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id,res_open_type string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
+func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id, res_open_type string) error {
+	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -114,7 +114,7 @@ func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme
 
 // 新增按钮
 func (this ResourceModel) PostButton(res_id, res_name, res_attr, res_up_id, res_type string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
+	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -136,7 +136,7 @@ func (this ResourceModel) PostButton(res_id, res_name, res_attr, res_up_id, res_
 
 // 删除指定的资源
 func (this ResourceModel) Delete(res_id string) (string, error) {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
+	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
 	var rst []resData
 
 	all, err := this.Get()
@@ -145,12 +145,12 @@ func (this ResourceModel) Delete(res_id string) (string, error) {
 		return error_resource_query, err
 	}
 
-	this.dfs(all,res_id,&rst)
+	this.dfs(all, res_id, &rst)
 
 	// add res_id
-	for _,val:=range all {
+	for _, val := range all {
 		if val.Res_id == res_id {
-			rst = append(rst,val)
+			rst = append(rst, val)
 			break
 		}
 	}
@@ -194,17 +194,17 @@ func (this ResourceModel) Delete(res_id string) (string, error) {
 }
 
 func (this ResourceModel) Update(res_id, res_name string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS","ALLRES"))
-	_,err := dbobj.Exec(sys_rdbms_005, res_name, res_id)
+	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	_, err := dbobj.Exec(sys_rdbms_005, res_name, res_id)
 	return err
 }
 
 // 获取子资源信息
-func (this ResourceModel)dfs(all []resData,res_id string,rst *[]resData){
-	for _, val:=range all {
+func (this ResourceModel) dfs(all []resData, res_id string, rst *[]resData) {
+	for _, val := range all {
 		if val.Res_up_id == res_id {
-			*rst = append(*rst,val)
-			this.dfs(all,val.Res_id,rst)
+			*rst = append(*rst, val)
+			this.dfs(all, val.Res_id, rst)
 		}
 	}
 }

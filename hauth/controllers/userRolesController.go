@@ -2,15 +2,14 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/utils/i18n"
 )
-
 
 type userRolesController struct {
 	models *models.UserRolesModel
@@ -19,7 +18,6 @@ type userRolesController struct {
 var UserRolesCtl = &userRolesController{
 	models: new(models.UserRolesModel),
 }
-
 
 // swagger:operation GET /v1/auth/batch/page StaticFiles domainShareControll
 //
@@ -50,7 +48,7 @@ func (this *userRolesController) Page(ctx *context.Context) {
 	// According to the key get the value from the groupCache system
 	rst, err := hcache.GetStaticFile("AuthorityPage")
 	if err != nil {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 404, i18n.Get(ctx.Request,"as_of_date_page_not_exist"))
+		hret.Error(ctx.ResponseWriter, 404, i18n.Get(ctx.Request, "as_of_date_page_not_exist"))
 		return
 	}
 
@@ -86,10 +84,10 @@ func (this userRolesController) GetRolesByUserId(ctx *context.Context) {
 	rst, err := this.models.GetRolesByUser(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_query"), err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_role_query"), err)
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation GET /v1/auth/user/roles/other userRolesController userRolesController
@@ -119,17 +117,17 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 	user_id := ctx.Request.FormValue("user_id")
 
 	if user_id == "" {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_no_user"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_role_no_user"))
 		return
 	}
 
 	rst, err := this.models.GetOtherRoles(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_user_role_un_auth"), err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_role_un_auth"), err)
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation POST /v1/auth/user/roles/auth userRolesController userRolesController
@@ -167,17 +165,17 @@ func (this userRolesController) Auth(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	msg, err := this.models.Auth(jclaim.Domain_id, jclaim.User_id, ijs)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, msg, err)
+		hret.Error(ctx.ResponseWriter, 419, msg, err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation POST /v1/auth/user/roles/revoke userRolesController userRolesController
@@ -224,17 +222,17 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,403,i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	msg, err := this.models.Revoke(user_id, role_id, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, msg, err)
+		hret.Error(ctx.ResponseWriter, 419, msg, err)
 		return
 	} else {
-		hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+		hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 		return
 	}
 }

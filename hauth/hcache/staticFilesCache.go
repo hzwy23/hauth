@@ -36,7 +36,7 @@ func RegisterStaticFile(key, value string) {
 
 func FileIsExist(key string) bool {
 	lock.RLock()
-	if _,ok := staticFile[key];ok{
+	if _, ok := staticFile[key]; ok {
 		lock.RUnlock()
 		return true
 	}

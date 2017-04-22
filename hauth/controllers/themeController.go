@@ -1,19 +1,19 @@
 package controllers
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/asaskevich/govalidator"
 )
 
 type themeController struct {
 	muser *models.UserThemeModel
-	mres *models.ThemeResourceModel
+	mres  *models.ThemeResourceModel
 }
 
 var ThemeCtl = &themeController{
@@ -52,7 +52,7 @@ func (this *themeController) Post(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -61,10 +61,10 @@ func (this *themeController) Post(ctx *context.Context) {
 	err = this.muser.Put(jclaim.User_id, theme_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_theme_update"), err)
 		return
 	}
-	hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 // swagger:operation PUT /v1/auth/resource/config/theme themeController themeController
@@ -102,33 +102,33 @@ func (this themeController) Put(ctx *context.Context) {
 		res_sort_id = "0"
 	}
 
-	flag,res_type := this.mres.CheckThemeExists(theme_id, res_id)
-	if govalidator.IsIn(res_type,"0","1","2") {
+	flag, res_type := this.mres.CheckThemeExists(theme_id, res_id)
+	if govalidator.IsIn(res_type, "0", "1", "2") {
 		if flag == 0 {
 			// 没有这个主题的配置信息,新增主题信息
-			msg, err := this.mres.Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id,res_open_type)
+			msg, err := this.mres.Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id, res_open_type)
 			if err != nil {
-				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, msg, err)
+				hret.Error(ctx.ResponseWriter, 421, msg, err)
 				return
 			}
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
-		} else if flag > 0{
+		} else if flag > 0 {
 			// 更新主题信息
-			err := this.mres.Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id,res_open_type)
+			err := this.mres.Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id, res_open_type)
 			if err != nil {
 				logs.Error(err)
-				hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"), err)
+				hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_theme_update"), err)
 				return
 			}
-			hret.WriteHttpOkMsgs(ctx.ResponseWriter, i18n.Success(ctx.Request))
+			hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 			return
 		} else {
-			hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_theme_update"))
+			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_theme_update"))
 			return
 		}
 	} else {
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,421,i18n.Get(ctx.Request,"error_theme_virtual_forbid"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_theme_virtual_forbid"))
 		return
 	}
 }
@@ -162,8 +162,8 @@ func (this themeController) QueryTheme(ctx *context.Context) {
 	rst, err := this.mres.GetDetails(res_id, theme_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 419, i18n.Get(ctx.Request,"error_resource_query_theme"), err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_resource_query_theme"), err)
 		return
 	}
-	hret.WriteJson(ctx.ResponseWriter, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }

@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/asofdate/utils/i18n"
 	"github.com/hzwy23/asofdate/utils/logs"
 	"github.com/hzwy23/asofdate/utils/token/hjwt"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/hauth/hcache"
 )
 
 var homePageMenusModel = new(models.HomePageMenusModel)
@@ -50,7 +50,7 @@ func SubSystemEntry(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
@@ -61,10 +61,10 @@ func SubSystemEntry(ctx *context.Context) {
 		hcache.RegisterStaticFile(id, url)
 	}
 
-	tpl,err := hcache.GetStaticFile(id)
+	tpl, err := hcache.GetStaticFile(id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter,404,i18n.PageNotFound(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
 	}
 	ctx.ResponseWriter.Write(tpl)
@@ -113,14 +113,14 @@ func HomePageMenus(ctx *context.Context) {
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
 	ojs, err := homePageMenusModel.Get(Id, typeId, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.WriteHttpErrMsgs(ctx.ResponseWriter, 421, i18n.Get(ctx.Request,"error_query_menu"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_query_menu"))
 		return
 	}
 	ctx.ResponseWriter.Write(ojs)
