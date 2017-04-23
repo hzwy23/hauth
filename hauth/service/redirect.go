@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hzwy23/asofdate/utils/config"
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils/config"
+	"github.com/hzwy23/utils/hret"
+	"github.com/hzwy23/utils/logs"
 	"path/filepath"
 	"os"
 )
@@ -15,7 +15,7 @@ func RedictToHtpps() {
 
 	defer hret.HttpPanic()
 
-	red, err := config.GetConfig(filepath.Join(os.Getenv("HBIGDATA_HOME"),"conf","system.properties"))
+	red, err := config.GetConfig(filepath.Join(os.Getenv("HBIGDATA_HOME"),"conf","asofdate.conf"))
 	if err != nil {
 		logs.Error(err)
 		return

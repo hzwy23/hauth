@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	"github.com/astaxie/beego/logs"
+	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/dbobj"
 )

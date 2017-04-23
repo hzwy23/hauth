@@ -5,9 +5,9 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils/hret"
+	"github.com/hzwy23/utils/i18n"
+	"github.com/hzwy23/utils/logs"
 	"html/template"
 )
 

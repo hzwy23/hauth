@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/utils/logs"
-	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
 )
 

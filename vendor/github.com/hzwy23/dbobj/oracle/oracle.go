@@ -29,10 +29,10 @@ func NewOracle() dbhandle.DbObj {
 	os.Setenv("NLS_DATE_FORMAT", "yyyy-mm-dd")
 
 	HOME := os.Getenv("HBIGDATA_HOME")
-	filedir := filepath.Join(HOME, "conf", "system.properties")
+	filedir := filepath.Join(HOME, "conf", "asofdate.conf")
 	red, err := utils.GetResource(filedir)
 	if err != nil {
-		fmt.Errorf("cant not read ./conf/system.properties.please check this file.")
+		fmt.Errorf("cant not read ./conf/asofdate.conf.please check this file.")
 		return nil
 	}
 

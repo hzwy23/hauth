@@ -5,8 +5,8 @@ import (
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/asofdate/utils"
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils"
+	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
 	"time"
 )

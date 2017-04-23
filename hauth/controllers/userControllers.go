@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/utils/hret"
+	"github.com/hzwy23/utils/hret"
 
 	"strings"
 
@@ -10,10 +10,10 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/asofdate/utils"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/utils/logs"
-	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/utils"
+	"github.com/hzwy23/utils/i18n"
+	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/utils/token/hjwt"
 )
 
 type userController struct {

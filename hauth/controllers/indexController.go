@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/i18n"
+	"github.com/hzwy23/utils/hret"
+	"github.com/hzwy23/utils/i18n"
 )
 
 // swagger:operation GET / StaticFiles IndexPage

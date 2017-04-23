@@ -3,7 +3,7 @@ package models
 import (
 	"encoding/json"
 
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
 )
 

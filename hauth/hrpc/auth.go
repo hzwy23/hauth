@@ -6,10 +6,10 @@ import (
 	"database/sql"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/utils/hret"
-	"github.com/hzwy23/asofdate/utils/i18n"
-	"github.com/hzwy23/asofdate/utils/logs"
-	"github.com/hzwy23/asofdate/utils/token/hjwt"
+	"github.com/hzwy23/utils/hret"
+	"github.com/hzwy23/utils/i18n"
+	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/utils/token/hjwt"
 	"github.com/hzwy23/dbobj"
 	"net/http"
 )
@@ -70,12 +70,14 @@ func GetDomainAuth(user_id string, domain_id string) int {
 	return cnt
 }
 
+// 根据用户账号,获取用户所在的域
 func GetDomainId(user_id string) (string, error) {
 	domain_id := ""
 	err := dbobj.QueryRow(sys_rdbms_hrpc_003, user_id).Scan(&domain_id)
 	return domain_id, err
 }
 
+// 校验用户是否有权限访问当前API
 func BasicAuth(ctx *context.Context) bool {
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := hjwt.ParseJwt(cookie.Value)
@@ -101,9 +103,11 @@ func BasicAuth(ctx *context.Context) bool {
 }
 
 // 检查用户对指定的域的权限
-// 第一个参数是上下文 context
-// 第二个参数是用户想要访问的域
-// 第三个参数是用户想要的权限，分两种情况，r 表示只读， w 表示读写
+// 第一个参数中,http.Request,包含了用户的连接信息,cookie中.
+// 第二个参数中,domain_id,是用户想要访问的域
+// 第三个参数是访问模式,r 表示 只读, w 表示 读写.
+// 如果返回true,表示用户有权限
+// 返回false,表示用户没有权限
 func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
 	level := checkDomainAuthLevel(req, domain_id)
 	switch pattern {

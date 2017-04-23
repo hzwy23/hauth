@@ -1,7 +1,7 @@
 package i18n
 
 import (
-	"github.com/astaxie/beego/logs"
+	"github.com/hzwy23/utils/logs"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"net/http"
 	"os"

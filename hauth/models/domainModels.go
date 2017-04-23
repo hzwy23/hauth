@@ -5,7 +5,7 @@ import (
 
 	"database/sql"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
 )
 

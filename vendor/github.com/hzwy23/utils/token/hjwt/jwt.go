@@ -6,7 +6,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/hzwy23/asofdate/utils/logs"
+	"github.com/hzwy23/utils/logs"
 )
 
 type JwtClaims struct {

@@ -1,0 +1,17 @@
+{"level":"debug","ts":"2017-04-23 20:57:51","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"error","ts":"2017-04-23 20:57:54","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
+{"level":"debug","ts":"2017-04-23 21:00:39","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"error","ts":"2017-04-23 21:00:42","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
+{"level":"error","ts":"2017-04-23 21:02:19","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
+{"level":"debug","ts":"2017-04-23 22:35:56","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"error","ts":"2017-04-23 22:35:58","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
+{"level":"debug","ts":"2017-04-23 22:40:30","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:49","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:50","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:53","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:54","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:57","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:58","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 22:48:59","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 23:02:20","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-23 23:02:22","caller":"models/resourceModels.go:43","msg":"get data from cache"}

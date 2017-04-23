@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/astaxie/beego/logs"
+	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/dbobj"
 )
