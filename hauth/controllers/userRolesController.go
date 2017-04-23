@@ -8,7 +8,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 type userRolesController struct {
@@ -41,7 +41,8 @@ var UserRolesCtl = &userRolesController{
 //   '404':
 //     description: page not found.
 func (this *userRolesController) Page(ctx *context.Context) {
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -154,7 +155,8 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 //     description: all domain information
 func (this userRolesController) Auth(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -162,7 +164,7 @@ func (this userRolesController) Auth(ctx *context.Context) {
 	logs.Error(ijs)
 
 	cok, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cok.Value)
+	jclaim, err := jwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -211,7 +213,8 @@ func (this userRolesController) Auth(ctx *context.Context) {
 //     description: success
 func (this userRolesController) Revoke(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -219,7 +222,7 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	role_id := ctx.Request.FormValue("role_id")
 
 	cok, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cok.Value)
+	jclaim, err := jwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

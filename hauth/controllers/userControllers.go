@@ -10,10 +10,10 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/crypto/haes"
 )
 
 type userController struct {
@@ -40,10 +40,9 @@ var UserCtl = &userController{
 //   '200':
 //     description: success
 func (userController) Page(ctx *context.Context) {
-	defer hret.HttpPanic()
-
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -81,7 +80,8 @@ func (userController) Page(ctx *context.Context) {
 //     description: success
 func (this userController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -89,7 +89,7 @@ func (this userController) Get(ctx *context.Context) {
 
 	// get user connection info from cookes.
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -141,7 +141,8 @@ func (this userController) Get(ctx *context.Context) {
 //     description: success
 func (this userController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -150,7 +151,7 @@ func (this userController) Post(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("domainId")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -195,7 +196,7 @@ func (this userController) Post(ctx *context.Context) {
 		return
 	}
 
-	userPasswd, err := utils.Encrypt(ctx.Request.FormValue("userPasswd"))
+	userPasswd, err := haes.Encrypt(ctx.Request.FormValue("userPasswd"))
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_passwd_encrypt"), err)
@@ -250,14 +251,15 @@ func (this userController) Post(ctx *context.Context) {
 //     description: success
 func (this userController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
 	ijs := []byte(ctx.Request.FormValue("JSON"))
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -318,7 +320,7 @@ func (this userController) Search(ctx *context.Context) {
 	var domain_id = ctx.Request.FormValue("domain_id")
 	if strings.TrimSpace(domain_id) == "" {
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -360,7 +362,8 @@ func (this userController) Search(ctx *context.Context) {
 //     description: success
 func (this userController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -371,7 +374,7 @@ func (this userController) Put(ctx *context.Context) {
 	user_id := ctx.Request.FormValue("userId")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -449,7 +452,8 @@ func (this userController) Put(ctx *context.Context) {
 //     description: success
 func (this userController) ModifyPasswd(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -480,7 +484,7 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 		return
 	}
 
-	encry_passwd, err := utils.Encrypt(user_password)
+	encry_passwd, err := haes.Encrypt(user_password)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
@@ -521,7 +525,8 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 //     description: success
 func (this userController) ModifyStatus(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -536,7 +541,7 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -593,7 +598,7 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 func (this userController) GetUserDetails(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 401, i18n.Disconnect(ctx.Request))

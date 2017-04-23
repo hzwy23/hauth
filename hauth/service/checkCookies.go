@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 const redirect = `
@@ -20,7 +20,7 @@ const redirect = `
 
 func CheckJWT(ctx *context.Context) {
 	cookie, err := ctx.Request.Cookie("Authorization")
-	if err != nil || !hjwt.CheckToken(cookie.Value) {
+	if err != nil || !jwt.CheckToken(cookie.Value) {
 		ctx.WriteString(redirect)
 	}
 }

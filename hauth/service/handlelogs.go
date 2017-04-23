@@ -5,7 +5,7 @@ import (
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/dbobj"
 )
 
@@ -28,7 +28,7 @@ func WriteHandleLogs(ctx *context.Context) {
 
 		dt := ctx.Request.Form.Encode()
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			dbobj.Exec(sql, "dev", ctx.Input.IP(), status, ctx.Request.Method, url, "dev", dt)
 		} else {

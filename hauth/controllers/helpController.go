@@ -31,10 +31,10 @@ var HelpCtl = &helpController{}
 func (this helpController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
-
 	rst, err := hcache.GetStaticFile("AsofdateHelpPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))

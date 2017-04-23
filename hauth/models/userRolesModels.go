@@ -80,7 +80,7 @@ func (UserRolesModel) Auth(domain_id, user_id, ijs string) (string, error) {
 		}
 
 		if domain_id != did && user_id != "admin" {
-			level := hrpc.GetDomainAuth(user_id, did)
+			level := hrpc.GetAuthLevel(user_id, did)
 			if level != 2 {
 				tx.Rollback()
 				return error_user_role_no_auth, errors.New(error_user_role_no_auth)
@@ -104,7 +104,7 @@ func (UserRolesModel) Revoke(user_id string, role_id string, uid, did string) (s
 		return error_user_role_no_auth, err
 	}
 	if u_domain_id != did && uid != "admin" {
-		level := hrpc.GetDomainAuth(uid, u_domain_id)
+		level := hrpc.GetAuthLevel(uid, u_domain_id)
 		if level != 2 {
 			return error_user_role_no_auth, errors.New(error_user_role_no_auth)
 		}

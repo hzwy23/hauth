@@ -9,10 +9,10 @@ import (
 	"github.com/hzwy23/utils/logs"
 
 	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/crypto/haes"
 )
 
 var indexModels = new(models.LoginModels)
@@ -38,7 +38,7 @@ func HomePage(ctx *context.Context) {
 	})
 
 	cok, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cok.Value)
+	jclaim, err := jwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
 		ctx.Redirect(302, "/")
@@ -92,7 +92,7 @@ func LoginSystem(ctx *context.Context) {
 
 	userPasswd := ctx.Request.FormValue("password")
 
-	psd, err := utils.Encrypt(userPasswd)
+	psd, err := haes.Encrypt(userPasswd)
 	if err != nil {
 		logs.Error("decrypt passwd failed.", psd)
 		hret.Error(ctx.ResponseWriter, 400, i18n.Get(ctx.Request, "error_system"))
@@ -114,7 +114,7 @@ func LoginSystem(ctx *context.Context) {
 	}
 
 	if ok, code, cnt, rmsg := hrpc.CheckPasswd(userId, psd); ok {
-		token := hjwt.GenToken(userId, domainId, orgid, 86400)
+		token := jwt.GenToken(userId, domainId, orgid, 86400)
 		cookie := http.Cookie{Name: "Authorization", Value: token, Path: "/", MaxAge: 86400}
 		http.SetCookie(ctx.ResponseWriter, &cookie)
 		hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))

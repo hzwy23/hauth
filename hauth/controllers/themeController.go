@@ -8,7 +8,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 type themeController struct {
@@ -49,7 +49,7 @@ func (this *themeController) Post(ctx *context.Context) {
 
 	// get user connection info from cookes.
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -84,7 +84,8 @@ func (this *themeController) Post(ctx *context.Context) {
 //     description: success
 func (this themeController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 

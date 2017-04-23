@@ -37,7 +37,8 @@ var ResourceCtl = &resourceController{
 //     description: all domain information
 func (resourceController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -74,9 +75,11 @@ func (resourceController) Page(ctx *context.Context) {
 //     description: success
 func (this resourceController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	rst, err := this.models.Get()
 	if err != nil {
 		logs.Error(err)
@@ -136,7 +139,8 @@ func (this resourceController) Query(ctx *context.Context) {
 //     description: success
 func (this resourceController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -348,7 +352,8 @@ func (this resourceController) Post(ctx *context.Context) {
 //     description: success
 func (this resourceController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -395,7 +400,8 @@ func (this resourceController) Delete(ctx *context.Context) {
 //     description: success
 func (this resourceController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 

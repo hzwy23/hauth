@@ -242,36 +242,6 @@ func (c *config) splitEqual(str string) (string, string, error) {
 	return strings.Trim(key, "\""), strings.Trim(keyVal, "\""), nil
 }
 
-// GetDetails the key and value from configuration file.
-//
-// Return pointer instance of config and error info.
-//
-// if success. error info is nil
-//
-// Args is : the configuration file of path.
-//
-// for exampples:
-//
-//   conf, err := GetResource("./conf/bigdata.properties")
-//   if err != nil {
-//      logs.Error("read configuration file failed.")
-//      ...
-//   }
-//   if val,ok := conf["key"];ok{
-//      logs.Debug("Read success.")
-//   }
-func GetResource(path string) (*config, error) {
-	conf := createConf()
-	conf.file = path
-	conf.lock = new(sync.RWMutex)
-	err := conf.getResource(path)
-	if err != nil {
-		return nil, err
-	} else {
-		return conf, nil
-	}
-}
-
 // GetDetails configuration infomation
 func GetConfig(path string) (*config, error) {
 	conf := createConf()

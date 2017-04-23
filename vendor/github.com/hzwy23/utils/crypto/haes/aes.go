@@ -1,4 +1,4 @@
-package utils
+package haes
 
 import (
 	"bytes"
@@ -78,7 +78,7 @@ func (this *myaes) pkcs5UnPadding(origData []byte) []byte {
 func (this *myaes) setKey(key []byte) bool {
 	switch len(key) {
 	default:
-		fmt.Errorf("aes set key failed. key is invalid. use default value instead of.")
+		fmt.Errorf("haes set key failed. key is invalid. use default value instead of.")
 		this.key = []byte("hzwy23@hustwb09y")
 		return false
 	case 16, 24, 32:

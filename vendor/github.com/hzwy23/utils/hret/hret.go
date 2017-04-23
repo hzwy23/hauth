@@ -88,17 +88,6 @@ func BootstrapTableJson(w http.ResponseWriter, total int64, v interface{}) {
 	w.Write(ijs)
 }
 
-type httpPanicFunc func()
-
-// HttpPanic user for stop panic up.
-func HttpPanic(f ...httpPanicFunc) {
-	if r := recover(); r != nil {
-		for _, val := range f {
-			val()
-		}
-	}
-}
-
 func writHttpError(w http.ResponseWriter, herr HttpErrMsg) {
 	herr.Version = "v1.0"
 	ijs, err := json.Marshal(herr)

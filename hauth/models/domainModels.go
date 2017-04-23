@@ -142,7 +142,7 @@ func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) erro
 		}
 
 		if user_id != "admin" {
-			level := hrpc.GetDomainAuth(user_id, val.Project_id)
+			level := hrpc.GetAuthLevel(user_id, val.Project_id)
 			if level != 2 {
 				tx.Rollback()
 				logs.Error("您没有权限删除这个域")

@@ -16,7 +16,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 type DomainShareController struct {
@@ -61,7 +61,8 @@ func (DomainShareController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// Check the user permissions
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -113,7 +114,8 @@ func (DomainShareController) Page(ctx *context.Context) {
 //   '419':
 //     description: get domain share information failed.
 func (this DomainShareController) Get(ctx *context.Context) {
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -122,7 +124,7 @@ func (this DomainShareController) Get(ctx *context.Context) {
 	// so set domain_id yourself.
 	if strings.TrimSpace(domain_id) == "" {
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -221,7 +223,8 @@ func (this DomainShareController) UnAuth(ctx *context.Context) {
 func (this DomainShareController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -245,7 +248,7 @@ func (this DomainShareController) Post(ctx *context.Context) {
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Disconnect(ctx.Request))
@@ -293,7 +296,8 @@ func (this DomainShareController) Post(ctx *context.Context) {
 func (this DomainShareController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -358,7 +362,8 @@ func (this DomainShareController) Delete(ctx *context.Context) {
 func (this DomainShareController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -383,7 +388,7 @@ func (this DomainShareController) Put(ctx *context.Context) {
 
 	// get user session from cookies
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Disconnect(ctx.Request))
@@ -423,7 +428,7 @@ func (this *DomainShareController) GetAccessDomain(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -459,7 +464,7 @@ func (this *DomainShareController) GetDomainOwner(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

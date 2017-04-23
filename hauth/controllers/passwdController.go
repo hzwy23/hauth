@@ -7,11 +7,11 @@ import (
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/crypto/haes"
 )
 
 type passwdController struct {
@@ -86,19 +86,19 @@ func (this passwdController) PostModifyPasswd(ctx *context.Context) {
 		return
 	}
 
-	oriEn, err := utils.Encrypt(oriPasswd)
+	oriEn, err := haes.Encrypt(oriPasswd)
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
 		return
 	}
 
-	newPd, err := utils.Encrypt(newPasswd)
+	newPd, err := haes.Encrypt(newPasswd)
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
 		return
 	}
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

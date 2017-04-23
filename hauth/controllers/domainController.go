@@ -12,7 +12,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 type domainController struct {
@@ -44,7 +44,8 @@ var DomainCtl = &domainController{models: &models.ProjectMgr{}}
 func (this *domainController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -97,7 +98,8 @@ func (this *domainController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// 权限控制
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -154,7 +156,8 @@ func (this *domainController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// Check user permissions
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -184,7 +187,7 @@ func (this *domainController) Post(ctx *context.Context) {
 
 	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
@@ -234,7 +237,8 @@ func (this *domainController) Post(ctx *context.Context) {
 //     description: success
 func (this *domainController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -248,7 +252,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_disconnect"))
@@ -305,7 +309,8 @@ func (this *domainController) Delete(ctx *context.Context) {
 func (this *domainController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -326,7 +331,7 @@ func (this *domainController) Put(ctx *context.Context) {
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -406,7 +411,7 @@ func (this *domainController) GetId(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

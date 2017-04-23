@@ -7,7 +7,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/dbobj"
 )
 
@@ -94,7 +94,7 @@ func CheckDomainByRoleId(role_id string) (string, error) {
 func BasicAuth(ctx *context.Context) bool {
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_no_auth"))
@@ -122,7 +122,7 @@ func BasicAuth(ctx *context.Context) bool {
 func DomainAuth(ctx *context.Context, domain_id string) int {
 	level := -1
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		return level

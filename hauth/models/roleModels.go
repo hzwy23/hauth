@@ -87,7 +87,7 @@ func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
 	for _, val := range allrole {
 
 		if val.Domain_id != domain_id && user_id != "admin" {
-			level := hrpc.GetDomainAuth(user_id, val.Domain_id)
+			level := hrpc.GetAuthLevel(user_id, val.Domain_id)
 			if level != 2 {
 				tx.Rollback()
 				return errors.New("您没有权限删除这个域中的角色信息")

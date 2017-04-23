@@ -8,7 +8,7 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/i18n"
@@ -44,7 +44,8 @@ var HandleLogsCtl = &handleLogsController{}
 func (this *handleLogsController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -79,14 +80,14 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 func (this handleLogsController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
-
 	ctx.ResponseWriter.Header().Set("Content-Type", "application/vnd.ms-excel")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -188,7 +189,8 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// Check the user permissions
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -198,7 +200,7 @@ func (this handleLogsController) GetHandleLogs(ctx *context.Context) {
 
 	// Get user connection information from cookie.
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -263,7 +265,8 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 	ctx.Request.ParseForm()
 
 	// Check the user permissions
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -274,7 +277,7 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 
 	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

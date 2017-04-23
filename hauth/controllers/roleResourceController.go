@@ -45,11 +45,12 @@ var RoleAndResourceCtl = &roleAndResourceController{
 //   '200':
 //     description: success
 func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
-	defer hret.HttpPanic()
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	var role_id = ctx.Request.FormValue("role_id")
 
 	rst, err := this.model.GetRow(role_id)
@@ -88,7 +89,8 @@ func (this roleAndResourceController) ResourcePage(ctx *context.Context) {
 //     description: success
 func (this roleAndResourceController) GetResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -142,9 +144,11 @@ func (this roleAndResourceController) GetResource(ctx *context.Context) {
 //     description: success
 func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	res_id := ctx.Request.FormValue("res_id")
 	role_id := ctx.Request.FormValue("role_id")
 	type_id := ctx.Request.FormValue("type_id")

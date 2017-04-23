@@ -13,7 +13,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 )
 
 type roleController struct {
@@ -48,9 +48,11 @@ var RoleCtl = &roleController{
 //     description: success
 func (roleController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	rst, err := hcache.GetStaticFile("AsofdateRolePage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
@@ -83,7 +85,8 @@ func (roleController) Page(ctx *context.Context) {
 //     description: success
 func (this roleController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -91,7 +94,7 @@ func (this roleController) Get(ctx *context.Context) {
 
 	if domain_id == "" {
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -139,9 +142,9 @@ func (this roleController) Get(ctx *context.Context) {
 //   '200':
 //     description: success
 func (this roleController) Post(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -152,7 +155,7 @@ func (this roleController) Post(ctx *context.Context) {
 	rolestatus := ctx.Request.FormValue("role_status")
 	id := domainid + "_join_" + roleid
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -218,9 +221,9 @@ func (this roleController) Post(ctx *context.Context) {
 //   '200':
 //     description: success
 func (this roleController) Delete(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -234,7 +237,7 @@ func (this roleController) Delete(ctx *context.Context) {
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -274,7 +277,8 @@ func (this roleController) Delete(ctx *context.Context) {
 //     description: success
 func (this roleController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -283,7 +287,7 @@ func (this roleController) Update(ctx *context.Context) {
 	Role_status := ctx.Request.FormValue("Role_status")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))

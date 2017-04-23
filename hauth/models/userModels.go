@@ -157,7 +157,7 @@ func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
 		}
 
 		if user_id != "admin" && domain_id != did {
-			level := hrpc.GetDomainAuth(user_id, did)
+			level := hrpc.GetAuthLevel(user_id, did)
 			if level != 2 {
 				logs.Error("没有被授权删除这个域中的信息")
 				tx.Rollback()

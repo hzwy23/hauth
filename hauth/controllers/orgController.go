@@ -14,7 +14,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/token/hjwt"
+	"github.com/hzwy23/utils/jwt"
 	"github.com/tealeg/xlsx"
 	"io/ioutil"
 	"os"
@@ -48,9 +48,11 @@ var OrgCtl = &orgController{
 //     description: success
 func (orgController) Page(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
@@ -83,7 +85,8 @@ func (orgController) Page(ctx *context.Context) {
 //     description: success
 func (this orgController) Get(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -91,7 +94,7 @@ func (this orgController) Get(ctx *context.Context) {
 
 	if domain_id == "" {
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -144,7 +147,8 @@ func (this orgController) Get(ctx *context.Context) {
 //     description: success
 func (this orgController) Delete(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -160,7 +164,7 @@ func (this orgController) Delete(ctx *context.Context) {
 
 	if govalidator.IsEmpty(domain_id) {
 		cok, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cok.Value)
+		jclaim, err := jwt.ParseJwt(cok.Value)
 		if err != nil {
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 			return
@@ -207,12 +211,13 @@ func (this orgController) Delete(ctx *context.Context) {
 //     description: success
 func (this orgController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
 		return
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -315,12 +320,13 @@ func (this orgController) Update(ctx *context.Context) {
 //     description: success
 func (this orgController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -471,7 +477,8 @@ func (this orgController) GetSubOrgInfo(ctx *context.Context) {
 //     description: success
 func (this orgController) Download(ctx *context.Context) {
 	ctx.Request.ParseForm()
-	if !hrpc.BasicAuth(ctx) {
+	if !hrpc.BasicAuth(ctx.Request) {
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -480,7 +487,7 @@ func (this orgController) Download(ctx *context.Context) {
 
 	if govalidator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
-		jclaim, err := hjwt.ParseJwt(cookie.Value)
+		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
 			logs.Error(err)
 			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
@@ -616,7 +623,7 @@ func (this orgController) Upload(ctx *context.Context) {
 
 	// 从cookies中获取用户连接信息
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := hjwt.ParseJwt(cookie.Value)
+	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
