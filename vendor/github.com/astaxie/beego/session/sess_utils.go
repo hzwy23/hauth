@@ -80,14 +80,14 @@ func generateRandomKey(strength int) []byte {
 
 // Encryption -----------------------------------------------------------------
 
-// encrypt encrypts a value using the given block in counter mode.
+// crypto encrypts a value using the given block in counter mode.
 //
 // A random initialization vector (http://goo.gl/zF67k) with the length of the
 // block size is prepended to the resulting ciphertext.
 func encrypt(block cipher.Block, value []byte) ([]byte, error) {
 	iv := generateRandomKey(block.BlockSize())
 	if iv == nil {
-		return nil, errors.New("encrypt: failed to generate random iv")
+		return nil, errors.New("crypto: failed to generate random iv")
 	}
 	// Encrypt it.
 	stream := cipher.NewCTR(block, iv)

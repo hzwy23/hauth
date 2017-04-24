@@ -111,7 +111,7 @@ type CookieProvider struct {
 // maxlifetime is ignored.
 // json config:
 // 	securityKey - hash string
-// 	blockKey - gob encode hash string. it's saved as aes crypto.
+// 	blockKey - gob encode hash string. it's saved as haes crypto.
 // 	securityName - recognized name in encoded cookie string
 // 	cookieName - cookie name
 // 	maxage - cookie max life time.
