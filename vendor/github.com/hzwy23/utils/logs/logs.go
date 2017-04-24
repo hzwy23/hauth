@@ -33,6 +33,8 @@ var (
 	lock = new(sync.RWMutex)
 )
 
+// 没有参数时,返回系统正常操作日志接口
+// 当有参数时,不管参数是什么值,返回紧急日志备份接口
 func GetLogger() *zap.SugaredLogger {
 	lock.RLock()
 	defer lock.RLock()
@@ -74,13 +76,13 @@ func iso8601TimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 }
 
 func init() {
-
 	//GetDetails log dir from environment
 	logpath := os.Getenv("HBIGDATA_HOME")
 
 	conf, err := config.GetConfig(path.Join(logpath, "conf", "asofdate.conf"))
 	if err != nil {
 		fmt.Errorf("%v", err)
+		log = back_emc
 		return
 	}
 
@@ -107,8 +109,11 @@ func init() {
 	logger, err := cfg.Build()
 	if err != nil {
 		fmt.Errorf("%v", err)
+		log = back_emc
 		return
 	}
 
+	lock.Lock()
+	defer lock.Unlock()
 	log = logger.WithOptions(zap.AddCallerSkip(1)).Sugar()
 }

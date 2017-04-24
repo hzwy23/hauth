@@ -1,12 +1,11 @@
 package hrpc
 
 import (
-	"net/http"
+	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/dbobj"
+	"net/http"
 )
-
 
 // check the user wheather handle the domain
 // return value :
@@ -29,7 +28,6 @@ func GetDomainId(user_id string) (string, error) {
 	err := dbobj.QueryRow(sys_rdbms_hrpc_003, user_id).Scan(&domain_id)
 	return domain_id, err
 }
-
 
 // 返回值是-1 表示没有读写权限
 // 返回值是1 表示有读取权限，没有写入权限

@@ -1,14 +1,16 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 )
 
 type userRolesController struct {
@@ -152,16 +154,34 @@ func (this userRolesController) GetOtherRoles(ctx *context.Context) {
 //   format:
 // responses:
 //   '200':
-//     description: all domain information
+//     description: success
 func (this userRolesController) Auth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx.Request) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+	var rst []models.UserRolesModel
+	err := json.Unmarshal([]byte(ctx.Request.FormValue("JSON")), &rst)
+	if err != nil {
+		logs.Error(err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_unmarsh_json"), err)
+		return
+	}
 
-	ijs := ctx.Request.FormValue("JSON")
-	logs.Error(ijs)
+	for _, val := range rst {
+		domain_id, err := hrpc.GetDomainId(val.User_id)
+		if err != nil {
+			logs.Error(err)
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_role_no_auth"))
+			return
+		}
+
+		if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
+			hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, domain_id))
+			return
+		}
+	}
 
 	cok, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := jwt.ParseJwt(cok.Value)
@@ -171,10 +191,10 @@ func (this userRolesController) Auth(ctx *context.Context) {
 		return
 	}
 
-	msg, err := this.models.Auth(jclaim.Domain_id, jclaim.User_id, ijs)
+	msg, err := this.models.Auth(rst, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, msg, err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
@@ -221,23 +241,25 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 	user_id := ctx.Request.FormValue("user_id")
 	role_id := ctx.Request.FormValue("role_id")
 
-	cok, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := jwt.ParseJwt(cok.Value)
+	domain_id, err := hrpc.GetDomainId(user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_role_no_auth"))
 		return
 	}
 
-	msg, err := this.models.Revoke(user_id, role_id, jclaim.User_id, jclaim.Domain_id)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, msg, err)
-		return
-	} else {
-		hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
+		hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, domain_id))
 		return
 	}
+
+	msg, err := this.models.Revoke(user_id, role_id)
+	if err != nil {
+		logs.Error(err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, msg), err)
+		return
+	}
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 func init() {

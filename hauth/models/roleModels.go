@@ -3,12 +3,12 @@ package models
 import (
 	"errors"
 
-	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"net/url"
+
+	"github.com/asaskevich/govalidator"
+	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/dbobj"
-	"time"
 )
 
 type RoleModel struct {
@@ -51,12 +51,6 @@ func (this RoleModel) GetRow(role_id string) (RoleInfo, error) {
 }
 
 func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
-	key := hcache.GenKey("ROLEMODELS", domain_id)
-	if hcache.IsExist(key) {
-		logs.Debug("get data from cache.")
-		rst, _ := hcache.Get(key).([]RoleInfo)
-		return rst, nil
-	}
 	rows, err := dbobj.Query(sys_rdbms_028, domain_id)
 	defer rows.Close()
 	if err != nil {
@@ -66,47 +60,86 @@ func (RoleModel) Get(domain_id string) ([]RoleInfo, error) {
 
 	var rst []RoleInfo
 	err = dbobj.Scan(rows, &rst)
-	hcache.Put(key, rst, 720*time.Minute)
 	return rst, err
 }
 
-func (RoleModel) Post(id, rolename, user_id, rolestatus, domainid, roleid string) error {
-	defer hcache.Delete(hcache.GenKey("ROLEMODELS", domainid))
+func (RoleModel) Post(data url.Values, user_id string) (string, error) {
+	domainid := data.Get("domain_id")
+	roleid := data.Get("role_id")
+	rolename := data.Get("role_name")
+	rolestatus := data.Get("role_status")
+	id := utils.JoinCode(domainid, roleid)
+
+	//校验
+	if !govalidator.IsAlnum(roleid) {
+		return "error_role_id_format", errors.New("error_role_id_format")
+	}
+	//
+	if govalidator.IsEmpty(rolename) {
+		return "error_role_desc_empty", errors.New("error_role_desc_empty")
+	}
+
+	if !govalidator.IsWord(domainid) {
+		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
+	}
+
+	if !govalidator.IsIn(rolestatus, "0", "1") {
+		return "error_role_status", errors.New("error_role_status")
+	}
+
 	_, err := dbobj.Exec(sys_rdbms_026, id, rolename, user_id, rolestatus, domainid, user_id, roleid)
-	return err
+	if err != nil {
+		logs.Error(err)
+		return "error_role_add_failed", err
+	}
+	return "success", nil
 }
 
-func (RoleModel) Delete(allrole []RoleInfo, user_id, domain_id string) error {
-
+func (RoleModel) Delete(allrole []RoleInfo) (string, error) {
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
-		return err
+		return "error_sql_begin", err
 	}
 
 	for _, val := range allrole {
-
-		if val.Domain_id != domain_id && user_id != "admin" {
-			level := hrpc.GetAuthLevel(user_id, val.Domain_id)
-			if level != 2 {
-				tx.Rollback()
-				return errors.New("您没有权限删除这个域中的角色信息")
-			}
-		}
-		hcache.Delete(hcache.GenKey("ROLEMODELS", val.Domain_id))
-		_, err := tx.Exec(sys_rdbms_027, val.Role_id)
+		_, err := tx.Exec(sys_rdbms_027, val.Role_id, val.Domain_id)
 		if err != nil {
 			logs.Error(err)
 			tx.Rollback()
-			return err
+			return "error_role_delete_failed", err
 		}
 		logs.Info("delete role info successfully. role id is :", val.Role_id)
 	}
-	return tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		logs.Error(err)
+		return "error_role_delete_failed", err
+	}
+	return "success", nil
 }
 
-func (RoleModel) Update(Role_name, Role_status, Role_id, User_id, domain_id string) error {
-	defer hcache.Delete(hcache.GenKey("ROLEMODELS", domain_id))
-	_, err := dbobj.Exec(sys_rdbms_050, Role_name, Role_status, User_id, Role_id)
-	return err
+func (RoleModel) Update(data url.Values, user_id string) (string, error) {
+	Role_id := data.Get("Role_id")
+	Role_name := data.Get("Role_name")
+	Role_status := data.Get("Role_status")
+
+	if !govalidator.IsWord(Role_id) {
+		return "error_role_id_format", errors.New("error_role_id_format")
+	}
+
+	if govalidator.IsEmpty(Role_name) {
+		return "error_role_desc_empty", errors.New("error_role_desc_empty")
+	}
+
+	if !govalidator.IsIn(Role_status, "0", "1") {
+		return "error_role_status", errors.New("error_role_status")
+	}
+
+	_, err := dbobj.Exec(sys_rdbms_050, Role_name, Role_status, user_id, Role_id)
+	if err != nil {
+		logs.Error(err)
+		return "error_role_update_failed", errors.New("error_role_update_failed")
+	}
+	return "success", nil
 }

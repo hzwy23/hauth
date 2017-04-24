@@ -1,7 +1,8 @@
 package service
 
 import (
-	"github.com/astaxie/beego/context"
+	"net/http"
+
 	"github.com/hzwy23/utils/jwt"
 )
 
@@ -18,9 +19,9 @@ const redirect = `
 </script>
 `
 
-func CheckJWT(ctx *context.Context) {
-	cookie, err := ctx.Request.Cookie("Authorization")
+func CheckConnection(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("Authorization")
 	if err != nil || !jwt.CheckToken(cookie.Value) {
-		ctx.WriteString(redirect)
+		w.Write([]byte(redirect))
 	}
 }

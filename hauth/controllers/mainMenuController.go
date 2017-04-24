@@ -6,8 +6,8 @@ import (
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 )
 
 var homePageMenusModel = new(models.HomePageMenusModel)
@@ -57,11 +57,13 @@ func SubSystemEntry(ctx *context.Context) {
 	// get url of the id number.
 	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
 
-	if !hcache.FileIsExist(id) {
-		hcache.RegisterStaticFile(id, url)
+	key := hcache.GenSha1Key(id, jclaim.User_id, url)
+
+	if !hcache.FileIsExist(key) {
+		hcache.RegisterStaticFile(key, url)
 	}
 
-	tpl, err := hcache.GetStaticFile(id)
+	tpl, err := hcache.GetStaticFile(key)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))

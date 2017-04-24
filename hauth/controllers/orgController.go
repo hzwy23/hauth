@@ -2,23 +2,24 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/astaxie/beego/context"
-	"strconv"
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
+
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 	"github.com/tealeg/xlsx"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 )
 
 type orgController struct {
@@ -92,7 +93,7 @@ func (this orgController) Get(ctx *context.Context) {
 
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if domain_id == "" {
+	if govalidator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
@@ -177,10 +178,10 @@ func (this orgController) Delete(ctx *context.Context) {
 		return
 	}
 
-	err = this.models.Delete(mjs, domain_id)
+	msg, err := this.models.Delete(mjs, domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 418, err.Error())
+		hret.Error(ctx.ResponseWriter, 418, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 
@@ -212,9 +213,12 @@ func (this orgController) Delete(ctx *context.Context) {
 func (this orgController) Update(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+
+	form := ctx.Request.Form
+	org_unit_id := form.Get("Id")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := jwt.ParseJwt(cookie.Value)
@@ -223,56 +227,23 @@ func (this orgController) Update(ctx *context.Context) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
-	org_unit_id := ctx.Request.FormValue("Id")
-	org_unit_desc := ctx.Request.FormValue("Org_unit_desc")
-	up_org_id := ctx.Request.FormValue("Up_org_id")
 
-	did, err := utils.SplitDomain(org_unit_id)
+	domain_id, err := utils.SplitDomain(org_unit_id)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.NoSeparator(ctx.Request, org_unit_id))
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request, did, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
-	// 校验输入信息
-	if govalidator.IsEmpty(org_unit_desc) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_id_desc_empty"))
-		return
-	}
-
-	if !govalidator.IsWord(org_unit_id) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_id_format"))
-		return
-	}
-
-	if !govalidator.IsWord(up_org_id) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_up_id_empty"))
-		return
-	}
-
-	check, err := this.models.GetSubOrgInfo(did, org_unit_id)
+	msg, err := this.models.Update(form, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_sub_query"))
-		return
-	}
-
-	for _, val := range check {
-		if val.Org_unit_id == up_org_id {
-			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_up_id_complex"))
-			return
-		}
-	}
-
-	err = this.models.Update(org_unit_desc, up_org_id, jclaim.User_id, org_unit_id, did)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_modify"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
@@ -324,6 +295,7 @@ func (this orgController) Post(ctx *context.Context) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+	form := ctx.Request.Form
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := jwt.ParseJwt(cookie.Value)
@@ -333,73 +305,20 @@ func (this orgController) Post(ctx *context.Context) {
 		return
 	}
 
-	org_unit_id := ctx.Request.FormValue("Org_unit_id")
-	org_unit_desc := ctx.Request.FormValue("Org_unit_desc")
-	up_org_id := ctx.Request.FormValue("Up_org_id")
-	domain_id := ctx.Request.FormValue("Domain_id")
+	domain_id := form.Get("Domain_id")
 
 	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
-	id := utils.JoinCode(domain_id, org_unit_id)
-
-	if !govalidator.IsWord(org_unit_id) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_id_format"))
-		return
-	}
-
-	if govalidator.IsEmpty(org_unit_desc) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_id_desc_empty"))
-		return
-	}
-
-	if !govalidator.IsWord(domain_id) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_id_check"))
-		return
-	}
-
-	if !govalidator.IsWord(up_org_id) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_org_up_id_empty"))
-		return
-	}
-
-	err = this.models.Post(org_unit_id, org_unit_desc, up_org_id, domain_id, jclaim.User_id, jclaim.User_id, id)
+	msg, err := this.models.Post(form, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_add"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Get(ctx.Request, "success"))
-}
-
-func (orgController) getOrgTops(node []models.SysOrgInfo) []models.SysOrgInfo {
-	var ret []models.SysOrgInfo
-	for _, val := range node {
-		flag := true
-		for _, iv := range node {
-			if val.Up_org_id == iv.Org_unit_id {
-				flag = false
-			}
-		}
-		if flag {
-			ret = append(ret, val)
-		}
-	}
-	return ret
-}
-
-func (this orgController) orgTree(node []models.SysOrgInfo, id string, d int, result *[]models.SysOrgInfo) {
-	var oneline models.SysOrgInfo
-	for _, val := range node {
-		if val.Up_org_id == id {
-			oneline = val
-			oneline.Org_dept = strconv.Itoa(d)
-			*result = append(*result, oneline)
-			this.orgTree(node, val.Org_unit_id, d+1, result)
-		}
-	}
 }
 
 // swagger:operation GET /v1/auth/relation/domain/org orgController orgController
@@ -685,10 +604,10 @@ func (this orgController) Upload(ctx *context.Context) {
 		}
 	}
 
-	err = this.models.Upload(data)
+	msg, err := this.models.Upload(data)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, err.Error())
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))

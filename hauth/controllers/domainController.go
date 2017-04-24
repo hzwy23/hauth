@@ -7,19 +7,18 @@ import (
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 )
 
 type domainController struct {
-	models *models.ProjectMgr
+	models *models.DomainMmodel
 }
 
-var DomainCtl = &domainController{models: &models.ProjectMgr{}}
+var DomainCtl = &domainController{models: &models.DomainMmodel{}}
 
 // swagger:operation GET /v1/auth/domain/page StaticFiles AuthorityController
 //
@@ -45,7 +44,7 @@ func (this *domainController) Page(ctx *context.Context) {
 	defer hret.HttpPanic()
 
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -74,18 +73,6 @@ func (this *domainController) Page(ctx *context.Context) {
 // - text/xml
 // - text/html
 // parameters:
-// - name: offset
-//   in: query
-//   description: start row number
-//   required: true
-//   type: integer
-//   format: int32
-// - name: limit
-//   in: query
-//   description: maximum number of results to return
-//   required: true
-//   type: integer
-//   format: int32
 // responses:
 //   '200':
 //     description: success
@@ -94,7 +81,6 @@ func (this *domainController) Page(ctx *context.Context) {
 //   '421':
 //     description: get domain information failed.
 func (this *domainController) Get(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
 
 	// 权限控制
@@ -103,18 +89,14 @@ func (this *domainController) Get(ctx *context.Context) {
 		return
 	}
 
-	// 获取便宜量, 分页查询
-	offset := ctx.Request.FormValue("offset")
-	limit := ctx.Request.FormValue("limit")
-
-	rst, total, err := this.models.GetAll(offset, limit)
+	rst, err := this.models.Get()
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_query"))
 		return
 	}
 
-	hret.BootstrapTableJson(ctx.ResponseWriter, total, rst)
+	hret.Json(ctx.ResponseWriter, rst)
 }
 
 // swagger:operation POST /v1/auth/domain/post domainController postDomainInfo
@@ -160,30 +142,7 @@ func (this *domainController) Post(ctx *context.Context) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
-
-	// Get the form data
-	domainId := ctx.Request.FormValue("domainId")
-	domainDesc := ctx.Request.FormValue("domainDesc")
-	domainStatus := ctx.Request.FormValue("domainStatus")
-
-	// validator domain id format
-	if !govalidator.IsWord(domainId) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_id_check"))
-		return
-	}
-
-	// validator domain describe format. It does not allow null values
-	if govalidator.IsEmpty(domainDesc) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_isempty"))
-		return
-	}
-
-	// validator domain status format
-	// It must be in the 0 and 1
-	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_status_check"))
-		return
-	}
+	form := ctx.Request.Form
 
 	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
@@ -195,10 +154,10 @@ func (this *domainController) Post(ctx *context.Context) {
 
 	// submit new domain info to user model
 	// If success, will return nil, or not.
-	err = this.models.Post(domainId, domainDesc, domainStatus, jclaim.User_id, jclaim.Domain_id)
+	msg, err := this.models.Post(form, jclaim.User_id, jclaim.Domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_add_failed"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 
@@ -243,7 +202,7 @@ func (this *domainController) Delete(ctx *context.Context) {
 	}
 
 	ijs := []byte(ctx.Request.FormValue("JSON"))
-	var js []models.ProjectMgr
+	var js []models.DomainMmodel
 	err := json.Unmarshal(ijs, &js)
 	if err != nil {
 		logs.Error(err)
@@ -259,7 +218,20 @@ func (this *domainController) Delete(ctx *context.Context) {
 		return
 	}
 
-	err = this.models.Delete(js, jclaim.User_id, jclaim.Domain_id)
+	// 授权校验
+	for _, val := range js {
+		if val.Project_id == jclaim.Domain_id {
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_forbid_delete_your_domain"))
+			return
+		}
+
+		if !hrpc.DomainAuth(ctx.Request, val.Project_id, "w") {
+			hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, val.Project_id))
+			return
+		}
+	}
+
+	err = this.models.Delete(js)
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 421, err.Error())
 		return
@@ -314,21 +286,7 @@ func (this *domainController) Put(ctx *context.Context) {
 		return
 	}
 
-	domainId := ctx.Request.FormValue("domainId")
-	domainDesc := ctx.Request.FormValue("domainDesc")
-	domainStatus := ctx.Request.FormValue("domainStatus")
-
-	// 校验域名称,不能为空
-	if govalidator.IsEmpty(domainDesc) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_isempty"))
-		return
-	}
-
-	// 校验域状态编码,必须是0或者1
-	if !govalidator.IsIn(domainStatus, "0", "1") {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_status_check"))
-		return
-	}
+	form := ctx.Request.Form
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := jwt.ParseJwt(cookie.Value)
@@ -338,15 +296,15 @@ func (this *domainController) Put(ctx *context.Context) {
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request, domainId, "w") {
+	if !hrpc.DomainAuth(ctx.Request, form.Get("domainId"), "w") {
 		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
 	}
 
-	err = this.models.Update(domainDesc, domainStatus, jclaim.User_id, domainId)
+	msg, err := this.models.Update(form, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_update"))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg))
 		return
 	}
 

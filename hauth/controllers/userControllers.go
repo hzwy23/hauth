@@ -2,18 +2,20 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/hret"
 
 	"strings"
+
+	"encoding/json"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
-	"github.com/hzwy23/utils/crypto/haes"
+	"github.com/hzwy23/utils/logs"
 )
 
 type userController struct {
@@ -87,18 +89,17 @@ func (this userController) Get(ctx *context.Context) {
 
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	// get user connection info from cookes.
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := jwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
-		return
-	}
-
 	// if the domain_id argument is empty
 	// so query default domain info
-	if strings.TrimSpace(domain_id) == "" {
+	if govalidator.IsEmpty(domain_id) {
+		// get user connection info from cookes.
+		cookie, _ := ctx.Request.Cookie("Authorization")
+		jclaim, err := jwt.ParseJwt(cookie.Value)
+		if err != nil {
+			logs.Error(err)
+			hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+			return
+		}
 		domain_id = jclaim.Domain_id
 	}
 
@@ -142,13 +143,11 @@ func (this userController) Get(ctx *context.Context) {
 func (this userController) Post(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
-
-	userId := ctx.Request.FormValue("userId")
-	userDesc := ctx.Request.FormValue("userDesc")
-	domain_id := ctx.Request.FormValue("domainId")
+	form := ctx.Request.Form
+	domain_id := form.Get("domainId")
 
 	cookie, _ := ctx.Request.Cookie("Authorization")
 	jclaim, err := jwt.ParseJwt(cookie.Value)
@@ -163,72 +162,10 @@ func (this userController) Post(ctx *context.Context) {
 		return
 	}
 
-	if !govalidator.IsWord(userId) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_id_check"))
-		return
-	}
-	//
-
-	if govalidator.IsEmpty(userDesc) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_name_check"))
-		return
-	}
-	//
-	password := ctx.Request.FormValue("userPasswd")
-	if govalidator.IsEmpty(password) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_passwd_check"))
-		return
-	}
-
-	surepassword := ctx.Request.FormValue("userPasswdConfirm")
-	if govalidator.IsEmpty(surepassword) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_passwd_empty"))
-		return
-	}
-
-	if password != surepassword {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_passwd_confirm_failed"))
-		return
-	}
-
-	if len(strings.TrimSpace(password)) < 6 {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_short"))
-		return
-	}
-
-	userPasswd, err := haes.Encrypt(ctx.Request.FormValue("userPasswd"))
+	msg, err := this.models.Post(form, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_passwd_encrypt"), err)
-		return
-	}
-
-	userStatus := ctx.Request.FormValue("userStatus")
-	userEmail := ctx.Request.FormValue("userEmail")
-	userPhone := ctx.Request.FormValue("userPhone")
-	userOrgUnitId := ctx.Request.FormValue("userOrgUnitId")
-
-	//
-	if !govalidator.IsEmail(userEmail) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_email_check"))
-		return
-	}
-
-	if !govalidator.IsWord(userOrgUnitId) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_role_org"))
-		return
-	}
-
-	//
-	if !govalidator.IsMobilePhone(userPhone) {
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_phone_check"))
-		return
-	}
-
-	err = this.models.Post(userId, userPasswd, userDesc, userStatus, jclaim.User_id, userEmail, userPhone, userOrgUnitId, domain_id)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_user_post"), err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
@@ -256,20 +193,47 @@ func (this userController) Delete(ctx *context.Context) {
 		return
 	}
 
-	ijs := []byte(ctx.Request.FormValue("JSON"))
-
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := jwt.ParseJwt(cookie.Value)
+	var rst []models.UserInfo
+	err := json.Unmarshal([]byte(ctx.Request.FormValue("JSON")), &rst)
 	if err != nil {
 		logs.Error(err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_json"))
+		return
+	}
+
+	cok, _ := ctx.Request.Cookie("Authorization")
+	jclaim, err := jwt.ParseJwt(cok.Value)
+	if err != nil {
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	msg, err := this.models.Delete(ijs, jclaim.User_id, jclaim.Domain_id)
+	for _, val := range rst {
+		domain_id, err := utils.SplitDomain(val.Org_unit_id)
+		if err != nil {
+			logs.Error(err)
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_query_org"))
+			return
+		}
+
+		if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
+			hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, val.Domain_id))
+			return
+		}
+		if val.User_id == "admin" {
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_forbid_delete_admin"))
+			return
+		}
+		if val.User_id == jclaim.User_id {
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_forbid_yourself"))
+			return
+		}
+	}
+
+	msg, err := this.models.Delete(rst)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, msg, err)
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
@@ -363,66 +327,35 @@ func (this userController) Search(ctx *context.Context) {
 func (this userController) Put(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+	form := ctx.Request.Form
 
-	user_name := ctx.Request.FormValue("userDesc")
-	org_id := ctx.Request.FormValue("orgId")
-	phone := ctx.Request.FormValue("userPhone")
-	email := ctx.Request.FormValue("userEmail")
-	user_id := ctx.Request.FormValue("userId")
-
-	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := jwt.ParseJwt(cookie.Value)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
-		return
-	}
-
-	did, err := hrpc.GetDomainId(user_id)
+	domain_id, err := hrpc.GetDomainId(form.Get("userId"))
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_get_domain"))
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request, did, "w") {
+	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_modify_passwd"))
 		return
 	}
 
-	if !govalidator.IsWord(user_id) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_id_empty"))
-		return
-	}
-
-	if govalidator.IsEmpty(user_name) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_desc_empty"))
-		return
-	}
-
-	if !govalidator.IsEmail(email) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_email_format"))
-		return
-	}
-
-	if !govalidator.IsWord(org_id) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_org_id_format"))
-		return
-	}
-
-	if !govalidator.IsMobilePhone(phone) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_phone_format"))
-		return
-	}
-
-	msg, err := this.models.Put(user_name, org_id, phone, email, jclaim.User_id, user_id, did)
+	cok, _ := ctx.Request.Cookie("Authorization")
+	jclaim, err := jwt.ParseJwt(cok.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, msg, err)
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		return
+	}
+	msg, err := this.models.Put(form, jclaim.User_id)
+	if err != nil {
+		logs.Error(err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
@@ -456,21 +389,9 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+	form := ctx.Request.Form
 
 	user_id := ctx.Request.FormValue("userid")
-
-	user_password := ctx.Request.FormValue("newpasswd")
-	confirm_password := ctx.Request.FormValue("surepasswd")
-	if user_password != confirm_password {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_confirm_failed"))
-		return
-	}
-
-	if len(strings.TrimSpace(confirm_password)) < 6 || len(strings.TrimSpace(confirm_password)) > 30 {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_passwd_short"))
-		return
-	}
-
 	did, err := hrpc.GetDomainId(user_id)
 	if err != nil {
 		logs.Error(err)
@@ -484,17 +405,10 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 		return
 	}
 
-	encry_passwd, err := haes.Encrypt(user_password)
+	msg, err := this.models.ModifyPasswd(form)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_password_encrpty"))
-		return
-	}
-
-	msg, err := this.models.ModifyPasswd(encry_passwd, user_id)
-	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, msg, err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
@@ -526,7 +440,7 @@ func (this userController) ModifyPasswd(ctx *context.Context) {
 func (this userController) ModifyStatus(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 
@@ -559,15 +473,10 @@ func (this userController) ModifyStatus(ctx *context.Context) {
 		return
 	}
 
-	if !govalidator.IsIn(status_id, "0", "1") {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_user_status_empty"))
-		return
-	}
-
 	msg, err := this.models.ModifyStatus(status_id, user_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, msg, err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))

@@ -2,10 +2,11 @@ package hcache
 
 import (
 	"errors"
-	"github.com/astaxie/beego/logs"
-	"github.com/golang/groupcache"
 	"io/ioutil"
 	"sync"
+
+	"github.com/astaxie/beego/logs"
+	"github.com/golang/groupcache"
 )
 
 // 这个包提供了缓存静态文件的方法
@@ -50,7 +51,7 @@ func GetStaticFile(key string) ([]byte, error) {
 	if gp == nil {
 		gp = groupcache.NewGroup("ASOFDATEHAUTH", 1<<28, groupcache.GetterFunc(func(ctx groupcache.Context, key string, dest groupcache.Sink) error {
 			if filepath, ok := staticFile[key]; ok {
-				logs.Debug("get " + key + " html data from disk.")
+				logs.Debug("get html data from disk.")
 				rst, _ := ioutil.ReadFile(filepath)
 				return dest.SetBytes(rst)
 			}

@@ -1093,3 +1093,10 @@ func IsMobilePhone(str string) bool {
 	}
 	return rxMobolePhone.MatchString(str)
 }
+
+func IsAlnum(str string) bool {
+	if IsEmpty(str) {
+		return false
+	}
+	return rxAlphanumeric.MatchString(str)
+}

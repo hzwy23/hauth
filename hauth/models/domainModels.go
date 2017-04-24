@@ -4,12 +4,15 @@ import (
 	"errors"
 
 	"database/sql"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/utils/logs"
+
+	"net/url"
+
+	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 )
 
-type ProjectMgr struct {
+type DomainMmodel struct {
 	Project_id            string `json:"domain_id"`
 	Project_name          string `json:"domain_desc"`
 	Project_status        string `json:"domain_status"`
@@ -20,55 +23,32 @@ type ProjectMgr struct {
 	Domain_status_cd      string `json:"domain_status_cd"`
 }
 
-type domainDataModel struct {
-	Domain_id  string       `json:"domain_id"`
-	Owner_list []ProjectMgr `json:"owner_list"`
+type domainDataSet struct {
+	Domain_id  string         `json:"domain_id"`
+	Owner_list []DomainMmodel `json:"owner_list"`
 }
 
-func (this ProjectMgr) Get() ([]ProjectMgr, error) {
-	var rst []ProjectMgr
+func (this DomainMmodel) Get() ([]DomainMmodel, error) {
+	var rst []DomainMmodel
 	rows, err := dbobj.Query(sys_rdbms_025)
 	defer rows.Close()
 	if err != nil {
-		logs.Error("query data error.", dbobj.GetErrorMsg(err))
+		logs.Error(err)
 		return nil, err
 	}
 
-	//	var oneLine ProjectMgr
+	//	var oneLine DomainMmodel
 	err = dbobj.Scan(rows, &rst)
 	if err != nil {
-		logs.Error("query data error.", dbobj.GetErrorMsg(err))
+		logs.Error(err)
 		return nil, err
 	}
 	return rst, nil
 }
 
-func (ProjectMgr) GetAll(offset, limit string) ([]ProjectMgr, int64, error) {
-	rows, err := dbobj.Query(sys_rdbms_082, offset, limit)
-	defer rows.Close()
-	if err != nil {
-		logs.Error("query data error.", dbobj.GetErrorMsg(err))
-		return nil, 0, err
-	}
-
-	//	var oneLine ProjectMgr
-	var rst []ProjectMgr
-	err = dbobj.Scan(rows, &rst)
-	if err != nil {
-		logs.Error("query data error.", dbobj.GetErrorMsg(err))
-		return nil, 0, err
-	}
-
-	// 查询总共行数,返回给客户端
-	var total int64 = 0
-	dbobj.QueryRow(sys_rdbms_081).Scan(&total)
-
-	return rst, total, nil
-}
-
 // 获取指定域的详细信息
-func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
-	var rst ProjectMgr
+func (DomainMmodel) GetRow(domain_id string) (DomainMmodel, error) {
+	var rst DomainMmodel
 
 	row, err := dbobj.Query(sys_rdbms_084, domain_id)
 	if err != nil {
@@ -95,7 +75,7 @@ func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 			return rst, err
 		}
 
-		rst.Project_id = domain_status.String
+		rst.Project_id = domain_id.String
 		rst.Project_name = domain_desc.String
 		rst.Project_status = domain_status.String
 		rst.Maintance_date = create_date.String
@@ -104,51 +84,67 @@ func (ProjectMgr) GetRow(domain_id string) (ProjectMgr, error) {
 		rst.Domain_maintance_user = modify_user.String
 		return rst, nil
 	}
-	return rst, errors.New("域信息不存在")
+	return rst, errors.New("no value")
 }
 
-func (ProjectMgr) Post(domain_id, domain_desc, domain_status, user_id, did string) error {
+// 新增域信息
+// 并将新增的域授权个创建人
+func (DomainMmodel) Post(data url.Values, user_id string, user_domain_id string) (string, error) {
 	tx, err := dbobj.Begin()
 	if err != nil {
-		return err
+		return "error_sql_begin", err
+	}
+
+	// Get the form data
+	domain_id := data.Get("domainId")
+	domain_desc := data.Get("domainDesc")
+	domain_status := data.Get("domainStatus")
+
+	// validator domain id format
+	if !govalidator.IsAlnum(domain_id) {
+		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
+	}
+
+	// validator domain describe format. It does not allow null values
+	if govalidator.IsEmpty(domain_desc) {
+		return "as_of_date_domain_isempty", errors.New("as_of_date_domain_isempty")
+	}
+
+	// validator domain status format
+	// It must be in the 0 and 1
+	if !govalidator.IsIn(domain_status, "0", "1") {
+		return "as_of_date_domain_status_check", errors.New("as_of_date_domain_status_check")
 	}
 
 	_, err = tx.Exec(sys_rdbms_036, domain_id, domain_desc, domain_status, user_id, user_id)
 	if err != nil {
 		tx.Rollback()
-		return err
+		return "as_of_date_domain_add_failed", err
 	}
 
-	_, err = tx.Exec(sys_rdbms_086, domain_id, did, 2, user_id, user_id)
+	_, err = tx.Exec(sys_rdbms_086, domain_id, user_domain_id, 2, user_id, user_id)
 	if err != nil {
 		tx.Rollback()
-		return err
+		return "as_of_date_domain_add_failed", err
 	}
 
-	return tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		logs.Error(err)
+		return "as_of_date_domain_add_failed", err
+	}
+	return "success", nil
 }
 
-func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) error {
+// 删除域信息
+// 在controller中校验权限
+func (DomainMmodel) Delete(js []DomainMmodel) error {
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
 		return err
 	}
 	for _, val := range js {
-		if domain_id == val.Project_id {
-			tx.Rollback()
-			logs.Error(err)
-			return errors.New("您不能删除自己所处的域。")
-		}
-
-		if user_id != "admin" {
-			level := hrpc.GetAuthLevel(user_id, val.Project_id)
-			if level != 2 {
-				tx.Rollback()
-				logs.Error("您没有权限删除这个域")
-				return errors.New("您没有权限删除这个域。")
-			}
-		}
 		_, err := tx.Exec(sys_rdbms_037, val.Project_id)
 		if err != nil {
 			logs.Error(err)
@@ -159,7 +155,28 @@ func (ProjectMgr) Delete(js []ProjectMgr, user_id string, domain_id string) erro
 	return tx.Commit()
 }
 
-func (ProjectMgr) Update(domainDesc, domainStatus, user_id, domainId string) error {
+// 更新域信息
+// 只能更新名称和状态
+func (DomainMmodel) Update(data url.Values, user_id string) (string, error) {
+
+	domainId := data.Get("domainId")
+	domainDesc := data.Get("domainDesc")
+	domainStatus := data.Get("domainStatus")
+
+	// 校验域名称,不能为空
+	if govalidator.IsEmpty(domainDesc) {
+		return "as_of_date_domain_isempty", errors.New("as_of_date_domain_isempty")
+	}
+
+	// 校验域状态编码,必须是0或者1
+	if !govalidator.IsIn(domainStatus, "0", "1") {
+		return "as_of_date_domain_status_check", errors.New("as_of_date_domain_status_check")
+	}
+
 	_, err := dbobj.Exec(sys_rdbms_038, domainDesc, domainStatus, user_id, domainId)
-	return err
+	if err != nil {
+		logs.Error(err)
+		return "as_of_date_domain_update", err
+	}
+	return "success", nil
 }

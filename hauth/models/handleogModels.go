@@ -2,8 +2,8 @@ package models
 
 import (
 	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 )
 
 type HandleLogMode struct {

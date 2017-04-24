@@ -15,7 +15,7 @@ func StartHauth() {
 	}, false)
 
 	beego.InsertFilter("/v1/*", beego.BeforeRouter, func(ctx *context.Context) {
-		CheckJWT(ctx)
+		CheckConnection(ctx.ResponseWriter, ctx.Request)
 	}, false)
 
 	registerRouter()

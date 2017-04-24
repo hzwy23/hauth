@@ -4,18 +4,20 @@ import (
 	"fmt"
 	"net/http"
 
+	"os"
+	"path/filepath"
+
 	"github.com/hzwy23/utils/config"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/logs"
-	"path/filepath"
-	"os"
 )
 
+// 将80端口,重定向到443端口
 func RedictToHtpps() {
 
 	defer hret.HttpPanic()
 
-	red, err := config.GetConfig(filepath.Join(os.Getenv("HBIGDATA_HOME"),"conf","asofdate.conf"))
+	red, err := config.GetConfig(filepath.Join(os.Getenv("HBIGDATA_HOME"), "conf", "asofdate.conf"))
 	if err != nil {
 		logs.Error(err)
 		return

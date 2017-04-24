@@ -3,12 +3,11 @@ package hrpc
 // hrpc package
 // this package provide permissions related function
 import (
-	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 	"net/http"
 )
-
 
 // 校验用户是否有权限访问当前API
 func BasicAuth(r *http.Request) bool {
@@ -28,7 +27,7 @@ func BasicAuth(r *http.Request) bool {
 		return false
 	}
 	if cnt == 0 {
-		logs.Error("insufficient privileges","user id is :",jclaim.User_id,"api is :",r.URL.Path)
+		logs.Error("insufficient privileges", "user id is :", jclaim.User_id, "api is :", r.URL.Path)
 		return false
 	}
 	return true

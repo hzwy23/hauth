@@ -9,10 +9,10 @@ import (
 	"github.com/hzwy23/utils/logs"
 
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/utils/crypto/haes"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
-	"github.com/hzwy23/utils/crypto/haes"
 )
 
 var indexModels = new(models.LoginModels)
@@ -46,7 +46,6 @@ func HomePage(ctx *context.Context) {
 	}
 
 	url := indexModels.GetDefaultPage(jclaim.User_id)
-
 	h, err := template.ParseFiles(url)
 	if err != nil {
 		logs.Error(err)

@@ -4,11 +4,11 @@ import (
 	"database/sql"
 
 	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/jwt"
-	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 )
 
 const (

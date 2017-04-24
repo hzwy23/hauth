@@ -3,7 +3,7 @@ package i18n
 import "net/http"
 
 func NoAuth(req *http.Request) string {
-	return Get(req,"as_of_date_no_auth")
+	return Get(req, "as_of_date_no_auth")
 }
 
 // 执行成功

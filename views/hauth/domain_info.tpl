@@ -45,14 +45,13 @@
                 toolbar:"#h-domain-toolbar-list",
                 striped: true,
                 pagination: true,
-                pageList:[20,40,80,160,400,800,3000,"All"],
+                pageList:[80,160,400,800,3000,"All"],
                 showRefresh:true,
                 pageSize: 40,
                 showExport:false,
                 search:true,
-                sidePagination: "server",
+                sidePagination: "client",
                 showColumns: true,
-                minimunCountColumns: 2,
                 columns:[{
                     checkbox:true,
                 }, {

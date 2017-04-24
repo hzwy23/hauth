@@ -1,36 +1,23 @@
 package models
 
 import (
-	"encoding/json"
 	"errors"
+	"strings"
+
+	"net/url"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/utils"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
-	"time"
-)
-
-const (
-	error_user_forbid_delete_admin = "admin 是系统超级管理员，无法被删除"
-	error_user_forbid_yourself     = "禁止将自己从系统中删除"
-	error_user_json                = "解析JSON数据失败"
-	error_user_query_org           = "查询用户机构所属域信息失败"
-	error_user_no_auth             = "您没有权限操作这个域中的用户"
-	error_user_exec                = "执行SQL语句失败"
-	error_user_commit              = "提交事务初始失败"
-	error_user_modify_status       = "修改用户状态信息失败"
-	error_user_modify_passwd       = "修改用户密码失败"
-	error_user_modify_info         = "修改用户信息失败"
+	"github.com/hzwy23/utils"
+	"github.com/hzwy23/utils/crypto/haes"
+	"github.com/hzwy23/utils/logs"
 )
 
 type UserModel struct {
 	morg OrgModel
 }
 
-type userInfo struct {
+type UserInfo struct {
 	User_id             string `json:"user_id"`
 	User_name           string `json:"user_name"`
 	User_status_desc    string `json:"status_desc"`
@@ -48,8 +35,8 @@ type userInfo struct {
 }
 
 // 查询用户自己的详细信息
-func (UserModel) GetOwnerDetails(user_id string) ([]userInfo, error) {
-	var rst []userInfo
+func (UserModel) GetOwnerDetails(user_id string) ([]UserInfo, error) {
+	var rst []UserInfo
 	row, err := dbobj.Query(sys_rdbms_023, user_id)
 	defer row.Close()
 	if err != nil {
@@ -61,15 +48,7 @@ func (UserModel) GetOwnerDetails(user_id string) ([]userInfo, error) {
 }
 
 // 查询域中所有的用户信息
-func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
-
-	key := hcache.GenKey("USERMODELS", domain_id)
-	if hcache.IsExist(key) {
-		logs.Debug("get data from cache.")
-		rst, _ := hcache.Get(key).([]userInfo)
-		return rst, nil
-	}
-
+func (UserModel) GetDefault(domain_id string) ([]UserInfo, error) {
 	row, err := dbobj.Query(sys_rdbms_017, domain_id)
 	defer row.Close()
 	if err != nil {
@@ -77,108 +56,134 @@ func (UserModel) GetDefault(domain_id string) ([]userInfo, error) {
 		return nil, err
 	}
 
-	var rst []userInfo
+	var rst []UserInfo
 	err = dbobj.Scan(row, &rst)
-	hcache.Put(key, rst, 720*time.Minute)
 	return rst, err
 }
 
 // 新增用户信息
-func (UserModel) Post(userId, userPasswd, userDesc, userStatus, id, userEmail, userPhone, userOrgUnitId, domain_id string) error {
-	defer hcache.Delete(hcache.GenKey("USERMODELS", domain_id))
+func (UserModel) Post(data url.Values, user_id string) (string, error) {
+	userId := data.Get("userId")
+	userDesc := data.Get("userDesc")
+	password := data.Get("userPasswd")
+	surepassword := data.Get("userPasswdConfirm")
+	userStatus := data.Get("userStatus")
+	userEmail := data.Get("userEmail")
+	userPhone := data.Get("userPhone")
+	userOrgUnitId := data.Get("userOrgUnitId")
+	domain_id := data.Get("domainId")
+
+	if !govalidator.IsWord(userId) {
+		return "error_user_id_check", errors.New("error_user_id_check")
+	}
+	//
+
+	if govalidator.IsEmpty(userDesc) {
+		return "error_user_name_check", errors.New("error_user_name_check")
+	}
+
+	if govalidator.IsEmpty(password) {
+		return "error_user_passwd_check", errors.New("error_user_passwd_check")
+	}
+
+	if govalidator.IsEmpty(surepassword) {
+		return "error_passwd_empty", errors.New("error_passwd_empty")
+	}
+
+	if password != surepassword {
+		return "error_passwd_confirm_failed", errors.New("error_passwd_confirm_failed")
+	}
+
+	if len(strings.TrimSpace(password)) < 6 {
+		return "error_passwd_short", errors.New("error_passwd_short")
+	}
+
+	userPasswd, err := haes.Encrypt(password)
+	if err != nil {
+		logs.Error(err)
+		return "error_user_passwd_encrypt", errors.New("error_user_passwd_encrypt")
+	}
+
+	//
+	if !govalidator.IsEmail(userEmail) {
+		return "error_user_email_check", errors.New("error_user_email_check")
+	}
+
+	if !govalidator.IsWord(userOrgUnitId) {
+		return "error_user_role_org", errors.New("error_user_role_org")
+	}
+
+	//
+	if !govalidator.IsMobilePhone(userPhone) {
+		return "error_user_phone_check", errors.New("error_user_phone_check")
+	}
+
+	org_domain_id, _ := utils.SplitDomain(userOrgUnitId)
+	if domain_id != org_domain_id {
+		return "error_user_org_format", errors.New("error_user_org_format")
+	}
 
 	tx, err := dbobj.Begin()
 	// insert user details
 	//
-	_, err = tx.Exec(sys_rdbms_018, userId, userDesc, id, userEmail, userPhone, userOrgUnitId, id)
+	_, err = tx.Exec(sys_rdbms_018, userId, userDesc, user_id, userEmail, userPhone, userOrgUnitId, user_id)
 	if err != nil {
 		tx.Rollback()
 		logs.Error(err)
-		return err
+		return "error_user_post", err
 	}
 
 	// insert user passwd
-	//
 	_, err = tx.Exec(sys_rdbms_019, userId, userPasswd, userStatus)
 	if err != nil {
 		tx.Rollback()
 		logs.Error(err)
-		return err
+		return "error_user_post", err
 	}
 
 	// insert theme info
-	//
-
-	stheme := `insert into sys_user_theme(user_id,theme_id) values(?,?)`
-
-	_, err = tx.Exec(stheme, userId, "1001")
+	_, err = tx.Exec(sys_rdbms_045, userId, "1001")
 	if err != nil {
 		tx.Rollback()
 		logs.Error(err.Error())
-		return err
+		return "error_user_post", err
 	}
 
-	return tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		logs.Error(err)
+		return "error_user_post", err
+	}
+	return "success", nil
 }
 
 // 删除用户信息
-func (UserModel) Delete(ijs []byte, user_id, domain_id string) (string, error) {
-	defer hcache.Delete(hcache.GenKey("USERMODELS", domain_id))
+func (UserModel) Delete(data []UserInfo) (string, error) {
+	tx, err := dbobj.Begin()
+	if err != nil {
+		return "error_sql_begin", err
+	}
 
-	var js []userInfo
-	err := json.Unmarshal(ijs, &js)
+	for _, val := range data {
+		_, err = tx.Exec(sys_rdbms_007, val.User_id, val.Org_unit_id)
+		if err != nil {
+			tx.Rollback()
+			logs.Error(err)
+			return "error_user_exec", err
+		}
+	}
+	err = tx.Commit()
 	if err != nil {
 		logs.Error(err)
-		return error_user_json, err
+		return "error_user_commit", err
 	}
 
-	tx, _ := dbobj.Begin()
-	for _, val := range js {
-		//判断用户是否在线
-		//如果在线,则不允许删除用户
-		if val.User_id == "admin" {
-			tx.Rollback()
-			return error_user_forbid_delete_admin, errors.New(error_user_forbid_delete_admin)
-		}
-
-		// check user
-		// can't delete yourself
-		if user_id == val.User_id {
-			tx.Rollback()
-			return error_user_forbid_yourself, errors.New("禁止将自己删除。")
-		}
-
-		// query domain_id by org_unit_id
-		did, err := utils.SplitDomain(val.Org_unit_id)
-		if err != nil {
-			logs.Error(err)
-			tx.Rollback()
-			return error_user_query_org, errors.New(error_user_query_org)
-		}
-
-		if user_id != "admin" && domain_id != did {
-			level := hrpc.GetAuthLevel(user_id, did)
-			if level != 2 {
-				logs.Error("没有被授权删除这个域中的信息")
-				tx.Rollback()
-				return error_user_no_auth, errors.New(error_user_no_auth)
-			}
-		}
-
-		_, err = tx.Exec(sys_rdbms_007, val.User_id)
-		if err != nil {
-			tx.Rollback()
-			logs.Error(err)
-			return error_user_exec, err
-		}
-	}
-	return error_user_commit, tx.Commit()
+	return "success", nil
 }
 
 // 搜索用户信息
-func (this UserModel) Search(org_id string, status_id string, domain_id string) ([]userInfo, error) {
-
-	var rst []userInfo
+func (this UserModel) Search(org_id string, status_id string, domain_id string) ([]UserInfo, error) {
+	var rst []UserInfo
 
 	ret, err := this.GetDefault(domain_id)
 	if err != nil {
@@ -221,25 +226,76 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 			}
 		}
 	}
-
 	return rst, nil
 }
 
 func (this UserModel) ModifyStatus(status_id, user_id string) (string, error) {
-	did, _ := hrpc.GetDomainId(user_id)
-	defer hcache.Delete(hcache.GenKey("USERMODELS", did))
+	if !govalidator.IsIn(status_id, "0", "1") {
+		return "error_user_status_empty", errors.New("error_user_status_empty")
+	}
+
 	_, err := dbobj.Exec(sys_rdbms_016, status_id, user_id)
-	return error_user_modify_status, err
+	return "error_user_modify_status", err
 }
 
-func (this UserModel) ModifyPasswd(passwd, user_id string) (string, error) {
-	_, err := dbobj.Exec(sys_rdbms_020, passwd, user_id)
-	return error_user_modify_passwd, err
+func (this UserModel) ModifyPasswd(data url.Values) (string, error) {
+	user_id := data.Get("userid")
+	user_password := data.Get("newpasswd")
+	confirm_password := data.Get("surepasswd")
+	if user_password != confirm_password {
+		return "error_passwd_confirm_failed", errors.New("error_passwd_confirm_failed")
+	}
+
+	if len(strings.TrimSpace(confirm_password)) < 6 || len(strings.TrimSpace(confirm_password)) > 30 {
+		return "error_passwd_short", errors.New("error_passwd_short")
+	}
+
+	encry_passwd, err := haes.Encrypt(user_password)
+	if err != nil {
+		logs.Error(err)
+		return "error_password_encrpty", errors.New("error_password_encrpty")
+	}
+
+	_, err = dbobj.Exec(sys_rdbms_020, encry_passwd, user_id)
+	if err != nil {
+		logs.Error(err)
+		return "error_user_modify_passwd", err
+	}
+	return "success", nil
 }
 
 // 修改用户信息
-func (this UserModel) Put(user_name, org_id, phone, email, uid, user_id, domain_id string) (string, error) {
-	defer hcache.Delete(hcache.GenKey("USERMODELS", domain_id))
-	_, err := dbobj.Exec(sys_rdbms_021, user_name, phone, email, uid, org_id, user_id)
-	return error_user_modify_info, err
+func (this UserModel) Put(data url.Values, modify_user string) (string, error) {
+	user_name := data.Get("userDesc")
+	org_id := data.Get("orgId")
+	phone := data.Get("userPhone")
+	email := data.Get("userEmail")
+	user_id := data.Get("userId")
+
+	if !govalidator.IsWord(user_id) {
+		return "error_user_id_empty", errors.New("error_user_id_empty")
+	}
+
+	if govalidator.IsEmpty(user_name) {
+		return "error_user_desc_empty", errors.New("error_user_desc_empty")
+	}
+
+	if !govalidator.IsEmail(email) {
+		return "error_user_email_format", errors.New("error_user_email_format")
+	}
+
+	if !govalidator.IsWord(org_id) {
+		return "error_org_id_format", errors.New("error_org_id_format")
+	}
+
+	if !govalidator.IsMobilePhone(phone) {
+		return "error_user_phone_format", errors.New("error_user_phone_format")
+	}
+
+	_, err := dbobj.Exec(sys_rdbms_021, user_name, phone, email, modify_user, org_id, user_id)
+	if err != nil {
+		logs.Error(err)
+		return "error_user_modify_info", err
+	}
+	return "success", nil
 }

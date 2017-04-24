@@ -1,17 +1,22 @@
 package models
 
 import (
-	"encoding/json"
+	"errors"
 
-	"github.com/hzwy23/utils/logs"
+	"net/url"
+
+	"fmt"
+
+	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 )
 
 type DomainShareModel struct {
-	md ProjectMgr
+	md DomainMmodel
 }
 
-type dsModel struct {
+type DomainShareData struct {
 	Uuid                string `json:"uuid"`
 	Target_domain_id    string `json:"target_domain_id"`
 	Domain_name         string `json:"domain_name"`
@@ -28,7 +33,7 @@ type dusModel struct {
 }
 
 // 获取指定域共享给了哪些对象
-func (DomainShareModel) Get(domain_id string) ([]dsModel, error) {
+func (DomainShareModel) Get(domain_id string) ([]DomainShareData, error) {
 
 	rows, err := dbobj.Query(sys_rdbms_083, domain_id)
 	if err != nil {
@@ -36,7 +41,7 @@ func (DomainShareModel) Get(domain_id string) ([]dsModel, error) {
 		return nil, err
 	}
 
-	var rst []dsModel
+	var rst []DomainShareData
 
 	err = dbobj.Scan(rows, &rst)
 
@@ -54,44 +59,80 @@ func (DomainShareModel) UnAuth(domain_id string) ([]dusModel, error) {
 	return rst, err
 }
 
-func (DomainShareModel) Post(domain_id, target_domain_id, auth_level, user_id string) error {
+func (DomainShareModel) Post(data url.Values, user_id string) (string, error) {
+
+	domain_id := data.Get("domain_id")
+	target_domain_id := data.Get("target_domain_id")
+	auth_level := data.Get("auth_level")
+	fmt.Println(domain_id)
+	if !govalidator.IsAlnum(domain_id) {
+		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
+	}
+
+	if !govalidator.IsAlnum(target_domain_id) {
+		return "as_of_date_domain_target", errors.New("as_of_date_domain_target")
+	}
+
+	if !govalidator.IsIn(auth_level, "1", "2") {
+		return "as_of_date_domain_mode", errors.New("as_of_date_domain_mode")
+	}
 	_, err := dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
-	return err
-}
-
-func (DomainShareModel) Update(uuid, user_id, auth_level string) error {
-	_, err := dbobj.Exec(sys_rdbms_088, auth_level, user_id, uuid)
-	return err
-}
-
-func (DomainShareModel) Delete(js string, domain_id string) error {
-	var rst []dsModel
-
-	err := json.Unmarshal([]byte(js), &rst)
 	if err != nil {
 		logs.Error(err)
-		return err
+		return "as_of_date_domain_share_failed", err
 	}
+	return "success", nil
+}
+
+func (DomainShareModel) Update(data url.Values, user_id string) (string, error) {
+
+	domain_id := data.Get("domain_id")
+	uuid := data.Get("uuid")
+	level := data.Get("auth_level")
+
+	if !govalidator.IsWord(domain_id) {
+		return "as_of_date_domain_target", errors.New("as_of_date_domain_target")
+	}
+
+	if !govalidator.IsIn(level, "1", "2") {
+		return "as_of_date_domain_mode", errors.New("as_of_date_domain_mode")
+	}
+
+	_, err := dbobj.Exec(sys_rdbms_088, level, user_id, uuid)
+	if err != nil {
+		logs.Error(err)
+		return "as_of_date_domain_share_update", errors.New("as_of_date_domain_share_update")
+	}
+	return "success", nil
+}
+
+func (DomainShareModel) Delete(data []DomainShareData, domain_id string) (string, error) {
+
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
-		return err
+		return "error_sql_begin", err
 	}
 
-	for _, val := range rst {
+	for _, val := range data {
 		_, err := dbobj.Exec(sys_rdbms_087, val.Uuid, domain_id)
 		if err != nil {
 			tx.Rollback()
 			logs.Error(err)
-			return err
+			return "as_of_date_domain_share_delete", err
 		}
 	}
-	return tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		logs.Error(err)
+		return "as_of_date_domain_share_delete", errors.New("as_of_date_domain_share_delete")
+	}
+	return "success", nil
 }
 
 // 获取这个有哪些域把共享给了指定的这个域
-func (this DomainShareModel) get(domain_id string) ([]ProjectMgr, error) {
-	var rst []ProjectMgr
+func (this DomainShareModel) get(domain_id string) ([]DomainMmodel, error) {
+	var rst []DomainMmodel
 	rows, err := dbobj.Query(sys_rdbms_034, domain_id)
 	if err != nil {
 		logs.Error(err)
@@ -101,7 +142,7 @@ func (this DomainShareModel) get(domain_id string) ([]ProjectMgr, error) {
 	return rst, err
 }
 
-func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
+func (this DomainShareModel) GetList(domain_id string) ([]DomainMmodel, error) {
 	// 获取所有的域信息
 	rst, err := this.md.Get()
 	if err != nil {
@@ -122,7 +163,7 @@ func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
 		dmap[val.Project_id] = true
 	}
 
-	var dslice []ProjectMgr
+	var dslice []DomainMmodel
 	for _, val := range rst {
 		if _, ok := dmap[val.Project_id]; ok && val.Domain_status_cd == "0" {
 			dslice = append(dslice, val)
@@ -131,9 +172,9 @@ func (this DomainShareModel) GetList(domain_id string) ([]ProjectMgr, error) {
 	return dslice, nil
 }
 
-func (this DomainShareModel) GetOwner(domain_id string) (domainDataModel, error) {
+func (this DomainShareModel) GetOwner(domain_id string) (domainDataSet, error) {
 
-	var ret domainDataModel
+	var ret domainDataSet
 
 	rst, err := this.GetList(domain_id)
 	if err != nil {

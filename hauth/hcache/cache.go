@@ -1,67 +1,114 @@
 package hcache
 
 import (
-	"crypto/sha1"
-	"fmt"
-	"github.com/astaxie/beego/cache"
 	"time"
+
+	"github.com/astaxie/beego/logs"
 )
 
-// beego cache modal
-var bm, _ = cache.NewCache("memory", `{"interval":3600}`)
+var relationCacheObj = NewRelationKey()
+
+var expire = time.Minute * 720
 
 // get cached value by key.
 func Get(key string) interface{} {
-	return bm.Get(key)
+	return relationCacheObj.cache.Get(key)
 }
 
 // GetMulti is a batch version of GetDetails.
 func GetMulti(keys []string) []interface{} {
-	return bm.GetMulti(keys)
+	return relationCacheObj.cache.GetMulti(keys)
+}
+
+func AddRelation(key string, value ...string) {
+	relationCacheObj.SetRelatKey(key, value...)
+}
+
+func Set(key string, value interface{}) error {
+	// 删除相关性缓存
+	relKey, err := relationCacheObj.GetRelatKey(key)
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	for key, _ := range relKey {
+		relationCacheObj.cache.Delete(key)
+	}
+
+	return relationCacheObj.cache.Put(key, value, expire)
 }
 
 // set cached value with key and expire time.
 func Put(key string, val interface{}, timeout time.Duration) error {
-	return bm.Put(key, val, timeout)
+	// 删除相关性缓存
+	relKey, err := relationCacheObj.GetRelatKey(key)
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	for key, _ := range relKey {
+		relationCacheObj.cache.Delete(key)
+	}
+
+	return relationCacheObj.cache.Put(key, val, timeout)
 }
 
 // delete cached value by key.
 func Delete(key string) error {
-	return bm.Delete(key)
+	// 删除相关性缓存
+	relKey, err := relationCacheObj.GetRelatKey(key)
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	for key, _ := range relKey {
+		relationCacheObj.cache.Delete(key)
+	}
+
+	return relationCacheObj.cache.Delete(key)
 }
 
 // increase cached int value by key, as a counter.
 func Incr(key string) error {
-	return bm.Incr(key)
+	// 删除相关性缓存
+	relKey, err := relationCacheObj.GetRelatKey(key)
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	for key, _ := range relKey {
+		relationCacheObj.cache.Delete(key)
+	}
+
+	return relationCacheObj.cache.Incr(key)
 }
 
 // decrease cached int value by key, as a counter.
 func Decr(key string) error {
-	return bm.Decr(key)
+	// 删除相关性缓存
+	relKey, err := relationCacheObj.GetRelatKey(key)
+	if err != nil {
+		logs.Error(err)
+		return err
+	}
+	for key, _ := range relKey {
+		relationCacheObj.cache.Delete(key)
+	}
+
+	return relationCacheObj.cache.Decr(key)
 }
 
 // check if cached value exists or not.
 func IsExist(key string) bool {
-	return bm.IsExist(key)
+	return relationCacheObj.cache.IsExist(key)
 }
 
 // clear all cache.
 func ClearAll() error {
-	return bm.ClearAll()
+	return relationCacheObj.cache.ClearAll()
 }
 
 // start gc routine based on config string settings.
 func StartAndGC(config string) error {
-	return bm.StartAndGC(config)
-}
-
-func GenKey(gpname string, keys ...string) string {
-	sh := sha1.New()
-	sh.Write([]byte(gpname))
-	sh.Write([]byte("_join_"))
-	for _, val := range keys {
-		sh.Write([]byte(val))
-		sh.Write([]byte("_join_"))
-	}
-	return fmt.Sprintf("%x", sh.Sum(nil))
+	return relationCacheObj.cache.StartAndGC(config)
 }

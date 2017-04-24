@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 	"time"
 )
 
@@ -38,7 +38,7 @@ type resData struct {
 
 // 查询所有的资源信息
 func (ResourceModel) Get() ([]resData, error) {
-	key := hcache.GenKey("RESOURCEMODELS", "ALLRES")
+	key := hcache.GenSha1Key("RESOURCEMODELS", "ALLRES")
 	if hcache.IsExist(key) {
 		logs.Debug("get data from cache")
 		rst, _ := hcache.Get(key).([]resData)
@@ -80,7 +80,7 @@ func (ResourceModel) Query(res_id string) ([]resData, error) {
 
 // 新增资源
 func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id, res_open_type string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	defer hcache.Delete(hcache.GenSha1Key("RESOURCEMODELS", "ALLRES"))
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -114,7 +114,7 @@ func (ResourceModel) Post(res_id, res_name, res_attr, res_up_id, res_type, theme
 
 // 新增按钮
 func (this ResourceModel) PostButton(res_id, res_name, res_attr, res_up_id, res_type string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	defer hcache.Delete(hcache.GenSha1Key("RESOURCEMODELS", "ALLRES"))
 	tx, err := dbobj.Begin()
 	if err != nil {
 		logs.Error(err)
@@ -136,7 +136,7 @@ func (this ResourceModel) PostButton(res_id, res_name, res_attr, res_up_id, res_
 
 // 删除指定的资源
 func (this ResourceModel) Delete(res_id string) (string, error) {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	defer hcache.Delete(hcache.GenSha1Key("RESOURCEMODELS", "ALLRES"))
 	var rst []resData
 
 	all, err := this.Get()
@@ -194,7 +194,7 @@ func (this ResourceModel) Delete(res_id string) (string, error) {
 }
 
 func (this ResourceModel) Update(res_id, res_name string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	defer hcache.Delete(hcache.GenSha1Key("RESOURCEMODELS", "ALLRES"))
 	_, err := dbobj.Exec(sys_rdbms_005, res_name, res_id)
 	return err
 }

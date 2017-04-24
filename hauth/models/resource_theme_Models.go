@@ -1,9 +1,9 @@
 package models
 
 import (
-	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils/logs"
 )
 
 type ThemeResourceModel struct {
@@ -46,7 +46,7 @@ func (this ThemeResourceModel) GetDetails(res_id string, theme_id string) ([]the
 }
 
 func (this ThemeResourceModel) Update(res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, theme_id, res_id, res_open_type string) error {
-	defer hcache.Delete(hcache.GenKey("RESOURCEMODELS", "ALLRES"))
+	defer hcache.Delete(hcache.GenSha1Key("RESOURCEMODELS", "ALLRES"))
 	_, err := dbobj.Exec(sys_rdbms_009, res_url, res_by_color, res_class, res_img, res_group_id, res_sort_id, res_open_type, theme_id, res_id)
 	return err
 }

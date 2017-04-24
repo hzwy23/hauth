@@ -30,7 +30,7 @@ var SwaggerCtl = &swaggerController{}
 //     description: success
 func (this swaggerController) Page(ctx *context.Context) {
 	if !hrpc.BasicAuth(ctx.Request) {
-		hret.Error(ctx.ResponseWriter, 403,i18n.NoAuth(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
 

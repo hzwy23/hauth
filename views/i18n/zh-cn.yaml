@@ -8,6 +8,8 @@
   translation: "您没有被授权在这个域[{{.Domain_id}}]中新增,修改,删除信息."
 - id: error_sql_begin
   translation: "开启事物处理失败"
+- id: error_forbid_delete_your_domain
+  translation: "禁止删除用户自己所在的域"
 - id: error_unmarsh_json
   translation: "解析json格式数据失败,请联系管理员"
 - id: as_of_date_domain_permission_denied
@@ -146,6 +148,10 @@
   translation: "已经有正在导入的任务,请稍等"
 - id: error_org_read_upload_file
   translation: "读取上传文件失败"
+- id: error_org_upload
+  translation: "上传机构信息失败,请检查是否有重复导入的机构信息"
+- id: error_org_submit
+  translation: "提交上传请求失败,请联系管理员"
 - id: error_passwd_empty
   translation: "密码不能为空"
 - id: error_passwd_same
@@ -234,3 +240,38 @@
   translation: "请选择用户状态"
 - id: as_of_date_no_separator
   translation: "唯一主键 {{.Id}} 中,不含分隔符,格式不正确"
+- id: error_org_delete
+  translation: "这个机构下边存在用户信息,请先清除用户信息,再来删除机构"
+- id: error_org_delete_commit
+  translation: "提交删除请求失败,请联系管理员"
+
+- id: error_user_role_no_auth
+  translation: "您没有权限删除这个域中用户的角色信息"
+- id: error_user_role
+  translation: "执行SQL失败"
+- id: error_user_role_commit
+  translation: "提交请求失败"
+- id: error_user_role_begin
+  translation: "初始化事物处理失败"
+- id: error_user_org_format
+  translation: "机构格式不正确"
+- id: error_user_json
+  translation: "解析JSON数据失败"
+- id: error_user_forbid_delete_admin
+  translation: "admin 是系统超级管理员，无法被删除"
+- id: error_user_forbid_yourself
+  translation: "禁止将自己从系统中删除"
+- id: error_user_query_org
+  translation: "查询用户机构所属域信息失败"
+- id: error_user_no_auth
+  translation: "您没有权限操作这个域中的用户"
+- id: error_user_exec
+  translation: "执行SQL语句失败"
+- id: error_user_commit
+  translation: "提交事务初始失败"
+- id: error_user_modify_status
+  translation: "修改用户状态信息失败"
+- id: error_user_modify_passwd
+  translation: "修改用户密码失败"
+- id: error_user_modify_info
+  translation: "修改用户信息失败"
