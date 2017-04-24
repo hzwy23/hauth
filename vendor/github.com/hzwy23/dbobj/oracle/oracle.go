@@ -6,10 +6,11 @@ import (
 	"os"
 	"strings"
 
+	"path/filepath"
+
 	"github.com/hzwy23/dbobj/dbhandle"
 	"github.com/hzwy23/dbobj/utils"
 	_ "github.com/mattn/go-oci8"
-	"path/filepath"
 )
 
 type oracle struct {
