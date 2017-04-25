@@ -7,6 +7,19 @@ import (
 	"github.com/hzwy23/utils/logs"
 )
 
+const redirect = `
+<script type="text/javascript">
+    $.Hconfirm({
+		cancelBtn:false,
+        header:"Get Special Page Failure",
+        body:"Get special page failed, Please contact your administrator",
+        callback:function () {
+            window.location.href="/"
+        }
+    })
+</script>
+`
+
 type HomePageMenusModel struct {
 	mur UserRolesModel
 	mut UserThemeModel
@@ -86,13 +99,13 @@ func (this HomePageMenusModel) Get(id, typeId, useId string) ([]byte, error) {
 	return json.Marshal(rst)
 }
 
-func (this HomePageMenusModel) GetUrl(user_id, id string) string {
+func (this HomePageMenusModel) GetUrl(user_id, id string) (string, error) {
 	row := dbobj.QueryRow(sys_rdbms_011, user_id, id)
 	var url string
 	err := row.Scan(&url)
 	if err != nil {
-		logs.Error("cant not fetch menu_url", err)
-		url = "./views/hauth/theme/default/sysconfig.tpl"
+		logs.Error("Get Special Page failure, user_id is :", user_id, "menu id is :", id, "details error is:", err)
+		return redirect, err
 	}
-	return url
+	return url, nil
 }

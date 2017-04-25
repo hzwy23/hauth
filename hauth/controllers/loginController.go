@@ -5,14 +5,13 @@ import (
 	"net/http"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/utils/logs"
-
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/crypto/haes"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
 )
 
 var indexModels = new(models.LoginModels)
@@ -34,6 +33,7 @@ var indexModels = new(models.LoginModels)
 //     description: all domain information
 func HomePage(ctx *context.Context) {
 	defer hret.HttpPanic(func() {
+		logs.Error("Get Home Page Failure.")
 		ctx.Redirect(302, "/")
 	})
 
@@ -84,13 +84,10 @@ func HomePage(ctx *context.Context) {
 //   '200':
 //     description: all domain information
 func LoginSystem(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
 
 	userId := ctx.Request.FormValue("username")
-
 	userPasswd := ctx.Request.FormValue("password")
-
 	psd, err := haes.Encrypt(userPasswd)
 	if err != nil {
 		logs.Error("decrypt passwd failed.", psd)
@@ -98,7 +95,7 @@ func LoginSystem(ctx *context.Context) {
 		return
 	}
 
-	domainId, err := indexModels.GetDefaultDomainId(userId)
+	domainId, err := hrpc.GetDomainId(userId)
 	if err != nil {
 		logs.Error(userId, " 用户没有指定的域", err)
 		hret.Error(ctx.ResponseWriter, 401, i18n.Get(ctx.Request, "error_user_no_domain"))

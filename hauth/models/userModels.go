@@ -2,9 +2,8 @@ package models
 
 import (
 	"errors"
-	"strings"
-
 	"net/url"
+	"strings"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"

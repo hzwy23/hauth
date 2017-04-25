@@ -11,7 +11,7 @@ const redirect = `
     $.Hconfirm({
 		cancelBtn:false,
         header:"连接已断开",
-        body:"<span style='font-weight:600;font-size:16px;padding-left:60px;height:90px;line-height:90px;'>用户连接已断开，请重新登录</span>",
+        body:"用户连接已断开，请重新登录",
         callback:function () {
             window.location.href="/"
         }

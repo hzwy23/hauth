@@ -6,9 +6,8 @@
 package controllers
 
 import (
-	"html/template"
-
 	"encoding/json"
+	"html/template"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"

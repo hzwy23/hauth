@@ -19,11 +19,6 @@ func (this LoginModels) GetDefaultPage(user_id string) string {
 	return url
 }
 
-func (this LoginModels) GetDefaultDomainId(user_id string) (domain_id string, err error) {
-	err = dbobj.QueryRow(sys_rdbms_079, user_id).Scan(&domain_id)
-	return
-}
-
 func (this LoginModels) GetDefaultOrgId(user_id string) (org_id string, err error) {
 	err = dbobj.QueryRow(sys_rdbms_080, user_id).Scan(&org_id)
 	return

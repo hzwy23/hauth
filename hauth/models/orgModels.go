@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-
 	"net/url"
 
 	"github.com/asaskevich/govalidator"
@@ -194,6 +193,26 @@ func (this OrgModel) Upload(data []SysOrgInfo) (string, error) {
 	}
 
 	for _, val := range data {
+		if !govalidator.IsAlnum(val.Code_number) {
+			tx.Rollback()
+			return "error_org_id_format", errors.New("机构编码必须由1-30位字母,数字组成")
+		}
+
+		if govalidator.IsEmpty(val.Org_unit_desc) {
+			tx.Rollback()
+			return "error_org_id_desc_empty", errors.New("error_org_id_desc_empty")
+		}
+
+		if govalidator.IsEmpty(val.Up_org_id) {
+			tx.Rollback()
+			return "error_org_up_id_empty", errors.New("error_org_up_id_empty")
+		}
+
+		if !govalidator.IsAlnum(val.Domain_id) {
+			tx.Rollback()
+			return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
+		}
+
 		_, err = tx.Exec(sys_rdbms_043, val.Code_number, val.Org_unit_desc, val.Up_org_id, val.Domain_id, val.Create_user, val.Create_user, val.Org_unit_id)
 		if err != nil {
 			logs.Error(err)

@@ -55,7 +55,12 @@ func SubSystemEntry(ctx *context.Context) {
 	}
 
 	// get url of the id number.
-	url := homePageMenusModel.GetUrl(jclaim.User_id, id)
+	url, err := homePageMenusModel.GetUrl(jclaim.User_id, id)
+	if err != nil {
+		logs.Error(err)
+		ctx.WriteString(url)
+		return
+	}
 
 	key := hcache.GenSha1Key(id, jclaim.User_id, url)
 
@@ -112,14 +117,14 @@ func HomePageMenus(ctx *context.Context) {
 
 	// get user connection information from cookie
 	cookie, _ := ctx.Request.Cookie("Authorization")
-	jclaim, err := jwt.ParseJwt(cookie.Value)
+	claim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
 		return
 	}
 
-	ojs, err := homePageMenusModel.Get(Id, typeId, jclaim.User_id)
+	ojs, err := homePageMenusModel.Get(Id, typeId, claim.User_id)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_query_menu"))

@@ -1,6 +1,6 @@
 package hret
 
-import "github.com/astaxie/beego/logs"
+import "github.com/hzwy23/utils/logs"
 
 type httpPanicFunc func()
 

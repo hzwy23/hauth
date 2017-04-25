@@ -2,18 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
-
-	"github.com/astaxie/beego/context"
-
-	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/models"
-
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
@@ -92,7 +89,6 @@ func (this orgController) Get(ctx *context.Context) {
 	}
 
 	domain_id := ctx.Request.FormValue("domain_id")
-
 	if govalidator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
@@ -154,9 +150,9 @@ func (this orgController) Delete(ctx *context.Context) {
 	}
 
 	domain_id := ctx.Request.FormValue("domain_id")
-	orgList := ctx.Request.FormValue("JSON")
+
 	var mjs []models.SysOrgInfo
-	err := json.Unmarshal([]byte(orgList), &mjs)
+	err := json.Unmarshal([]byte(ctx.Request.FormValue("JSON")), &mjs)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_delete_org_info"), err)
@@ -306,7 +302,6 @@ func (this orgController) Post(ctx *context.Context) {
 	}
 
 	domain_id := form.Get("Domain_id")
-
 	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_permission_denied_modify"))
 		return
@@ -350,11 +345,9 @@ func (this orgController) Post(ctx *context.Context) {
 //   '200':
 //     description: success
 func (this orgController) GetSubOrgInfo(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
 
 	org_unit_id := ctx.Request.FormValue("org_unit_id")
-
 	did, err := utils.SplitDomain(org_unit_id)
 	if err != nil {
 		logs.Error(err)
@@ -428,8 +421,7 @@ func (this orgController) Download(ctx *context.Context) {
 	}
 
 	var sheet *xlsx.Sheet
-	HOME := os.Getenv("HBIGDATA_HOME")
-	file, err := xlsx.OpenFile(filepath.Join(HOME, "views", "uploadTemplate", "hauthOrgExportTemplate.xlsx"))
+	file, err := xlsx.OpenFile(filepath.Join(os.Getenv("HBIGDATA_HOME"), "views", "uploadTemplate", "hauthOrgExportTemplate.xlsx"))
 	if err != nil {
 		file = xlsx.NewFile()
 		sheet, err = file.AddSheet("机构信息")
@@ -551,9 +543,7 @@ func (this orgController) Upload(ctx *context.Context) {
 
 	// 同一个时间,只能有一个导入任务
 	this.upload <- 1
-	defer func() {
-		<-this.upload
-	}()
+	defer func() { <-this.upload }()
 
 	ctx.Request.ParseForm()
 	fd, _, err := ctx.Request.FormFile("file")

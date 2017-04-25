@@ -23,7 +23,6 @@ type handleLogs struct {
 func (this HandleLogMode) Download(domain_id string) ([]handleLogs, error) {
 	var rst []handleLogs
 	rows, err := dbobj.Query(sys_rdbms_012, domain_id)
-	defer rows.Close()
 	if err != nil {
 		logs.Error(err)
 		return rst, err

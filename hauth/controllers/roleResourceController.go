@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"html/template"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
@@ -8,7 +10,6 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"html/template"
 )
 
 type roleAndResourceController struct {

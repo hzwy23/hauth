@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-
 	"strings"
 
 	"github.com/astaxie/beego/context"
@@ -57,7 +56,6 @@ var PasswdController = &passwdController{
 //   '200':
 //     description: all domain information
 func (this passwdController) PostModifyPasswd(ctx *context.Context) {
-
 	ctx.Request.ParseForm()
 
 	oriPasswd := ctx.Request.FormValue("orapasswd")

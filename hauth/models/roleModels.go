@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-
 	"net/url"
 
 	"github.com/asaskevich/govalidator"

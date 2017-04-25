@@ -5,9 +5,8 @@ import (
 
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/models"
-
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
@@ -304,7 +303,7 @@ func (this *domainController) Put(ctx *context.Context) {
 	msg, err := this.models.Update(form, jclaim.User_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg))
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
 
@@ -342,7 +341,7 @@ func (this *domainController) GetDetails(ctx *context.Context) {
 	rst, err := this.models.GetRow(domain_id)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_details"))
+		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "as_of_date_domain_details"), err)
 		return
 	}
 	hret.Json(ctx.ResponseWriter, rst)
@@ -372,7 +371,7 @@ func (this *domainController) GetId(ctx *context.Context) {
 	jclaim, err := jwt.ParseJwt(cookie.Value)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request))
+		hret.Error(ctx.ResponseWriter, 403, i18n.Disconnect(ctx.Request), err)
 		return
 	}
 

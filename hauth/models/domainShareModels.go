@@ -2,10 +2,7 @@ package models
 
 import (
 	"errors"
-
 	"net/url"
-
-	"fmt"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
@@ -64,7 +61,7 @@ func (DomainShareModel) Post(data url.Values, user_id string) (string, error) {
 	domain_id := data.Get("domain_id")
 	target_domain_id := data.Get("target_domain_id")
 	auth_level := data.Get("auth_level")
-	fmt.Println(domain_id)
+
 	if !govalidator.IsAlnum(domain_id) {
 		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 	}
@@ -76,6 +73,7 @@ func (DomainShareModel) Post(data url.Values, user_id string) (string, error) {
 	if !govalidator.IsIn(auth_level, "1", "2") {
 		return "as_of_date_domain_mode", errors.New("as_of_date_domain_mode")
 	}
+
 	_, err := dbobj.Exec(sys_rdbms_086, domain_id, target_domain_id, auth_level, user_id, user_id)
 	if err != nil {
 		logs.Error(err)

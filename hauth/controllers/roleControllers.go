@@ -3,13 +3,12 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils"
-
-	"github.com/asaskevich/govalidator"
-	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
@@ -253,6 +252,7 @@ func (this roleController) Update(ctx *context.Context) {
 		hret.Error(ctx.ResponseWriter, 403, i18n.NoAuth(ctx.Request))
 		return
 	}
+
 	form := ctx.Request.Form
 	Role_id := form.Get("Role_id")
 

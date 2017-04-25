@@ -8,9 +8,10 @@ import (
 
 	"github.com/hzwy23/dbobj/utils"
 
+	"path/filepath"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hzwy23/dbobj/dbhandle"
-	"path/filepath"
 )
 
 type mysql struct {

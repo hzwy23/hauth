@@ -1,10 +1,8 @@
 package models
 
 import (
-	"errors"
-
 	"database/sql"
-
+	"errors"
 	"net/url"
 
 	"github.com/asaskevich/govalidator"

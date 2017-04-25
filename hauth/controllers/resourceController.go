@@ -1,12 +1,11 @@
 package controllers
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
-	"github.com/hzwy23/asofdate/hauth/models"
-
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"

@@ -1,20 +1,18 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego/context"
-
-	"github.com/hzwy23/asofdate/hauth/hcache"
-
-	"github.com/hzwy23/asofdate/hauth/hrpc"
-	"github.com/hzwy23/utils/hret"
-	"github.com/hzwy23/utils/jwt"
-	"github.com/hzwy23/utils/logs"
-
-	"github.com/hzwy23/asofdate/hauth/models"
-	"github.com/hzwy23/utils/i18n"
-	"github.com/tealeg/xlsx"
 	"os"
 	"path/filepath"
+
+	"github.com/astaxie/beego/context"
+	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/hrpc"
+	"github.com/hzwy23/asofdate/hauth/models"
+	"github.com/hzwy23/utils/hret"
+	"github.com/hzwy23/utils/i18n"
+	"github.com/hzwy23/utils/jwt"
+	"github.com/hzwy23/utils/logs"
+	"github.com/tealeg/xlsx"
 )
 
 type handleLogsController struct {
