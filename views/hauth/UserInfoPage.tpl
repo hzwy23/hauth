@@ -119,17 +119,11 @@
                     ijs.upId=element.up_org_id;
                     arr.push(ijs)
                 });
-                var ijs = {};
-                ijs.id = "-1";
-                ijs.text = "根节点";
-                ijs.upId = "##hzwy23##";
-                arr.push(ijs);
 
                 $("#h-user-org-list").Hselect({
                     data:arr,
                     height:"24px",
                     width:"180px",
-                    value:"-1",
                 });
             });
 
@@ -157,17 +151,10 @@
                             arr.push(ijs)
                         });
 
-                        var ijs = {};
-                        ijs.id = "-1";
-                        ijs.text = "根节点";
-                        ijs.upId = "##hzwy23##";
-                        arr.push(ijs);
-
                         $("#h-user-org-list").Hselect({
                             data:arr,
                             height:"24px",
                             width:"180px",
-                            value:"-1",
                         });
                     });
                 }
@@ -179,7 +166,7 @@
         $("#h-user-status-list").Hselect({
             height:"24px;",
             width:"180px",
-            value:1,
+            value:0,
         })
     });
 
