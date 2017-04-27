@@ -2015,6 +2015,11 @@ var Hutils = {
                 $(nextObj).find("ul").scrollTop(0);
                 $(nextObj).find("ul").scrollLeft(0);
 
+                $(obj).find(".HshowSelectValue i").css({
+                    "border-color":"transparent transparent #888 transparent",
+                    "border-width":"0px 4px 5px 4px"
+                });
+
                 // var ptop = $(obj).offset().top
                 // var pleft = $(obj).offset().left;
                 // var tp = ptop+$(this).height();
@@ -2034,6 +2039,11 @@ var Hutils = {
                 //     left:pleft
                 // })
             }else{
+                $(obj).find(".HshowSelectValue i").css({
+                    "border-color":"#888 transparent transparent transparent",
+                    "border-width":"5px 4px 0px 4px"
+                });
+
                 $(obj).find("ul").closest("div").hide();
                 $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
                     $(this).remove()

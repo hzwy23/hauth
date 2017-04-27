@@ -63,15 +63,15 @@
     </div>
 </div>
 <div id="h-user-toolbar-list" style="height: 24px; line-height: 24px;">
-    <span style="font-size: 10px;font-weight: 600;display: inline">机构:</span>
-    <select id="h-user-org-list" class="form-control" style="width: 180px;height: 24px; line-height: 24px;padding: 0px; display: inline">
+    <span style="font-size: 10px;font-weight: 600;" class="pull-left">机构:</span>
+    <select id="h-user-org-list" class="form-control pull-left" style="width: 180px;height: 24px; line-height: 24px;padding: 0px;">
     </select>
-    <span style="font-size: 10px;font-weight: 600;display: inline">&nbsp;状态:</span>
-    <select id="h-user-status-list" class="form-control" style="width: 180px;height: 24px; line-height: 24px;padding: 0px;display: inline;">
+    <span style="font-size: 10px;font-weight: 600;" class="pull-left">&nbsp;状态:</span>
+    <select id="h-user-status-list" class="form-control pull-left" style="width: 180px;height: 24px; line-height: 24px;padding: 0px;">
         <option value="0">正常</option>
         <option value="1">失效</option>
     </select>
-    <button onclick="UserObj.search()" class="btn btn-success btn-xs" style="margin-left: 8px;"><i class="icon-search"> </i>查询</button>
+    <button onclick="UserObj.search()" class="btn btn-success btn-xs pull-left" style="margin-left: 8px;"><i class="icon-search"> </i>查询</button>
 </div>
 <script>
     NProgress.start();
@@ -119,10 +119,17 @@
                     ijs.upId=element.up_org_id;
                     arr.push(ijs)
                 });
+                var ijs = {};
+                ijs.id = "-1";
+                ijs.text = "根节点";
+                ijs.upId = "##hzwy23##";
+                arr.push(ijs);
+
                 $("#h-user-org-list").Hselect({
                     data:arr,
                     height:"24px",
                     width:"180px",
+                    value:"-1",
                 });
             });
 
@@ -149,10 +156,18 @@
                             ijs.upId=element.up_org_id;
                             arr.push(ijs)
                         });
+
+                        var ijs = {};
+                        ijs.id = "-1";
+                        ijs.text = "根节点";
+                        ijs.upId = "##hzwy23##";
+                        arr.push(ijs);
+
                         $("#h-user-org-list").Hselect({
                             data:arr,
                             height:"24px",
                             width:"180px",
+                            value:"-1",
                         });
                     });
                 }
@@ -164,6 +179,7 @@
         $("#h-user-status-list").Hselect({
             height:"24px;",
             width:"180px",
+            value:1,
         })
     });
 
