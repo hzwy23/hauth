@@ -1,9 +1,9 @@
 .hzwy23-theme-background{
-    background-color: #009966;
+    background-color: #025e99;
 }
 
 .theme-tab-color{
-    background-color: #009966;
+    background-color: #025e99;
 }
 
 /*
@@ -126,11 +126,11 @@
 }
 
 .active-tab{
-    background-color: #006699;
+    background-color: #009999;
     color: #e1e4e9;
 }
 .active-tab:hover{
-    background-color: #006699;
+    background-color: #009999;
     color: #ffffff;
 }
 /*结束tab标签样式*/

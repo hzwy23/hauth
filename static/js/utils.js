@@ -2275,7 +2275,6 @@ var Hutils = {
 
                 header:"弹框信息",
                 headerHeight:"40px",
-                headerColor :"#fafafa",
                 headerFontSize:"14px",
                 headerFontColor:"",
 
@@ -2294,8 +2293,8 @@ var Hutils = {
             //初始化弹框主体
             function init(){
                 var mframe='<div class="modal-dialog">'+
-                    '<div class="modal-content h-modal-content" style="border: '+__DEFAULT.headerColor+' solid 2px; width: '+__DEFAULT.width+'; height: '+__DEFAULT.height+';">'+
-                    '<div class="modal-header h-modal-header" style="background-color: '+__DEFAULT.headerColor+'; height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; padding: 0px;">'+
+                    '<div class="modal-content h-modal-content" style="width: '+__DEFAULT.width+'; height: '+__DEFAULT.height+';">'+
+                    '<div class="modal-header h-modal-header" style="height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; padding: 0px;">'+
                     '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; width: 30px; padding-top: 2px;">×</button>'+
                     '<h4 class="modal-title" style="margin-left: 15px;height: '+__DEFAULT.headerFontSize+';color: '+__DEFAULT.headerFontColor+'; line-height: '+__DEFAULT.headerHeight+';font-weight: 600; font-size: '+__DEFAULT.headerFontSize+'">'+__DEFAULT.header+'</h4>'+
                     '</div>'+

@@ -20,7 +20,8 @@
 	<link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="/static/Font-Awesome-3.2.1/css/font-awesome.min.css"/>
 
-	<link rel="stylesheet" href="/static/theme/default/index.css" type="text/css" />
+	<link rel="stylesheet" href="/static/theme/common.css"/>
+	<link rel="stylesheet" href="/static/theme/cyan/index.css" type="text/css" />
 	<link rel="stylesheet" href="/static/css/animate.css"/>
 	<link rel="stylesheet" href="/static/nprogress/nprogress.css"/>
 
@@ -51,7 +52,7 @@
 
 </head>
 
-<body style="overflow: hidden" class="theme-bg-cyan">
+<body style="overflow: hidden" class="hzwy23-theme-background">
 <div id="bigdata-platform-subsystem"
 	 style="margin-right:0px; background-size: cover; overflow: hidden;">
 	<div style="position: relative; height: 60px; text-align: left;">
@@ -69,15 +70,15 @@
 	</div>
 </div>
 <!--导航栏,标签切换栏, 修改为隐藏-->
-<div class="H-content-tab theme-bg-cyan">
+<div class="H-content-tab theme-tab-color">
 	<div class="H-tab-bar pull-left" id="H-tab-left">
-		<button class="H-left-tab theme-bg-cyan" onclick="Hutils.H_HomePage()"><i style="color: white" class="icon-th-large"></i></button>
+		<button class="H-left-tab theme-tab-color" onclick="Hutils.H_HomePage()"><i style="color: white" class="icon-th-large"></i></button>
 		<nav class="H-tabs-index"></nav>
 	</div>
 	<div class="H-tab-bar pull-right" id="H-tab-right">
-		<button data-toggle="tooltip" title="显示菜单栏" class="H-right-tab theme-bg-cyan" onclick="Hutils.HchangeWrapper()"><i style="color: white" class="icon-columns"></i></button>
-		<button data-toggle="tooltip" title="安全退出" class="H-right-tab theme-bg-cyan" onclick="Hutils.HLogOut()"><i style="color: white" class="icon-off"></i></button>
-		<button data-toggle="tooltip" title="用户信息" class="H-right-tab theme-bg-cyan" onclick="Hutils.UserMgrInfo()"><i style="color: white" class="icon-user"></i></button>
+		<button data-toggle="tooltip" title="显示菜单栏" class="H-right-tab theme-tab-color" onclick="Hutils.HchangeWrapper()"><i style="color: white" class="icon-columns"></i></button>
+		<button data-toggle="tooltip" title="安全退出" class="H-right-tab theme-tab-color" onclick="Hutils.HLogOut()"><i style="color: white" class="icon-off"></i></button>
+		<button data-toggle="tooltip" title="用户信息" class="H-right-tab theme-tab-color" onclick="Hutils.UserMgrInfo()"><i style="color: white" class="icon-user"></i></button>
 	</div>
 </div>
 
@@ -226,9 +227,13 @@
 		<!-- Default panel contents -->
 		<div class="panel-heading">
 			<span style="font-size: 12px;font-weight: 600;">主题切换：</span>
-			<button onclick="changeTheme(1001)" class="btn btn-success btn-sm">
+			<button onclick="changeTheme(1001)" class="btn btn-sm theme-green-color" style="color: white;">
 			</button>
-			<button onclick="changeTheme(1004)" class="btn btn-sm theme-bg-cyan" style="color: white;">
+			<button onclick="changeTheme(1004)" class="btn btn-sm theme-cyan-color" style="color: white;">
+			</button>
+			<button onclick="changeTheme(1002)" class="btn btn-sm theme-blue-color" style="color: white;">
+			</button>
+			<button onclick="changeTheme(1003)" class="btn btn-sm theme-apple-color" style="color: white;">
 			</button>
 			<div class="pull-right">
 				<button onclick="changemodifypassword()" class="btn btn-success btn-xs">

@@ -1,4 +1,4 @@
-<div id="wrapper" class="navbar-static-side theme-bg-color" style="margin: 0px;width: 100%;">
+<div id="wrapper" class="navbar-static-side hzwy23-theme-background" style="margin: 0px;width: 100%;">
     <div class="H-logo-area" style="margin: 0px; padding: 0 0 0 30px;">
         帮助信息系统
     </div>

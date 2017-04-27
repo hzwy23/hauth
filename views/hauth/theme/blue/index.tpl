@@ -21,7 +21,7 @@
 	<link rel="stylesheet" href="/static/Font-Awesome-3.2.1/css/font-awesome.min.css"/>
 
 	<link rel="stylesheet" href="/static/theme/common.css"/>
-	<link rel="stylesheet" href="/static/theme/default/index.css" type="text/css" />
+	<link rel="stylesheet" href="/static/theme/blue/index.css" type="text/css" />
 	<link rel="stylesheet" href="/static/css/animate.css"/>
 	<link rel="stylesheet" href="/static/nprogress/nprogress.css"/>
 
@@ -41,6 +41,7 @@
 	<!-- Latest compiled and minified Locales -->
 	<script src="/static/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
 
+
 	<!--bootstrap switch-->
 	<link rel="stylesheet" href="/static/bootstrap-switch-master/dist/css/bootstrap3/bootstrap-switch.min.css"/>
 	<script src="/static/bootstrap-switch-master/dist/js/bootstrap-switch.min.js"></script>
@@ -48,6 +49,7 @@
 	<!--webupload-->
 	<link rel="stylesheet" href="/static/webuploader/dist/webuploader.css"/>
 	<script src="/static/webuploader/dist/webuploader.min.js"></script>
+
 </head>
 
 <body style="overflow: hidden" class="hzwy23-theme-background">
@@ -141,15 +143,15 @@
     };
 
     var changeTheme = function (id) {
-        $.HAjaxRequest({
-            url:"/v1/auth/theme/update",
-            type:'post',
-            dataType:'json',
-            data:{theme_id:id},
-            success:function () {
-                window.location.href="/HomePage"
+		$.HAjaxRequest({
+		    url:"/v1/auth/theme/update",
+			type:'post',
+			dataType:'json',
+			data:{theme_id:id},
+			success:function () {
+				window.location.href="/HomePage"
             },
-        })
+		})
     };
 
     var changemodifypassword = function(){
@@ -158,9 +160,9 @@
             body:$("#h-user-modify-password").html(),
             height:"420px",
             width:"720px",
-			preprocess:function () {
+            preprocess:function () {
                 var user_id = $("#h-user-details-user-id").html()
-				$("#h-modify-user-id").val(user_id)
+                $("#h-modify-user-id").val(user_id)
             },
             callback:function(hmode){
                 var newpd = $("#plat-change-passwd").find('input[name="newpasswd"]').val()
@@ -168,13 +170,15 @@
                 var surpd = $("#plat-change-passwd").find('input[name="surepasswd"]').val()
                 if ($.trim(newpd) =="" || $.trim(orapd) == "" || $.trim(surpd)  == "" ){
                     $.Notify({
-						message:"不能将密码设置成空格",
+                        title:"温馨提示",
+                        message:"不能将密码设置成空格",
                         type:"danger",
                     })
                     return
                 }else if(newpd != surpd){
                     $.Notify({
-						message:"两次输入的新密码不一致，请确认是否存在多余的空格",
+                        title:"温馨提示",
+                        message:"两次输入的新密码不一致，请确认是否存在多余的空格",
                         type:"danger",
                     })
                     return
@@ -187,15 +191,14 @@
                     success:function(){
                         $(hmode).remove();
                         $.Notify({
-							message:"修改密码成功",
-							type:"success",
+                            title:"执行成功",
+                            message:"修改密码成功",
                         })
                     },
                 });
             }
         })
     };
-
 
     //调整主菜单的长度和宽度
     $(document).ready(function(){
@@ -206,9 +209,10 @@
             language :(navigator.language || navigator.browserLanguage).toLowerCase(),
             async: true,
         });
+
         Hutils.initMenu(0,-1,"系统服务","管理会计","公共信息")
-        indexObj.adjustLocation();
-        indexObj.bindEvents();
+        indexObj.adjustLocation()
+        indexObj.bindEvents()
         NProgress.done();
     });
 
@@ -237,7 +241,6 @@
 				</button>
 			</div>
 		</div>
-		<!-- Table -->
 		<table class="table table-bordered table-responsive">
 			<tr style="height: 36px;line-height: 36px;">
 				<td style="text-align: right;">用户id:&nbsp;</td>
