@@ -117,7 +117,11 @@ sudo ./asofdate
 
 E-mail： hzwy23@163.com
 
-demo演示地址：https://www.asofdate.com 
+demo演示地址：https://www.asofdate.com:8090
+
+用户名: demo
+
+密  码: 123456
 
 ## 代码贡献列表
 
