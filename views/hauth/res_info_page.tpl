@@ -88,10 +88,10 @@
                     <div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">
                         <span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;主题风格：</span>
                         <select onchange="ResObj.updateTheme()" id="h-resource-theme-style-code" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
-                            <option value="1001">青春风格</option>
-                            <option value="1002">稳重风格</option>
-                            <option value="1003">粉色风格</option>
-                            <option value="1004">中国风</option>
+                            <option value="1001">绿色主题</option>
+                            <option value="1002">蓝色主题</option>
+                            <option value="1003">粉丝主题</option>
+                            <option value="1004">青色主题</option>
                         </select>
                     </div>
                 </div>
@@ -545,10 +545,10 @@
             <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
             <div class="col-sm-12">
                 <select id="h-res-add-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
-                    <option value="1001">青春风格</option>
-                    <option value="1002">稳重风格</option>
-                    <option value="1003">粉色风格</option>
-                    <option value="1004">中国风</option>
+                    <option value="1001">绿色主题</option>
+                    <option value="1002">蓝色主题</option>
+                    <option value="1003">粉丝主题</option>
+                    <option value="1004">青色主题</option>
                 </select>
             </div>
         </div>
@@ -661,10 +661,10 @@
             <label class="col-sm-12 control-label" style="font-size: 14px; font-weight: 500;text-align: left">所属主题：</label>
             <div class="col-sm-12">
                 <select id="h-res-modify-theme-id" name="theme_id" class="form-control" style="height: 30px; line-height: 30px;">
-                    <option value="1001">青春风格</option>
-                    <option value="1002">稳重风格</option>
-                    <option value="1003">粉色风格</option>
-                    <option value="1004">中国风</option>
+                    <option value="1001">绿色主题</option>
+                    <option value="1002">蓝色主题</option>
+                    <option value="1003">粉丝主题</option>
+                    <option value="1004">青色主题</option>
                 </select>
             </div>
         </div>

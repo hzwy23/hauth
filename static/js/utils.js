@@ -2270,8 +2270,8 @@ var Hutils = {
             var __DEFAULT = {
                 callback : "",
                 preprocess: "",
-                width:"600px",
-                height:"230px ",
+                width:"800px",
+                height:"360px ",
 
                 header:"弹框信息",
                 headerHeight:"40px",

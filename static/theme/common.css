@@ -27,6 +27,52 @@
     transform: scale(.8);
 }
 
+@media only screen and (max-width: 2048px) {
+    .tile{
+        width: 240px;
+        height: 240px;
+    }
+    .tile-wide{
+        width:490px;
+        height: 240px;
+    }
+    .tile-large{
+        width:490px;
+        height: 490px;
+    }
+}
+
+
+@media only screen and (max-width: 1920px) {
+    .tile{
+        width: 220px;
+        height: 220px;
+    }
+    .tile-wide{
+        width:450px;
+        height: 220px;
+    }
+    .tile-large{
+        width:450px;
+        height: 450px;
+    }
+}
+
+@media only screen and (max-width: 1680px) {
+    .tile{
+        width: 160px;
+        height: 160px;
+    }
+    .tile-wide{
+        width:330px;
+        height: 160px;
+    }
+    .tile-large{
+        width:330px;
+        height: 330px;
+    }
+}
+
 @media only screen and (max-width: 1440px) {
     .tile{
         width: 130px;

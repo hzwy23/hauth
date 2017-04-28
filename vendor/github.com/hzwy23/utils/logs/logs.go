@@ -86,22 +86,39 @@ func init() {
 		return
 	}
 
-	file, err := conf.Get("Hauth.log.file")
+	// 创建日志参数配置对象
+	cfg := zap.NewProductionConfig()
+
+	// 生成日志文件路径
+	filename := filepath.Join(logpath, "temp", "log", "asofdate.log")
+
+	//判断日志所在目录,是否存在
+	_, err = os.Stat(filepath.Join(logpath, "temp", "log"))
 	if err != nil {
-		fmt.Errorf("%s", "cant not find Hauth.log.file. so set default file.")
-		file = "hauth.log"
+		if os.IsNotExist(err) {
+			// 创建日志目录
+			err := os.MkdirAll(filepath.Join(logpath, "temp", "log"), os.ModeDir)
+			if err != nil {
+				fmt.Errorf("%s", "文件不存在,创建日志文件失败")
+				// 日志文件无法创建
+				// 使用console作为日志输出
+			} else {
+				cfg.OutputPaths = []string{filename}
+				cfg.ErrorOutputPaths = []string{filename}
+			}
+		}
+		// 如果日志文件存在,但是无法获取Stat信息
+		// 将日志输出到console上
+	} else {
+		cfg.OutputPaths = []string{filename}
+		cfg.ErrorOutputPaths = []string{filename}
 	}
 
-	filename := filepath.Join(logpath, "temp", "log", file)
 	log_level, err := conf.Get("Hauth.log.level")
 	if err != nil {
 		fmt.Errorf("%s", "log level not set, set log level as default value.")
 		log_level = "info"
 	}
-
-	cfg := zap.NewProductionConfig()
-	cfg.OutputPaths = []string{filename}
-	cfg.ErrorOutputPaths = []string{filename}
 
 	cfg.EncoderConfig.EncodeTime = iso8601TimeEncoder
 	cfg.DisableStacktrace = true
