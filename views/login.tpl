@@ -39,89 +39,25 @@
         }
     </style>
 </head>
-<body style="background-size: cover;background-image: url('/static/images/index_bg.jpg')">
-<div class="container-fluid">
-    <nav class="navbar navbar-fixed-top" role="navigation">
-        <div class="pull-left">
-            <h3 style="height: 50px; line-height: 50px; margin-left: 15px; color: white;">H 集成开发平台</h3>
+<body style="background-size: cover;background-image: url('/static/images/login_bg.jpg')">
+<div class="container-fluid text-center">
+    <img id="h-login-login-form" src="/static/images/login_form.png" />
+    <div id="h-login-login-input" style="margin-top: -170px;">
+        <div style="margin-left: 14px;">
+            <input name="username" style="width: 150px; background-color: #38B6FF;height: 24px;
+    padding: 6px 12px;    font-size: 12px;    line-height: 1.42857143; font-weight: 600;   color: #f5f5f5;   background-image: none;    border: 1px solid #ccc;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;"/>
         </div>
-        <div  class="pull-right">
-            <div id="h-login-form" class="pull-left" style="display: none; height: 50px; line-height: 50px;">
-                <form id='inputZoon' class="navbar-form navbar-right" style="height: 35px;line-height: 35px;">
-                    <div class="form-group input-group-sm">
-                        <input name="username" value="admin" type="text" class="form-control"
-                               placeholder="账号">
-                    </div>
-                    &nbsp;
-                    &nbsp;
-                    <div class="form-group input-group-sm">
-                        <input name="password" value="hzwy23" type="password" class="form-control"
-                               placeholder="密码">
-                    </div>
-                    &nbsp;
-                    <div class="btn-group btn-group-sm">
-                        <button onclick="LoginSubmit(this)" type="button" class="btn btn-info">登&nbsp;录</button>
-                    </div>
-                </form>
-            </div>
-            <div class="pull-right" style="color: white;">
-                <div class="btn btn-link-sm" style="font-weight: 600;margin-top: 11px;font-size: 12px;" onclick="Hlogin(this)"> 登录</div>
-                <div class="btn btn-link-sm" style="font-weight: 600;margin-top: 11px;font-size: 12px;" onclick="Hregister()"> 注册</div>
-            </div>
+        <div style="margin-top:6px; margin-left: 14px;">
+            <input type="password" name="password" style="width: 150px; background-color: #38b3fb;;height: 24px;
+    padding: 6px 12px;    font-size: 12px; line-height: 1.42857143; font-weight: 600;   color: #f5f5f5;   background-image: none;    border: 1px solid #ccc;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;"/>
         </div>
-    </nav>
-    <div class="row" style=" margin-top: 120px; text-align: center;height: 320px;padding-top: 60px;">
-        <div class="col-sm-4 col-md-4 col-lg-4">
-            <div class="col-sm-8 col-md-8 col-lg-8 col-sm-offset-4" style="color: #FFFFFF;text-align: center;">
-                <span class="icon-4x icon-magnet"></span>
-            </div>
-            &nbsp;
-            <div class="col-sm-8 col-md-8 col-lg-8 col-sm-offset-4">
-                <span style="color: #FFFFFF">
-                    <p>成熟的解决方案</p>
-                    <p>完全开发源代码</p>
-                </span>
-            </div>
-
-        </div>
-        <div class="col-sm-4 col-md-4 col-lg-4">
-            <div class="col-sm-12 col-md-12 col-lg-12" style="color: #FFFFFF;text-align: center;">
-                <span class="icon-4x icon-signal"></span>
-            </div>
-            &nbsp;
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <span style="color: #FFFFFF">
-                    <p>去session化</p>
-                    <p>Metro风格</p>
-                    <p>多主题切换</p>
-                </span>
-            </div>
-        </div>
-        <div class="col-sm-4 col-md-4 col-lg-4">
-            <div class="col-sm-8 col-md-8 col-lg-8" style="color: #FFFFFF;text-align: center;">
-                <span class="icon-4x icon-group"></span>
-            </div>
-
-            <div class="col-sm-8 col-md-8 col-lg-8">
-                &nbsp;
-                <span style="color: #FFFFFF">
-
-                    <p>beego基础开发</p>
-                    <p>丰富的API接口</p>
-                </span>
-            </div>
-
-        </div>
-    </div>
-    <div class="row" style="text-align: center; height: 120px;">
-        <div class="col-sm-4 col-md-4 col-lg-4">
-        </div>
-        <div class="col-sm-4 col-md-4 col-lg-4" align="center">
-            <div onclick="OpenGithub()" class="h-github-source">
-                源码下载
-            </div>
-        </div>
-        <div class="col-sm-4 col-md-4 col-lg-4">
+        <div id="h-login-button-list" style="margin-top: 26px;">
+            <button onclick="LoginSubmit(this)" class="btn btn-xs btn-success" style="margin-left: -16px;">登陆</button>
+            <button class="btn btn-xs btn-info" onclick="clearInputForm(this)" style="margin-left: 6px;">重置</button>
         </div>
     </div>
 </div>
@@ -131,14 +67,22 @@
 <script type="text/javascript" src="/static/js/bootstrap-notify.min.js"></script>
 <script>
     NProgress.start();
+
+    function clearInputForm(obj) {
+        $("#h-login-login-input").find("input[name='username']").val("");
+        $("#h-login-login-input").find("input[name='password']").val("");
+    }
+
     function LoginSubmit(obj){
+        var user = $("#h-login-login-input").find("input[name='username']").val();
+        var psd = $("#h-login-login-input").find("input[name='password']").val();
+
         $.HAjaxRequest({
             url:"/login",
             type:"post",
-            data:$("#inputZoon").serialize(),
+            data:{username:user,password:psd},
             dataType:'json',
             success:function(){
-
                 window.location.href="/HomePage";
             },
             error:function(msg){
@@ -191,23 +135,6 @@
 
     };
 
-    function Hlogin(obj){
-        $("#h-login-form").show();
-        $(obj).hide();
-    };
-
-    function  OpenGithub() {
-        window.open("https://github.com/hzwy23/asofdate")
-    };
-
-    function Hregister(){
-        $.Notify({
-            message:"演示环境，暂不支持用户注册",
-            type:"info"
-        })
-//        window.location.href="/plat/registerPage";
-    };
-
     $(document).keydown(function(e){
         if (e.keyCode == '13'){
             setTimeout(LoginSubmit,200)
@@ -224,13 +151,26 @@
         });
 
         var $body = $(".container-fluid");
-        $body.height(document.documentElement.clientHeight)
-//        $body.css("background-image","url('/static/images/index_bg.png')");
+        $body.height(document.documentElement.clientHeight);
+        var margin_left = document.documentElement.clientWidth/2
+        var margin_top = (document.documentElement.clientHeight - 370)/2
+        if (margin_top < 0) {
+            margin_top = 0
+        }
+        $("#h-login-login-form").css({
+            'margin-top':margin_top
+        });
+
         NProgress.done();
     });
     
     window.onresize = function () {
         $(".container-fluid").height(document.documentElement.clientHeight)
+        var margin_top = (document.documentElement.clientHeight - 369)/2
+        if (margin_top < 0) {
+            margin_top = 10
+        }
+        $("#h-login-login-form").css('margin-top',margin_top);
     };
 
 

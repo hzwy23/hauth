@@ -1,17 +1,27 @@
-{"level":"debug","ts":"2017-04-23 20:57:51","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"error","ts":"2017-04-23 20:57:54","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
-{"level":"debug","ts":"2017-04-23 21:00:39","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"error","ts":"2017-04-23 21:00:42","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
-{"level":"error","ts":"2017-04-23 21:02:19","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
-{"level":"debug","ts":"2017-04-23 22:35:56","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"error","ts":"2017-04-23 22:35:58","caller":"hrpc/auth.go:67","msg":"sql: no rows in result set"}
-{"level":"debug","ts":"2017-04-23 22:40:30","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:49","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:50","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:53","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:54","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:57","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:58","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 22:48:59","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 23:02:20","caller":"models/resourceModels.go:43","msg":"get data from cache"}
-{"level":"debug","ts":"2017-04-23 23:02:22","caller":"models/resourceModels.go:43","msg":"get data from cache"}
+{"level":"debug","ts":"2017-04-28 13:32:23","caller":"controller/responsibility_center.go:431","msg":"masmas_join_1293102"}
+{"level":"debug","ts":"2017-04-28 13:32:23","caller":"controller/responsibility_center.go:431","msg":"masmas_join_1293101"}
+{"level":"debug","ts":"2017-04-28 13:32:28","caller":"controller/responsibility_center.go:431","msg":"masmas_join_1293101"}
+{"level":"error","ts":"2017-04-28 13:32:44","caller":"model/amartGroupConfigModel.go:84","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:32:44","caller":"controller/amartGroupRulesConfigController.go:146","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"debug","ts":"2017-04-28 13:36:02","caller":"controller/responsibility_center.go:431","msg":"masmas_join_129310101"}
+{"level":"debug","ts":"2017-04-28 13:36:02","caller":"controller/responsibility_center.go:431","msg":"masmas_join_129310102"}
+{"level":"debug","ts":"2017-04-28 13:36:03","caller":"controller/responsibility_center.go:431","msg":"masmas_join_129310103"}
+{"level":"debug","ts":"2017-04-28 13:36:03","caller":"controller/responsibility_center.go:431","msg":"masmas_join_1293101"}
+{"level":"error","ts":"2017-04-28 13:39:59","caller":"model/amartGroupConfigModel.go:84","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:39:59","caller":"controller/amartGroupRulesConfigController.go:146","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:49:34","caller":"controller/amartGroupRulesConfigController.go:146","msg":"域信息格式不正确,请联系管理员"}
+{"level":"error","ts":"2017-04-28 13:50:02","caller":"model/amartGroupConfigModel.go:106","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:50:02","caller":"controller/amartGroupRulesConfigController.go:146","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:50:56","caller":"model/amartGroupConfigModel.go:109","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:50:56","caller":"controller/amartGroupRulesConfigController.go:146","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:51:43","caller":"model/amartGroupConfigModel.go:109","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 13:51:43","caller":"controller/amartGroupRulesConfigController.go:146","msg":"Error 1452: Cannot add or update a child row: a foreign key constraint fails (`test`.`ca_amart_group_rules`, CONSTRAINT `fk_ca_amart_group_01` FOREIGN KEY (`group_id`) REFERENCES `ca_amart_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE)"}
+{"level":"error","ts":"2017-04-28 15:19:39","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 15:19:43","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 15:24:58","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 15:25:07","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 20:06:13","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 20:22:53","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 20:23:02","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 22:04:52","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
+{"level":"error","ts":"2017-04-28 22:10:23","caller":"hret/recover.go:10","msg":"system generator panic.runtime error: invalid memory address or nil pointer dereference"}
