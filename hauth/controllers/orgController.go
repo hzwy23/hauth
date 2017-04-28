@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
@@ -16,6 +15,7 @@ import (
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 	"github.com/tealeg/xlsx"
 )
 
@@ -89,7 +89,7 @@ func (this orgController) Get(ctx *context.Context) {
 	}
 
 	domain_id := ctx.Request.FormValue("domain_id")
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
@@ -159,7 +159,7 @@ func (this orgController) Delete(ctx *context.Context) {
 		return
 	}
 
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		cok, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cok.Value)
 		if err != nil {
@@ -397,7 +397,7 @@ func (this orgController) Download(ctx *context.Context) {
 	ctx.ResponseWriter.Header().Set("Content-Type", "application/vnd.ms-excel")
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {

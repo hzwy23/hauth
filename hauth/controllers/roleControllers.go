@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
@@ -13,6 +12,7 @@ import (
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type roleController struct {
@@ -91,7 +91,7 @@ func (this roleController) Get(ctx *context.Context) {
 
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {

@@ -5,11 +5,11 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/crypto/haes"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type UserModel struct {
@@ -72,20 +72,20 @@ func (UserModel) Post(data url.Values, user_id string) (string, error) {
 	userOrgUnitId := data.Get("userOrgUnitId")
 	domain_id := data.Get("domainId")
 
-	if !govalidator.IsWord(userId) {
+	if !validator.IsWord(userId) {
 		return "error_user_id_check", errors.New("error_user_id_check")
 	}
 	//
 
-	if govalidator.IsEmpty(userDesc) {
+	if validator.IsEmpty(userDesc) {
 		return "error_user_name_check", errors.New("error_user_name_check")
 	}
 
-	if govalidator.IsEmpty(password) {
+	if validator.IsEmpty(password) {
 		return "error_user_passwd_check", errors.New("error_user_passwd_check")
 	}
 
-	if govalidator.IsEmpty(surepassword) {
+	if validator.IsEmpty(surepassword) {
 		return "error_passwd_empty", errors.New("error_passwd_empty")
 	}
 
@@ -104,16 +104,16 @@ func (UserModel) Post(data url.Values, user_id string) (string, error) {
 	}
 
 	//
-	if !govalidator.IsEmail(userEmail) {
+	if !validator.IsEmail(userEmail) {
 		return "error_user_email_check", errors.New("error_user_email_check")
 	}
 
-	if !govalidator.IsWord(userOrgUnitId) {
+	if !validator.IsWord(userOrgUnitId) {
 		return "error_user_role_org", errors.New("error_user_role_org")
 	}
 
 	//
-	if !govalidator.IsMobilePhone(userPhone) {
+	if !validator.IsMobilePhone(userPhone) {
 		return "error_user_phone_check", errors.New("error_user_phone_check")
 	}
 
@@ -190,7 +190,7 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 		return nil, err
 	}
 
-	if !govalidator.IsEmpty(org_id) {
+	if !validator.IsEmpty(org_id) {
 
 		orglist, err := this.morg.GetSubOrgInfo(domain_id, org_id)
 		if err != nil {
@@ -205,7 +205,7 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 
 		for _, val := range ret {
 			if _, ok := orgmap[val.Org_unit_id]; ok {
-				if !govalidator.IsEmpty(status_id) {
+				if !validator.IsEmpty(status_id) {
 					if val.User_status_id == status_id {
 						rst = append(rst, val)
 					}
@@ -216,7 +216,7 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 		}
 	} else {
 		for _, val := range ret {
-			if !govalidator.IsEmpty(status_id) {
+			if !validator.IsEmpty(status_id) {
 				if val.User_status_id == status_id {
 					rst = append(rst, val)
 				}
@@ -229,7 +229,7 @@ func (this UserModel) Search(org_id string, status_id string, domain_id string) 
 }
 
 func (this UserModel) ModifyStatus(status_id, user_id string) (string, error) {
-	if !govalidator.IsIn(status_id, "0", "1") {
+	if !validator.IsIn(status_id, "0", "1") {
 		return "error_user_status_empty", errors.New("error_user_status_empty")
 	}
 
@@ -271,23 +271,23 @@ func (this UserModel) Put(data url.Values, modify_user string) (string, error) {
 	email := data.Get("userEmail")
 	user_id := data.Get("userId")
 
-	if !govalidator.IsWord(user_id) {
+	if !validator.IsWord(user_id) {
 		return "error_user_id_empty", errors.New("error_user_id_empty")
 	}
 
-	if govalidator.IsEmpty(user_name) {
+	if validator.IsEmpty(user_name) {
 		return "error_user_desc_empty", errors.New("error_user_desc_empty")
 	}
 
-	if !govalidator.IsEmail(email) {
+	if !validator.IsEmail(email) {
 		return "error_user_email_format", errors.New("error_user_email_format")
 	}
 
-	if !govalidator.IsWord(org_id) {
+	if !validator.IsWord(org_id) {
 		return "error_org_id_format", errors.New("error_org_id_format")
 	}
 
-	if !govalidator.IsMobilePhone(phone) {
+	if !validator.IsMobilePhone(phone) {
 		return "error_user_phone_format", errors.New("error_user_phone_format")
 	}
 

@@ -3,13 +3,13 @@ package controllers
 import (
 	"html/template"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type roleAndResourceController struct {
@@ -154,12 +154,12 @@ func (this roleAndResourceController) HandleResource(ctx *context.Context) {
 	role_id := ctx.Request.FormValue("role_id")
 	type_id := ctx.Request.FormValue("type_id")
 
-	if !govalidator.IsWord(res_id) {
+	if !validator.IsWord(res_id) {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_res_id"))
 		return
 	}
 
-	if !govalidator.IsWord(role_id) {
+	if !validator.IsWord(role_id) {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_role_id_format"))
 		return
 	}

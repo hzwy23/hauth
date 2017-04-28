@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type DomainShareModel struct {
@@ -62,15 +62,15 @@ func (DomainShareModel) Post(data url.Values, user_id string) (string, error) {
 	target_domain_id := data.Get("target_domain_id")
 	auth_level := data.Get("auth_level")
 
-	if !govalidator.IsAlnum(domain_id) {
+	if !validator.IsAlnum(domain_id) {
 		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 	}
 
-	if !govalidator.IsAlnum(target_domain_id) {
+	if !validator.IsAlnum(target_domain_id) {
 		return "as_of_date_domain_target", errors.New("as_of_date_domain_target")
 	}
 
-	if !govalidator.IsIn(auth_level, "1", "2") {
+	if !validator.IsIn(auth_level, "1", "2") {
 		return "as_of_date_domain_mode", errors.New("as_of_date_domain_mode")
 	}
 
@@ -88,11 +88,11 @@ func (DomainShareModel) Update(data url.Values, user_id string) (string, error) 
 	uuid := data.Get("uuid")
 	level := data.Get("auth_level")
 
-	if !govalidator.IsWord(domain_id) {
+	if !validator.IsWord(domain_id) {
 		return "as_of_date_domain_target", errors.New("as_of_date_domain_target")
 	}
 
-	if !govalidator.IsIn(level, "1", "2") {
+	if !validator.IsIn(level, "1", "2") {
 		return "as_of_date_domain_mode", errors.New("as_of_date_domain_mode")
 	}
 

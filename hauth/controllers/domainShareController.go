@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"html/template"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
@@ -17,6 +16,7 @@ import (
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type DomainShareController struct {
@@ -124,7 +124,7 @@ func (this DomainShareController) Get(ctx *context.Context) {
 	domain_id := ctx.Request.FormValue("domain_id")
 	// if the request argument domain_id is empty,
 	// so set domain_id yourself.
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)
 		if err != nil {
@@ -176,7 +176,7 @@ func (this DomainShareController) UnAuth(ctx *context.Context) {
 	ctx.Request.ParseForm()
 	domain_id := ctx.Request.FormValue("domain_id")
 
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "as_of_date_domain_isempty"))
 		return
 	}

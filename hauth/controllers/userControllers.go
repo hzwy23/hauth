@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
@@ -14,6 +13,7 @@ import (
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type userController struct {
@@ -89,7 +89,7 @@ func (this userController) Get(ctx *context.Context) {
 
 	// if the domain_id argument is empty
 	// so query default domain info
-	if govalidator.IsEmpty(domain_id) {
+	if validator.IsEmpty(domain_id) {
 		// get user connection info from cookes.
 		cookie, _ := ctx.Request.Cookie("Authorization")
 		jclaim, err := jwt.ParseJwt(cookie.Value)

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type RoleModel struct {
@@ -70,19 +70,19 @@ func (RoleModel) Post(data url.Values, user_id string) (string, error) {
 	id := utils.JoinCode(domainid, roleid)
 
 	//校验
-	if !govalidator.IsAlnum(roleid) {
+	if !validator.IsAlnum(roleid) {
 		return "error_role_id_format", errors.New("error_role_id_format")
 	}
 	//
-	if govalidator.IsEmpty(rolename) {
+	if validator.IsEmpty(rolename) {
 		return "error_role_desc_empty", errors.New("error_role_desc_empty")
 	}
 
-	if !govalidator.IsWord(domainid) {
+	if !validator.IsWord(domainid) {
 		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 	}
 
-	if !govalidator.IsIn(rolestatus, "0", "1") {
+	if !validator.IsIn(rolestatus, "0", "1") {
 		return "error_role_status", errors.New("error_role_status")
 	}
 
@@ -123,15 +123,15 @@ func (RoleModel) Update(data url.Values, user_id string) (string, error) {
 	Role_name := data.Get("Role_name")
 	Role_status := data.Get("Role_status")
 
-	if !govalidator.IsWord(Role_id) {
+	if !validator.IsWord(Role_id) {
 		return "error_role_id_format", errors.New("error_role_id_format")
 	}
 
-	if govalidator.IsEmpty(Role_name) {
+	if validator.IsEmpty(Role_name) {
 		return "error_role_desc_empty", errors.New("error_role_desc_empty")
 	}
 
-	if !govalidator.IsIn(Role_status, "0", "1") {
+	if !validator.IsIn(Role_status, "0", "1") {
 		return "error_role_status", errors.New("error_role_status")
 	}
 

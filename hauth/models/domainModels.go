@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type DomainMmodel struct {
@@ -99,18 +99,18 @@ func (DomainMmodel) Post(data url.Values, user_id string, user_domain_id string)
 	domain_status := data.Get("domainStatus")
 
 	// validator domain id format
-	if !govalidator.IsAlnum(domain_id) {
+	if !validator.IsAlnum(domain_id) {
 		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 	}
 
 	// validator domain describe format. It does not allow null values
-	if govalidator.IsEmpty(domain_desc) {
+	if validator.IsEmpty(domain_desc) {
 		return "as_of_date_domain_isempty", errors.New("as_of_date_domain_isempty")
 	}
 
 	// validator domain status format
 	// It must be in the 0 and 1
-	if !govalidator.IsIn(domain_status, "0", "1") {
+	if !validator.IsIn(domain_status, "0", "1") {
 		return "as_of_date_domain_status_check", errors.New("as_of_date_domain_status_check")
 	}
 
@@ -162,12 +162,12 @@ func (DomainMmodel) Update(data url.Values, user_id string) (string, error) {
 	domainStatus := data.Get("domainStatus")
 
 	// 校验域名称,不能为空
-	if govalidator.IsEmpty(domainDesc) {
+	if validator.IsEmpty(domainDesc) {
 		return "as_of_date_domain_isempty", errors.New("as_of_date_domain_isempty")
 	}
 
 	// 校验域状态编码,必须是0或者1
-	if !govalidator.IsIn(domainStatus, "0", "1") {
+	if !validator.IsIn(domainStatus, "0", "1") {
 		return "as_of_date_domain_status_check", errors.New("as_of_date_domain_status_check")
 	}
 

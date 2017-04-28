@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
@@ -9,6 +8,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type resourceController struct {
@@ -164,19 +164,19 @@ func (this resourceController) Post(ctx *context.Context) {
 		res_up_id = "-1"
 	}
 
-	if !govalidator.IsWord(res_id) {
+	if !validator.IsWord(res_id) {
 		logs.Error("资源编码必须由1,30位字母或数字组成")
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_res_id"))
 		return
 	}
 
-	if govalidator.IsEmpty(res_name) {
+	if validator.IsEmpty(res_name) {
 		logs.Error("菜单名称不能为空")
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_desc_empty"))
 		return
 	}
 
-	if govalidator.IsEmpty(res_type) {
+	if validator.IsEmpty(res_type) {
 		logs.Error("菜单类别不能为空")
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_type"))
 		return
@@ -185,37 +185,37 @@ func (this resourceController) Post(ctx *context.Context) {
 	switch res_type {
 	case "0":
 		// 首页主菜单信息
-		if !govalidator.IsURI(res_url) {
+		if !validator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
 			return
 		}
 
-		if govalidator.IsEmpty(res_class) {
+		if validator.IsEmpty(res_class) {
 			logs.Error("菜单样式类型不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_class_style"))
 			return
 		}
 
-		if !govalidator.IsURI(res_img) {
+		if !validator.IsURI(res_img) {
 			logs.Error("菜单图标不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_icon"))
 			return
 		}
 
-		if !govalidator.IsNumeric(group_id) {
+		if !validator.IsNumeric(group_id) {
 			logs.Error("菜单分组信息必须是数字")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_group"))
 			return
 		}
 
-		if !govalidator.IsNumeric(sort_id) {
+		if !validator.IsNumeric(sort_id) {
 			logs.Error("菜单排序号必须是数字")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_sort"))
 			return
 		}
 
-		if govalidator.IsEmpty(res_open_type) {
+		if validator.IsEmpty(res_open_type) {
 			logs.Error("打开方式不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_open_type"))
 			return
@@ -229,43 +229,43 @@ func (this resourceController) Post(ctx *context.Context) {
 		}
 	case "1":
 		// 子系统菜单信息
-		if !govalidator.IsURI(res_url) {
+		if !validator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
 			return
 		}
 
-		if !govalidator.IsWord(res_up_id) {
+		if !validator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
 			return
 		}
 
-		if govalidator.IsEmpty(res_class) {
+		if validator.IsEmpty(res_class) {
 			logs.Error("菜单样式类型不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_class_style"))
 			return
 		}
 
-		if !govalidator.IsURI(res_img) {
+		if !validator.IsURI(res_img) {
 			logs.Error("菜单图标不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_icon"))
 			return
 		}
 
-		if !govalidator.IsNumeric(group_id) {
+		if !validator.IsNumeric(group_id) {
 			logs.Error("菜单分组信息必须是数字")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_group"))
 			return
 		}
 
-		if !govalidator.IsNumeric(sort_id) {
+		if !validator.IsNumeric(sort_id) {
 			logs.Error("菜单排序号必须是数字")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_sort"))
 			return
 		}
 
-		if govalidator.IsEmpty(res_open_type) {
+		if validator.IsEmpty(res_open_type) {
 			logs.Error("打开方式不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_open_type"))
 			return
@@ -280,13 +280,13 @@ func (this resourceController) Post(ctx *context.Context) {
 
 	case "2":
 		// 功能按钮信息
-		if !govalidator.IsWord(res_up_id) {
+		if !validator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
 			return
 		}
 
-		if !govalidator.IsURI(res_url) {
+		if !validator.IsURI(res_url) {
 			logs.Error("菜单路由地址不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
 			return
@@ -308,7 +308,7 @@ func (this resourceController) Post(ctx *context.Context) {
 	case "4":
 		// 虚拟节点信息
 		// 功能按钮信息
-		if !govalidator.IsWord(res_up_id) {
+		if !validator.IsWord(res_up_id) {
 			logs.Error("菜单上级编码不能为空")
 			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
 			return
@@ -407,7 +407,7 @@ func (this resourceController) Update(ctx *context.Context) {
 	res_id := ctx.Request.FormValue("res_id")
 	res_name := ctx.Request.FormValue("res_name")
 
-	if govalidator.IsEmpty(res_name) {
+	if validator.IsEmpty(res_name) {
 		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_desc_empty"))
 		return
 	}

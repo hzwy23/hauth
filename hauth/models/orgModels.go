@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type OrgModel struct {
@@ -84,16 +84,16 @@ func (this OrgModel) Update(data url.Values, user_id string) (string, error) {
 		return "as_of_date_no_separator", errors.New("as_of_date_no_separator")
 	}
 
-	if !govalidator.IsWord(org_unit_id) {
+	if !validator.IsWord(org_unit_id) {
 		return "error_org_id_format", errors.New("error_org_id_format")
 	}
 
 	// 校验输入信息
-	if govalidator.IsEmpty(org_unit_desc) {
+	if validator.IsEmpty(org_unit_desc) {
 		return "error_org_id_desc_empty", errors.New("error_org_id_desc_empty")
 	}
 
-	if !govalidator.IsWord(up_org_id) {
+	if !validator.IsWord(up_org_id) {
 		return "error_org_up_id_empty", errors.New("error_org_up_id_empty")
 	}
 
@@ -126,19 +126,19 @@ func (OrgModel) Post(data url.Values, user_id string) (string, error) {
 
 	org_unit_id := utils.JoinCode(domain_id, code_number)
 
-	if !govalidator.IsAlnum(code_number) {
+	if !validator.IsAlnum(code_number) {
 		return "error_org_id_format", errors.New("error_org_id_format")
 	}
 
-	if govalidator.IsEmpty(org_unit_desc) {
+	if validator.IsEmpty(org_unit_desc) {
 		return "error_org_id_desc_empty", errors.New("error_org_id_desc_empty")
 	}
 
-	if !govalidator.IsWord(domain_id) {
+	if !validator.IsWord(domain_id) {
 		return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 	}
 
-	if !govalidator.IsWord(up_org_id) {
+	if !validator.IsWord(up_org_id) {
 		return "error_org_up_id_empty", errors.New("error_org_up_id_empty")
 	}
 
@@ -193,22 +193,22 @@ func (this OrgModel) Upload(data []SysOrgInfo) (string, error) {
 	}
 
 	for _, val := range data {
-		if !govalidator.IsAlnum(val.Code_number) {
+		if !validator.IsAlnum(val.Code_number) {
 			tx.Rollback()
 			return "error_org_id_format", errors.New("机构编码必须由1-30位字母,数字组成")
 		}
 
-		if govalidator.IsEmpty(val.Org_unit_desc) {
+		if validator.IsEmpty(val.Org_unit_desc) {
 			tx.Rollback()
 			return "error_org_id_desc_empty", errors.New("error_org_id_desc_empty")
 		}
 
-		if govalidator.IsEmpty(val.Up_org_id) {
+		if validator.IsEmpty(val.Up_org_id) {
 			tx.Rollback()
 			return "error_org_up_id_empty", errors.New("error_org_up_id_empty")
 		}
 
-		if !govalidator.IsAlnum(val.Domain_id) {
+		if !validator.IsAlnum(val.Domain_id) {
 			tx.Rollback()
 			return "as_of_date_domain_id_check", errors.New("as_of_date_domain_id_check")
 		}

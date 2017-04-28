@@ -1,9 +1,9 @@
 package models
 
 import (
-	"github.com/asaskevich/govalidator"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type HandleLogMode struct {
@@ -62,7 +62,7 @@ func (this HandleLogMode) Get(domain_id, offset, limit string) ([]handleLogs, in
 
 func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handleLogs, error) {
 	var rst []handleLogs
-	if userid != "" && govalidator.IsDate(start) && govalidator.IsDate(end) {
+	if userid != "" && validator.IsDate(start) && validator.IsDate(end) {
 		rows, err := dbobj.Query(sys_rdbms_031, domain_id, userid, start, end)
 		defer rows.Close()
 		if err != nil {
@@ -73,7 +73,7 @@ func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handle
 			logs.Error(err)
 			return nil, err
 		}
-	} else if userid != "" && govalidator.IsDate(start) {
+	} else if userid != "" && validator.IsDate(start) {
 
 		rows, err := dbobj.Query(sys_rdbms_032, domain_id, userid, start)
 		defer rows.Close()
@@ -86,7 +86,7 @@ func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handle
 			logs.Error(err)
 			return nil, err
 		}
-	} else if userid != "" && govalidator.IsDate(end) {
+	} else if userid != "" && validator.IsDate(end) {
 
 		rows, err := dbobj.Query(sys_rdbms_031, domain_id, userid, start, end)
 		defer rows.Close()
@@ -99,7 +99,7 @@ func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handle
 			logs.Error(err)
 			return nil, err
 		}
-	} else if govalidator.IsDate(start) && govalidator.IsDate(end) {
+	} else if validator.IsDate(start) && validator.IsDate(end) {
 		rows, err := dbobj.Query(sys_rdbms_033, domain_id, start, end)
 		defer rows.Close()
 		if err != nil {
@@ -111,7 +111,7 @@ func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handle
 			logs.Error(err)
 			return nil, err
 		}
-	} else if govalidator.IsDate(start) {
+	} else if validator.IsDate(start) {
 		rows, err := dbobj.Query(sys_rdbms_035, domain_id, start, end)
 		defer rows.Close()
 		if err != nil {
@@ -123,7 +123,7 @@ func (this HandleLogMode) Search(domain_id, userid, start, end string) ([]handle
 			logs.Error(err)
 			return nil, err
 		}
-	} else if govalidator.IsDate(end) {
+	} else if validator.IsDate(end) {
 		rows, err := dbobj.Query(sys_rdbms_039, domain_id, start, end)
 		defer rows.Close()
 		if err != nil {

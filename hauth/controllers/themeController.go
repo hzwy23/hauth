@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/asaskevich/govalidator"
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
@@ -9,6 +8,7 @@ import (
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
+	"github.com/hzwy23/validator"
 )
 
 type themeController struct {
@@ -99,12 +99,12 @@ func (this themeController) Put(ctx *context.Context) {
 	res_sort_id := ctx.Request.FormValue("res_sort_id")
 	res_open_type := ctx.Request.FormValue("res_openType")
 
-	if govalidator.IsNull(res_sort_id) {
+	if validator.IsNull(res_sort_id) {
 		res_sort_id = "0"
 	}
 
 	flag, res_type := this.mres.CheckThemeExists(theme_id, res_id)
-	if govalidator.IsIn(res_type, "0", "1", "2") {
+	if validator.IsIn(res_type, "0", "1", "2") {
 		if flag == 0 {
 			// 没有这个主题的配置信息,新增主题信息
 			msg, err := this.mres.Post(theme_id, res_id, res_url, res_class, res_img, res_by_color, res_group_id, res_sort_id, res_open_type)
