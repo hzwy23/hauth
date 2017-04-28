@@ -22,6 +22,22 @@
 
     <script src="/static/nprogress/nprogress.js"></script>
 
+    <style type="text/css">
+        .h-github-source {
+            cursor: pointer;
+            border: #3caff3 solid 1px;
+            height: 40px;
+            line-height: 40px;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 600;
+            width: 240px;
+        }
+        .h-github-source:hover{
+            background-color: #cccccc;
+            color: #0f0f0f;
+        }
+    </style>
 </head>
 <body style="background-size: cover;background-image: url('/static/images/login_bg.jpg')">
 <div class="container-fluid text-center">
