@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
@@ -47,7 +47,7 @@ func (this *domainController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("DomainPage")
+	rst, err := groupcache.GetStaticFile("DomainPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.Get(ctx.Request, "as_of_date_page_not_exist"))
 		return
@@ -379,5 +379,5 @@ func (this *domainController) GetId(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("DomainPage", "./views/hauth/domain_info.tpl")
+	groupcache.RegisterStaticFile("DomainPage", "./views/hauth/domain_info.tpl")
 }

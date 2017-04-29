@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils"
@@ -51,7 +51,7 @@ func (orgController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("AsofdateOrgPage")
+	rst, err := groupcache.GetStaticFile("AsofdateOrgPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -604,5 +604,5 @@ func (this orgController) Upload(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdateOrgPage", "./views/hauth/org_page.tpl")
+	groupcache.RegisterStaticFile("AsofdateOrgPage", "./views/hauth/org_page.tpl")
 }

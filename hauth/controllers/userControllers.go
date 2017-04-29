@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils"
@@ -46,7 +46,7 @@ func (userController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("AsofdasteUserPage")
+	rst, err := groupcache.GetStaticFile("AsofdasteUserPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -521,5 +521,5 @@ func (this userController) GetUserDetails(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdasteUserPage", "./views/hauth/UserInfoPage.tpl")
+	groupcache.RegisterStaticFile("AsofdasteUserPage", "./views/hauth/UserInfoPage.tpl")
 }

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
@@ -47,7 +47,7 @@ func (this *handleLogsController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("AsofdateHandleLogPage")
+	rst, err := groupcache.GetStaticFile("AsofdateHandleLogPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -292,5 +292,5 @@ func (this handleLogsController) SerachLogs(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdateHandleLogPage", "./views/hauth/handle_logs_page.tpl")
+	groupcache.RegisterStaticFile("AsofdateHandleLogPage", "./views/hauth/handle_logs_page.tpl")
 }

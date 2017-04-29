@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
@@ -36,7 +36,7 @@ func (this helpController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("AsofdateHelpPage")
+	rst, err := groupcache.GetStaticFile("AsofdateHelpPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -45,5 +45,5 @@ func (this helpController) Page(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdateHelpPage", "./views/help/auth_help.tpl")
+	groupcache.RegisterStaticFile("AsofdateHelpPage", "./views/help/auth_help.tpl")
 }

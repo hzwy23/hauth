@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 )
@@ -23,7 +23,7 @@ import (
 //   '200':
 //     description: all domain information
 func IndexPage(ctx *context.Context) {
-	rst, err := hcache.GetStaticFile("AsofdateIndexPage")
+	rst, err := groupcache.GetStaticFile("AsofdateIndexPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -32,5 +32,5 @@ func IndexPage(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdateIndexPage", "./views/login.tpl")
+	groupcache.RegisterStaticFile("AsofdateIndexPage", "./views/login.tpl")
 }

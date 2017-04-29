@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
@@ -34,7 +34,7 @@ func (this swaggerController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("SwaggerPage")
+	rst, err := groupcache.GetStaticFile("SwaggerPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.Get(ctx.Request, "as_of_date_page_not_exist"))
 		return
@@ -44,5 +44,5 @@ func (this swaggerController) Page(ctx *context.Context) {
 }
 
 func init() {
-	hcache.RegisterStaticFile("SwaggerPage", "./views/help/swagger_index.html")
+	groupcache.RegisterStaticFile("SwaggerPage", "./views/help/swagger_index.html")
 }

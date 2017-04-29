@@ -275,3 +275,27 @@
   translation: "修改用户密码失败"
 - id: error_user_modify_info
   translation: "修改用户信息失败"
+- id: error_resource_forbid_system_resource  
+  translation: "禁止删除系统内置菜单信息"
+- id: error_resource_query                  
+  translation: "查询菜单资源信息失败"
+- id: error_resource_begin                  
+  translation: "初始化事物处理失败"
+- id: error_resource_role_relation          
+  translation: "删除资源与角色关系失败"
+- id: error_resource_theme_relation         
+  translation: "删除资源与主题关系失败"
+- id: error_resource_delete                 
+  translation: "删除菜单资源信息失败"
+- id: error_resource_commit                 
+  translation: "提交事务处理失败"
+- id: error_resource_queryType              
+  translation: "获取资源类型信息失败"
+- id: error_resource_addTheme               
+  translation: "新增主题风格信息失败"
+- id: error_resource_add
+  translation: "新增菜单资源失败,菜单编码重复"
+- id: error_resource_theme_add
+  translation: "新增菜单资源信息失败,写入用户主题信息失败"
+- id: error_resource_auth_to_admin
+  translation: "授权菜单资源给admin用户失败"

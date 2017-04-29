@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
@@ -49,7 +49,7 @@ func (this *userRolesController) Page(ctx *context.Context) {
 	}
 
 	// According to the key get the value from the groupCache system
-	rst, err := hcache.GetStaticFile("AuthorityPage")
+	rst, err := groupcache.GetStaticFile("AuthorityPage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.Get(ctx.Request, "as_of_date_page_not_exist"))
 		return
@@ -264,5 +264,5 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 
 func init() {
 	// Registered in the static page to the groupCache system
-	hcache.RegisterStaticFile("AuthorityPage", "./views/hauth/sys_batch_page.tpl")
+	groupcache.RegisterStaticFile("AuthorityPage", "./views/hauth/sys_batch_page.tpl")
 }

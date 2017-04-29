@@ -1,4 +1,4 @@
-package hcache
+package groupcache
 
 import (
 	"errors"
@@ -13,7 +13,7 @@ import (
 // 将系统中使用到的静态html文件缓存到内存中,
 // 下次在打开这个页面时,就不需要从磁盘中读取,而是直接冲缓存中加载.
 // example:
-// hcache.RegisterStaticFile(key,value)
+// groupcache.RegisterStaticFile(key,value)
 // 每一个key只能注册一次,否则会panic.
 
 var groupctx groupcache.Context

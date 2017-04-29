@@ -2,13 +2,12 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/validator"
 )
 
 type resourceController struct {
@@ -41,7 +40,7 @@ func (resourceController) Page(ctx *context.Context) {
 		return
 	}
 
-	rst, err := hcache.GetStaticFile("AsofdateResourcePage")
+	rst, err := groupcache.GetStaticFile("AsofdateResourcePage")
 	if err != nil {
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
 		return
@@ -143,188 +142,15 @@ func (this resourceController) Post(ctx *context.Context) {
 		return
 	}
 
-	theme_id := ctx.Request.FormValue("theme_id")
-	res_type := ctx.Request.FormValue("res_type")
-	res_id := ctx.Request.FormValue("res_id")
-	res_name := ctx.Request.FormValue("res_name")
-	res_up_id := ctx.Request.FormValue("res_up_id")
-	res_url := ctx.Request.FormValue("res_url")
-	res_class := ctx.Request.FormValue("res_class")
-	res_img := ctx.Request.FormValue("res_img")
-	res_bg_color := ctx.Request.FormValue("res_bg_color")
-	group_id := ctx.Request.FormValue("group_id")
-	sort_id := ctx.Request.FormValue("sort_id")
-	res_open_type := ctx.Request.FormValue("res_open_type")
+	form := ctx.Request.Form
 
-	res_attr := "1"
-	if res_type == "0" || res_type == "4" {
-		res_attr = "0"
-	}
-	if res_type == "0" {
-		res_up_id = "-1"
-	}
-
-	if !validator.IsWord(res_id) {
-		logs.Error("资源编码必须由1,30位字母或数字组成")
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_res_id"))
+	msg, err := this.models.Post(form)
+	if err != nil {
+		logs.Error(err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
-
-	if validator.IsEmpty(res_name) {
-		logs.Error("菜单名称不能为空")
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_desc_empty"))
-		return
-	}
-
-	if validator.IsEmpty(res_type) {
-		logs.Error("菜单类别不能为空")
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_type"))
-		return
-	}
-
-	switch res_type {
-	case "0":
-		// 首页主菜单信息
-		if !validator.IsURI(res_url) {
-			logs.Error("菜单路由地址不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
-			return
-		}
-
-		if validator.IsEmpty(res_class) {
-			logs.Error("菜单样式类型不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_class_style"))
-			return
-		}
-
-		if !validator.IsURI(res_img) {
-			logs.Error("菜单图标不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_icon"))
-			return
-		}
-
-		if !validator.IsNumeric(group_id) {
-			logs.Error("菜单分组信息必须是数字")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_group"))
-			return
-		}
-
-		if !validator.IsNumeric(sort_id) {
-			logs.Error("菜单排序号必须是数字")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_sort"))
-			return
-		}
-
-		if validator.IsEmpty(res_open_type) {
-			logs.Error("打开方式不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_open_type"))
-			return
-		}
-
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id, res_open_type)
-		if err != nil {
-			logs.Error(err)
-			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_resource_exec"), err)
-			return
-		}
-	case "1":
-		// 子系统菜单信息
-		if !validator.IsURI(res_url) {
-			logs.Error("菜单路由地址不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
-			return
-		}
-
-		if !validator.IsWord(res_up_id) {
-			logs.Error("菜单上级编码不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
-			return
-		}
-
-		if validator.IsEmpty(res_class) {
-			logs.Error("菜单样式类型不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_class_style"))
-			return
-		}
-
-		if !validator.IsURI(res_img) {
-			logs.Error("菜单图标不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_icon"))
-			return
-		}
-
-		if !validator.IsNumeric(group_id) {
-			logs.Error("菜单分组信息必须是数字")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_group"))
-			return
-		}
-
-		if !validator.IsNumeric(sort_id) {
-			logs.Error("菜单排序号必须是数字")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_sort"))
-			return
-		}
-
-		if validator.IsEmpty(res_open_type) {
-			logs.Error("打开方式不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_open_type"))
-			return
-		}
-
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id, res_open_type)
-		if err != nil {
-			logs.Error(err)
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_exec"), err)
-			return
-		}
-
-	case "2":
-		// 功能按钮信息
-		if !validator.IsWord(res_up_id) {
-			logs.Error("菜单上级编码不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
-			return
-		}
-
-		if !validator.IsURI(res_url) {
-			logs.Error("菜单路由地址不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_route_uri"))
-			return
-		}
-		sort_id = "0"
-		res_img = ""
-		group_id = ""
-		res_class = ""
-		res_bg_color = ""
-		res_open_type = ""
-		res_open_type = ""
-		err := this.models.Post(res_id, res_name, res_attr, res_up_id, res_type, theme_id, res_url, res_bg_color, res_class, group_id, res_img, sort_id, res_open_type)
-		if err != nil {
-			logs.Error(err)
-			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_resource_exec"), err)
-			return
-		}
-
-	case "4":
-		// 虚拟节点信息
-		// 功能按钮信息
-		if !validator.IsWord(res_up_id) {
-			logs.Error("菜单上级编码不能为空")
-			hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_up_id"))
-			return
-		}
-
-		err := this.models.PostButton(res_id, res_name, res_attr, res_up_id, res_type)
-		if err != nil {
-			logs.Error(err)
-			hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, "error_resource_exec"), err)
-			return
-		}
-	default:
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_type"))
-		return
-	}
-	hret.Success(ctx.ResponseWriter, "success")
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 
 }
 
@@ -407,20 +233,15 @@ func (this resourceController) Update(ctx *context.Context) {
 	res_id := ctx.Request.FormValue("res_id")
 	res_name := ctx.Request.FormValue("res_name")
 
-	if validator.IsEmpty(res_name) {
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_desc_empty"))
-		return
-	}
-
-	err := this.models.Update(res_id, res_name)
+	msg, err := this.models.Update(res_id, res_name)
 	if err != nil {
 		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_resource_update"), err)
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, msg), err)
 		return
 	}
-	hret.Success(ctx.ResponseWriter, "success")
+	hret.Success(ctx.ResponseWriter, i18n.Success(ctx.Request))
 }
 
 func init() {
-	hcache.RegisterStaticFile("AsofdateResourcePage", "./views/hauth/res_info_page.tpl")
+	groupcache.RegisterStaticFile("AsofdateResourcePage", "./views/hauth/res_info_page.tpl")
 }

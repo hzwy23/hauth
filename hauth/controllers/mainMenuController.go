@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/hzwy23/asofdate/hauth/hcache"
+	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/models"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
@@ -62,13 +62,13 @@ func SubSystemEntry(ctx *context.Context) {
 		return
 	}
 
-	key := hcache.GenSha1Key(id, jclaim.User_id, url)
+	key := groupcache.GenSha1Key(id, jclaim.User_id, url)
 
-	if !hcache.FileIsExist(key) {
-		hcache.RegisterStaticFile(key, url)
+	if !groupcache.FileIsExist(key) {
+		groupcache.RegisterStaticFile(key, url)
 	}
 
-	tpl, err := hcache.GetStaticFile(key)
+	tpl, err := groupcache.GetStaticFile(key)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 404, i18n.PageNotFound(ctx.Request))
