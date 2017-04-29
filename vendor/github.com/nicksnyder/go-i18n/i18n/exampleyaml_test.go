@@ -1,4 +1,4 @@
-package i18n_test
+package i18n
 
 import (
 	"fmt"

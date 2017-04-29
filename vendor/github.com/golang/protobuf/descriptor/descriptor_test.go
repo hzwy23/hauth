@@ -1,4 +1,4 @@
-package descriptor_test
+package descriptor
 
 import (
 	"fmt"

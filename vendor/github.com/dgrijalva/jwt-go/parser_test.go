@@ -1,4 +1,4 @@
-package jwt_test
+package jwt
 
 import (
 	"crypto/rsa"

@@ -1,4 +1,4 @@
-package yaml_test
+package yaml
 
 import (
 	. "gopkg.in/check.v1"

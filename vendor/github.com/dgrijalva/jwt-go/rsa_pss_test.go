@@ -1,6 +1,6 @@
 // +build go1.4
 
-package jwt_test
+package jwt
 
 import (
 	"crypto/rsa"

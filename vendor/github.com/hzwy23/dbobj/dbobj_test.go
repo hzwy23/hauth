@@ -1,4 +1,4 @@
-package dbobj_test
+package dbobj
 
 import (
 	"database/sql"

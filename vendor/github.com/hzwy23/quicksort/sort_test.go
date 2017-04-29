@@ -1,4 +1,4 @@
-package quicksort_test
+package quicksort
 
 import (
 	"fmt"
