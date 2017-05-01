@@ -9,7 +9,7 @@ import (
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/validator"
+	"github.com/hzwy23/utils/validator"
 )
 
 type roleAndResourceController struct {

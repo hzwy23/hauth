@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/validator"
+	"github.com/hzwy23/utils/validator"
 )
 
 type HandleLogMode struct {

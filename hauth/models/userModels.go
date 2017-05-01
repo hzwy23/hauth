@@ -9,7 +9,7 @@ import (
 	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/crypto/haes"
 	"github.com/hzwy23/utils/logs"
-	"github.com/hzwy23/validator"
+	"github.com/hzwy23/utils/validator"
 )
 
 type UserModel struct {
