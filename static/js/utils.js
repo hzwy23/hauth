@@ -1319,57 +1319,6 @@ var Hutils = {
                 var event = getEvent()
                 event.stopPropagation()
             }
-        })
-
-        $("div").scroll(function() {
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-            if (showUiStatus != "none"){
-                var ptop = $(obj).offset().top
-                var pleft = $(obj).offset().left;
-                var tp = ptop+$(obj).find(".HshowSelectValue").height()
-                $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-            }
-        });
-
-        $(document).scroll(function() {
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-            if (showUiStatus != "none"){
-                var ptop = $(obj).offset().top
-                var pleft = $(obj).offset().left;
-                var tp = ptop+$(obj).find(".HshowSelectValue").height()
-                $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-            }
-        });
-
-        $("body").scroll(function() {
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-            if (showUiStatus != "none"){
-                var ptop = $(obj).offset().top
-                var pleft = $(obj).offset().left;
-                var tp = ptop+$(obj).find(".HshowSelectValue").height()
-                $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-            }
         });
 
         $(obj).find(".HshowSelectValue").on('click',function(){
@@ -1387,10 +1336,10 @@ var Hutils = {
                     "border-color":"#888 transparent transparent transparent",
                     "border-width":"5px 4px 0px 4px",
                 })
+                $(obj).find("ul li").show();
                 var w = $(obj).width()
                 $(obj).find(".HselectShowAreaHuangZhanWei").css("min-width",w)
                 $(obj).find(".HselectShowAreaHuangZhanWei input").css("min-width",w-12)
-
 
                 var nextObj = $(this).next()
                 $(nextObj).find("input").val("")
@@ -1403,25 +1352,25 @@ var Hutils = {
                     "border-width":"0px 4px 5px 4px"
                 })
 
-                var ptop = $(obj).offset().top
-                var pleft = $(obj).offset().left;
-                var tp = ptop+$(this).height()
-                var ulHeight = $(nextObj).height()
-                if (tp+ulHeight > document.body.scrollHeight){
-                    var addHeight = tp+ulHeight+30 - document.body.scrollHeight
-                    var appdiv = document.createElement("div")
-                    $(appdiv).css("height",addHeight).addClass("Hzwy23FillBodyForSelectItems")
-                    $("body").append(appdiv)
-                    var st = $("body").scrollTop();
-                    $("body").animate({scrollTop:st+addHeight},500)
-                }
-                $(obj).find(".HselectShowAreaHuangZhanWei").offset({
-                    top:tp,
-                    left:pleft
-                })
+                // var ptop = $(obj).offset().top
+                // var pleft = $(obj).offset().left;
+                // var tp = ptop+$(this).height()
+                // var ulHeight = $(nextObj).height()
+                // if (tp+ulHeight > document.body.scrollHeight){
+                //     var addHeight = tp+ulHeight+30 - document.body.scrollHeight
+                //     var appdiv = document.createElement("div")
+                //     $(appdiv).css("height",addHeight).addClass("Hzwy23FillBodyForSelectItems")
+                //     $("body").append(appdiv)
+                //     var st = $("body").scrollTop();
+                //     $("body").animate({scrollTop:st+addHeight},500)
+                // }
+                // $(obj).find(".HselectShowAreaHuangZhanWei").offset({
+                //     top:tp,
+                //     left:pleft
+                // })
 
             }else{
-                $(obj).find("li").closest("div").hide();
+                $(obj).find("ul").closest("div").hide();
                 $(obj).find(".HshowSelectValue i").css({
                     "border-color":"#888 transparent transparent transparent",
                     "border-width":"5px 4px 0px 4px"
@@ -1434,7 +1383,7 @@ var Hutils = {
         })
 
         $(document).on('click',function(){
-            $(obj).find("li").closest("div").hide();
+            $(obj).find("ul").closest("div").hide();
             $(obj).find(".HshowSelectValue i").css({
                 "border-color":"#888 transparent transparent transparent",
                 "border-width":"5px 4px 0px 4px"
@@ -1457,8 +1406,8 @@ var Hutils = {
     };
 
     $.fn.HtreeSelect = function(param){
-        var sel = this;
-        var obj = document.createElement("div");
+        var sel = this
+        var obj = document.createElement("div")
 
         if ( $(sel).attr("hselect") == "true"){
             // 重复初始化Hselect
@@ -1510,7 +1459,7 @@ var Hutils = {
 
             attr: false,
 
-            nodeSelect: false,
+            nodeSelect: true,
 
         };
 
@@ -1652,13 +1601,13 @@ var Hutils = {
                         if ( __DEFAULT.attr==true ) {
                             opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
                                 '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-close" style="color: #ccb008;"></i>' +
+                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
                                 '</hzw><input name="select_check" type="checkbox" style="width:20px; margin-top: 0px;">' +
                                 '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
                         } else {
-                            opt+='<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
                                 '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-close" style="color: #ccb008;"></i>' +
+                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
                                 '</hzw><input name="select_check" type="checkbox" style="width:20px; margin-top: 0px;">' +
                                 '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
                         }
@@ -1674,15 +1623,15 @@ var Hutils = {
                     } else {
                         //节点
                         if (__DEFAULT.attr == true) {
-                            opt+='<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
                                 '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-close" style="color: #ccb008;"></i>' +
+                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
                                 '</hzw>' +
                                 '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
                         } else {
-                            opt+='<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
+                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
                                 '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-close" style="color: #ccb008;"></i>' +
+                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
                                 '</hzw>' +
                                 '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
                         }
@@ -1946,7 +1895,7 @@ var Hutils = {
                 event.stopPropagation()
             }
 
-            if ( __DEFAULT.attr == true && __DEFAULT.nodeSelect == true && $(this).attr("data-attr") != "0"){
+            if ( __DEFAULT.attr == true && __DEFAULT.nodeSelect == false && $(this).attr("data-attr") != "0"){
                 showOrHide($(this))
                 return
             }
@@ -2135,12 +2084,127 @@ var Hutils = {
 (function($){
 
     $.extend({
+        Notify:function(param){
+
+            var DEFAULT = {
+                icon:"icon-ok",
+                caption:"",
+                title:$.i18n.prop("notify_header_title"),
+                message:$.i18n.prop("notify_header_success"),
+                content:"",
+                type:"success",
+                position:null,
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+            };
+
+            $.extend(true,DEFAULT,param);
+            switch (DEFAULT.type){
+                case "success":DEFAULT.icon = "icon-ok";break;
+                case "danger":DEFAULT.icon = "icon-remove" ; break;
+                case "info" : DEFAULT.icon = "icon-bullhorn";break;
+                case "primary": DEFAULT.icon = "icon-bell" ; break;
+                case "warning": DEFAULT.icon = "icon-warning-sign"; break;
+                default :
+                    DEFAULT.icon = "icon-bullhorn"
+            }
+
+            $.notify({
+                // options
+                icon: DEFAULT.icon,
+                title: DEFAULT.title,
+                message:DEFAULT.message,
+                url: '',
+                target: '_blank'
+            },{
+                // settings
+                element: 'body',
+                position: DEFAULT.position,
+                type: DEFAULT.type,
+                allow_dismiss: true,
+                newest_on_top: true,
+                showProgressbar: false,
+                placement:DEFAULT.placement,
+                offset: 20,
+                spacing: 10,
+                z_index: 2147483647,
+                delay: 3000,
+                timer: 1000,
+                url_target: '_blank',
+                mouse_over: null,
+                animate: {
+                    enter: 'animated fadeInDown',
+                    exit: 'animated fadeOutUp'
+                },
+                onShow: null,
+                onShown: null,
+                onClose: null,
+                onClosed: null,
+                icon_type: 'class',
+            });
+        },
+        HAjaxRequest:function(a){
+            var b = {
+                type:"get",
+                url:"",
+                data:"",
+                cache:false,
+                async:false,
+                dataType:"json",
+                error:function(m) {
+                    var msg = JSON.parse(m.responseText);
+                    jQuery.Notify({
+                        title: $.i18n.prop("notify_header_title"),
+                        message: msg.error_msg,
+                        type: "danger",
+                    });
+                    console.log("return message is :",msg);
+                    console.log("return code is :",msg.error_code);
+                    console.log("return details error info:",msg.error_details);
+                    console.log("return version: ",msg.version);
+                },
+                success:function(b){
+                }
+            };
+            $.extend(!0,b,a);
+            "delete"==b.type.toLowerCase()?(
+                b.data._method="DELETE",
+                    $.ajax({
+                        type:"post",
+                        url:b.url,
+                        cache:b.cache,
+                        async:b.async,
+                        data:b.data,
+                        dataType:b.dataType,
+                        error:b.error,
+                        success:function(a){
+                            b.success(a)}
+                    })
+            ):$.ajax({
+                type:b.type,
+                url:b.url,
+                cache:b.cache,
+                async:b.async,
+                data:b.data,
+                dataType:b.dataType,
+                error:b.error,
+                success: function(da) {
+                    b.success(da)
+                },
+            })
+        },
         Hdownload:function (params) {
             var __DEFAULT = {
                 url:"",
                 name:"导出数据",
             };
             $.extend(true,__DEFAULT,params);
+
+            if (__DEFAULT.name == "" || __DEFAULT.name==undefined) {
+                __DEFAULT.name = "导出参数信息"
+            }
 
             var expname = __DEFAULT.name+".xlsx";
 
@@ -2271,7 +2335,7 @@ var Hutils = {
                 callback : "",
                 preprocess: "",
                 width:"800px",
-                height:"360px ",
+                height:"494px ",
 
                 header:"弹框信息",
                 headerHeight:"40px",
@@ -2647,119 +2711,173 @@ var Hutils = {
                 $(getObj(hmode,"modal-header")).css({"cursor":"default"})
             })
         },
-        /*
-         * 这个函数，用户显示提示框。
-         * */
-        Notify:function(param){
+        Hworkflow:function (param) {
+            var __DEFAULT = {
+                callback : "",
+                preprocess: "",
+                width:"800px",
+                height:"494px ",
 
-            var DEFAULT = {
-                icon:"icon-ok",
-                caption:"",
-                title:$.i18n.prop("notify_header_title"),
-                message:$.i18n.prop("notify_header_success"),
-                content:"",
-                type:"success",
-                position:null,
-                placement: {
-                    from: "top",
-                    align: "center"
-                },
+                header:"弹框信息",
+                headerHeight:"40px",
+                headerFontSize:"14px",
+                headerFontColor:"",
+
+                submitDesc:"提交",
+                body:"",
+
+                footer: "",
             };
 
-            $.extend(true,DEFAULT,param);
-            switch (DEFAULT.type){
-                case "success":DEFAULT.icon = "icon-ok";break;
-                case "danger":DEFAULT.icon = "icon-remove" ; break;
-                case "info" : DEFAULT.icon = "icon-bullhorn";break;
-                case "primary": DEFAULT.icon = "icon-bell" ; break;
-                case "warning": DEFAULT.icon = "icon-warning-sign"; break;
-                default :
-                    DEFAULT.icon = "icon-bullhorn"
+            $.extend(true,__DEFAULT,param);
+            if (__DEFAULT.footer=="" || __DEFAULT.footer == undefined) {
+                $(__DEFAULT.body).find(".hzwy23-page").each(function (index, element) {
+                    index = index + 1
+                    if (index > 1) {
+                        __DEFAULT.footer += "&nbsp;&nbsp;--&nbsp;<button class='btn btn-info' style='border-radius: 15px;'>"+index+"</button>"
+                    } else {
+                        __DEFAULT.footer += "<button class='btn btn-info' style='border-radius: 15px;'>"+index+"</button>"
+                    }
+                });
+            }
+            //初始化弹框主体
+            function init(){
+                var mframe='<div class="modal-dialog">'+
+                    '<div class="modal-content h-modal-content" style="width: '+__DEFAULT.width+'; height: '+__DEFAULT.height+';">'+
+                    '<div class="modal-header h-modal-header" style="height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; padding: 0px;">'+
+                    '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="height: '+__DEFAULT.headerHeight+'; line-height: '+__DEFAULT.headerHeight+'; width: 30px; padding-top: 2px;">×</button>'+
+                    '<h4 class="modal-title" style="margin-left: 15px;height: '+__DEFAULT.headerFontSize+';color: '+__DEFAULT.headerFontColor+'; line-height: '+__DEFAULT.headerHeight+';font-weight: 600; font-size: '+__DEFAULT.headerFontSize+'">'+__DEFAULT.header+'</h4>'+
+                    '</div>'+
+                    '<div class="modal-body" style="width: '+__DEFAULT.width+'; overflow-y: auto">'+__DEFAULT.body+'</div>'+
+                    '<div class="modal-footer btn-group-sm" style="text-align: center;">'+__DEFAULT.footer+
+                    '<button type="button" class="btn btn-primary submit pull-right"><i class="icon-ok"></i>&nbsp;'+__DEFAULT.submitDesc+'</button>'+
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                return mframe;
+            };
+
+            //显示弹出框
+            function showModal(mframe){
+                var hmod=document.createElement("div");
+                $(hmod).addClass("modal fade").attr({
+                    "tabindex":"-1",
+                    "role":"dialog",
+                    "aria-labelledby":"myModalLabel",
+                    "aria-hidden":"true",
+                })
+                hmod.innerHTML=mframe;
+                document.body.appendChild(hmod);
+                $(hmod).modal({backdrop:false});
+                $(hmod).modal("show");
+                return hmod
+            };
+
+            //根据类获取对象实例
+            function getObj(mod,className,typeObj){
+                if (typeof typeObj == "undefined"){
+                    typeObj = "div"
+                }
+                var obj = {}
+                $(mod).find(typeObj).each(function(index,element){
+                    if ($(element).hasClass(className)){
+                        obj = element
+                    }
+                })
+                return obj
+            };
+
+            //调节body高度和宽度
+            function modifyBodyHeightAndWidth(mod){
+                var headerObj = getObj(mod,"modal-header")
+                var contentObj = getObj(mod,"modal-content")
+                var bodyObj = getObj(hmode,"modal-body")
+                var headHeight = $(headerObj).height()
+                var contentHeight = $(contentObj).height()
+
+                $(bodyObj).css("height",contentHeight-headHeight-65)
+                $(bodyObj).css("width","-=4")
+            };
+
+            //modify location
+            function modifyLocation(mod){
+                var ww = $(window).width()
+                var wh = $(window).height();
+                var mw = $(getObj(mod,"modal-content")).width()
+                var mh = $(getObj(mod,"modal-content")).height()
+                //var modifyY = (wh - 2*mh)/2
+                var modifyX = (ww - mw)/2
+                $(getObj(mod,"modal-content")).offset({
+                    left:modifyX
+                })
+            };
+
+            //
+            var mframe =  init();
+            var hmode = showModal(mframe);
+            modifyBodyHeightAndWidth(hmode);
+            modifyLocation(hmode);
+            //close modal when click close button in right header
+            $(getObj(hmode,"modal-header")).find("button").on("click",function(){
+                $(hmode).remove();
+            });
+
+
+            // preprocess function
+            if (typeof  __DEFAULT.preprocess == "function"){
+                __DEFAULT.preprocess(hmode)
             }
 
-            $.notify({
-                // options
-                icon: DEFAULT.icon,
-                title: DEFAULT.title,
-                message:DEFAULT.message,
-                url: '',
-                target: '_blank'
-            },{
-                // settings
-                element: 'body',
-                position: DEFAULT.position,
-                type: DEFAULT.type,
-                allow_dismiss: true,
-                newest_on_top: true,
-                showProgressbar: false,
-                placement:DEFAULT.placement,
-                offset: 20,
-                spacing: 10,
-                z_index: 2147483647,
-                delay: 3000,
-                timer: 1000,
-                url_target: '_blank',
-                mouse_over: null,
-                animate: {
-                    enter: 'animated fadeInDown',
-                    exit: 'animated fadeOutUp'
-                },
-                onShow: null,
-                onShown: null,
-                onClose: null,
-                onClosed: null,
-                icon_type: 'class',
-            });
-        },
-        HAjaxRequest:function(a){
-            var b = {
-                type:"get",
-                url:"",
-                data:"",
-                cache:false,
-                async:false,
-                dataType:"json",
-                error:function(m) {
-                    var msg = JSON.parse(m.responseText);
-                    jQuery.Notify({
-                        title: $.i18n.prop("notify_header_title"),
-                        message: msg.error_msg,
-                        type: "danger",
+            $(getObj(hmode,"modal-footer")).find("button").on("click",function(){
+                if (!$(this).hasClass("submit")) {
+                    var text = $(this).html();
+                    $(getObj(hmode,"modal-body")).find(".hzwy23-page").each(function (index, element) {
+                        var index = index + 1;
+                        if (index == text) {
+                            $(element).show();
+                        } else {
+                            $(element).hide();
+                        }
                     });
-                    console.log("return message is :",msg);
-                    console.log("return code is :",msg.error_code);
-                    console.log("return details error info:",msg.error_details);
-                    console.log("return version: ",msg.version);
-                },
-                success:function(b){
+                } else {
+                    __DEFAULT.callback(hmode );
                 }
+            });
+
+
+            // 移除文本选中状态
+            var d = "getSelection" in window?function(){
+                window.getSelection().removeAllRanges()
+            }:function(){
+                document.selection.empty()
             };
-            $.extend(!0,b,a);
-            "delete"==b.type.toLowerCase()?(
-                b.data._method="DELETE",
-                    $.ajax({
-                        type:"post",
-                        url:b.url,
-                        cache:b.cache,
-                        async:b.async,
-                        data:b.data,
-                        dataType:b.dataType,
-                        error:b.error,
-                        success:function(a){
-                            b.success(a)}
-                    })
-            ):$.ajax({
-                type:b.type,
-                url:b.url,
-                cache:b.cache,
-                async:b.async,
-                data:b.data,
-                dataType:b.dataType,
-                error:b.error,
-                success: function(da) {
-                    b.success(da)
-                },
+
+            // 绑定拖动效果
+            var f=0,c=0,e=0,b=0,a=0;
+            $(getObj(hmode,"modal-header")).bind("mousemove",function(h){
+                if(a==1){
+                    f=h.pageX-e;
+                    c=h.pageY-b;
+                    if(c<=0){
+                        c=0
+                    }
+                    $(this).parent().offset({left:f,top:c})
+                }
+            }).bind("mousedown",function(h){
+                d();
+                e=h.pageX-$(this).parent().offset().left;
+                b=h.pageY-$(this).parent().offset().top;
+                a=1;
+                $(getObj(hmode,"modal-header")).css({"cursor":"move"})}
+            ).bind("mouseup",function(h){
+                $(getObj(hmode,"modal-header")).css({"cursor":"default"});
+                a=0;
+                e=0;
+                b=0
+            }).bind("mouseleave",function(h){
+                a=0;
+                $(getObj(hmode,"modal-header")).css({"cursor":"default"})
             })
-        },
+        }
     })
 }(jQuery));
