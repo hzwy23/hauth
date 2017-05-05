@@ -1,10 +1,14 @@
-**如果觉得项目还不错,请Star一个, 项目在不断的添加新动能,如需稳定版本,请在release中获取.**
+**项目在不断的添加新动能,如需稳定版本,请在release中获取.**
 
 [Asofdate Project Release](https://github.com/hzwy23/asofdate/releases)
 
+## golang版本要求
+```
+go sdk >= 1.8
+```
+
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
 ```golang
-go 版本：1.70以及以上版本
 go get github.com/hzwy23/asofdate
 #上边命令,将会在GOPATH/bin目录中生成asofate可执行文件,由于系统运行需要配置文件和静态页面
 #所系请将GOPATH/bin的asofdate可执行文件,复制到$GOPATH/src/github.com/hzwy23/asofdate目录中
@@ -130,5 +134,3 @@ github账号 |
 cp542524698 |
 xingyuejun | 
 hzwy23 |
-
-**如果觉得项目还不错,请Star一个**
