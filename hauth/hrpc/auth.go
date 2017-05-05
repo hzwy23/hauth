@@ -3,10 +3,12 @@ package hrpc
 // hrpc package
 // this package provide permissions related function
 import (
+	"net/http"
+
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/jwt"
 	"github.com/hzwy23/utils/logs"
-	"net/http"
+	"github.com/hzwy23/utils/validator"
 )
 
 // 校验用户是否有权限访问当前API
@@ -40,6 +42,10 @@ func BasicAuth(r *http.Request) bool {
 // 如果返回true,表示用户有权限
 // 返回false,表示用户没有权限
 func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
+	if validator.IsEmpty(domain_id) {
+		return false
+	}
+
 	level := checkDomainAuthLevel(req, domain_id)
 	switch pattern {
 	case "r":
