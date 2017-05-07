@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/hzwy23/asofdate/hauth/groupcache"
 	"github.com/hzwy23/asofdate/hauth/models"
+	"github.com/hzwy23/utils/crypto/sha1"
 	"github.com/hzwy23/utils/hret"
 	"github.com/hzwy23/utils/i18n"
 	"github.com/hzwy23/utils/jwt"
@@ -62,7 +63,7 @@ func SubSystemEntry(ctx *context.Context) {
 		return
 	}
 
-	key := groupcache.GenSha1Key(id, jclaim.User_id, url)
+	key := sha1.GenSha1Key(id, jclaim.User_id, url)
 
 	if !groupcache.FileIsExist(key) {
 		groupcache.RegisterStaticFile(key, url)

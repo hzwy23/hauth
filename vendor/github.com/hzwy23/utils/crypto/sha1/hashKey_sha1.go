@@ -1,4 +1,4 @@
-package groupcache
+package sha1
 
 import (
 	"crypto/sha1"
