@@ -244,7 +244,7 @@
                 height: "24px",
                 width: "180px",
                 value:data.domain_id,
-                onChange: function () {
+                onclick: function () {
                     $("#h-role-info-table-details").bootstrapTable('refresh');
                 },
             });

@@ -132,7 +132,7 @@
                 height:"24px",
                 width:"180px",
                 value:data.domain_id,
-                onChange:function () {
+                onclick:function () {
                     /*
                     * 当右上角域信息值发生变化时
                     * 重新获取新域中的用户信息
@@ -187,7 +187,7 @@
                     $("#h-domain-up-id").Hselect({
                         data:arr,
                         height:"30px",
-                        onChange:function(){
+                        onclick:function(){
                             var domain_id = $("#h-domain-up-id").val()
                             $.getJSON("/v1/auth/resource/org/get",{domain_id:domain_id},function(data){
                                 var arr = new Array()

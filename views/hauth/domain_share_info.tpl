@@ -246,7 +246,7 @@
                 data:arr,
                 height:"24px",
                 width:"180px",
-                onChange:function(){
+                onclick:function(){
                     // 刷新table信息
                     var domain_id =  $("#h-domain-share-domain-list").val();
                     if (domain_id==null){

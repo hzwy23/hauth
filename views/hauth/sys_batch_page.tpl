@@ -232,7 +232,7 @@
                 height:"24px",
                 width:"180px",
                 value:data.domain_id,
-                onChange:function () {
+                onclick:function () {
                     var did = $("#h-auth-domain-list").val();
                     $.getJSON("/v1/auth/resource/org/get",{domain_id:did},function(data){
                         var arr = new Array()
@@ -248,7 +248,7 @@
                             data:arr,
                             height:"24px",
                             width:"180px",
-                            onChange:function () {
+                            onclick:function () {
                                 AuthObj.search()
                             },
                         });
@@ -272,7 +272,7 @@
                     data:arr,
                     height:"24px",
                     width:"180px",
-                    onChange:function () {
+                    onclick:function () {
                         AuthObj.search()
                     },
                 });
