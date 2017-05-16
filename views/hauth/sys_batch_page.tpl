@@ -25,10 +25,9 @@
     <div class="col-sm-12 col-md-6 col-lg-7">
         <div id="h-grant-user-table-show" style="border: #598f56 solid 1px;">
             <div id="h-grant-toolbar-list" style="height: 24px; line-height: 24px;">
-                <span style="font-size: 10px;font-weight: 600;display: inline">机构:</span>
-                <select id="h-auth-org-list" class="form-control" style="height: 24px; line-height: 24px;padding: 0px; display: inline">
+                <span style="font-size: 10px;font-weight: 600;" class="pull-left">机构:</span>
+                <select id="h-auth-org-list" class="form-control pull-left" style="width: 240px;height: 24px; line-height: 24px;padding: 0px;">
                 </select>
-                <!--<button onclick="AuthObj.search()" class="btn btn-success btn-xs" style="margin-left: 8px;"><i class="icon-search"> </i>查询</button>-->
             </div>
             <div id="h-grant-table-info" class="col-sm-12 col-md-12 col-lg-12">
                 <table id="h-grant-info-table-details"
@@ -247,7 +246,7 @@
                         $("#h-auth-org-list").Hselect({
                             data:arr,
                             height:"24px",
-                            width:"180px",
+                            width:"240px",
                             onclick:function () {
                                 AuthObj.search()
                             },
@@ -271,7 +270,7 @@
                 $("#h-auth-org-list").Hselect({
                     data:arr,
                     height:"24px",
-                    width:"180px",
+                    width:"240px",
                     onclick:function () {
                         AuthObj.search()
                     },

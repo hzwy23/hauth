@@ -64,10 +64,10 @@
 </div>
 <div id="h-user-toolbar-list" style="height: 24px; line-height: 24px;">
     <span style="font-size: 10px;font-weight: 600;" class="pull-left">机构:</span>
-    <select id="h-user-org-list" class="form-control pull-left" style="width: 180px;height: 24px; line-height: 24px;padding: 0px;">
+    <select id="h-user-org-list" class="form-control pull-left" style="width: 240px;height: 24px; line-height: 24px;padding: 0px;">
     </select>
-    <span style="font-size: 10px;font-weight: 600;" class="pull-left">&nbsp;状态:</span>
-    <select id="h-user-status-list" class="form-control pull-left" style="width: 180px;height: 24px; line-height: 24px;padding: 0px;">
+    <span style="font-size: 10px;font-weight: 600;margin-left: 12px;" class="pull-left">&nbsp;状态:</span>
+    <select id="h-user-status-list" class="form-control pull-left" style="width: 120px;height: 24px; line-height: 24px;padding: 0px;">
         <option value="0">正常</option>
         <option value="1">失效</option>
     </select>
@@ -123,7 +123,7 @@
                 $("#h-user-org-list").Hselect({
                     data:arr,
                     height:"24px",
-                    width:"180px",
+                    width:"240px",
                 });
             });
 
@@ -154,7 +154,7 @@
                         $("#h-user-org-list").Hselect({
                             data:arr,
                             height:"24px",
-                            width:"180px",
+                            width:"240px",
                         });
                     });
                 }
@@ -164,8 +164,8 @@
 
         // 机构状态选择框
         $("#h-user-status-list").Hselect({
-            height:"24px;",
-            width:"180px",
+            height:"24px",
+            width:"120px",
             value:0,
         })
     });
