@@ -917,17 +917,17 @@ var Hutils = {
     };
 
     $.fn.Hselect = function(param){
-        var sel = this
-        var obj = document.createElement("div")
+        var sel = this;
+        var obj = document.createElement("div");
 
         if ( $(sel).attr("hselect") == "true"){
             // 重复初始化Hselect
-            var hselect = $(sel).next()
-            var displaycss = $(hselect).css("display")
+            var hselect = $(sel).next();
+            var displaycss = $(hselect).css("display");
             $(obj).attr("style",$(sel).attr("style"));
-            $(obj).css("display",displaycss)
+            $(obj).css("display",displaycss);
 
-            $(hselect).remove()
+            $(hselect).remove();
             $(sel).html("");
         } else {
             // 第一次初始化Hselect
@@ -1115,12 +1115,13 @@ var Hutils = {
         }
 
         function initSelect(selObj,arr){
-            var optHtml = ""
+            var optHtml = "";
             for (var i = 0; i < arr.length; i++){
                 optHtml+='<option value="'+arr[i].id+'">'+arr[i].text+'</option>'
             }
-            $(selObj).append(optHtml)
-            $(selObj).hide()
+            $(selObj).append(optHtml);
+            $(selObj).hide();
+            $(selObj).val("");
         }
 
         function showOrHide(e){
@@ -1186,6 +1187,8 @@ var Hutils = {
             if (__DEFAULT.value != ""){
                 var text = $(sel).find("option:selected").text()
                 $(obj).find(".HshowSelectValue span").html(text)
+            } else {
+                $(sel).val("");
             }
         }
 
