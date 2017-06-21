@@ -5,10 +5,8 @@
 go sdk >= 1.8
 ```
 
-**java版本地址**
-```
+**Java版本地址**
 [https://github.com/hzwy23/asofdate-etl](https://github.com/hzwy23/asofdate-etl)
-```
 
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
 ```golang
