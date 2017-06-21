@@ -1,10 +1,13 @@
-**项目在不断的添加新动能,如需稳定版本,请在release中获取.**
-
 [Asofdate Project Release](https://github.com/hzwy23/asofdate/releases)
 
 #### golang版本建议:
 ```
 go sdk >= 1.8
+```
+
+**java版本地址**
+```
+[https://github.com/hzwy23/asofdate-etl](https://github.com/hzwy23/asofdate-etl)
 ```
 
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
