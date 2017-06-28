@@ -64,3 +64,10 @@ func DomainAuth(req *http.Request, domain_id string, pattern string) bool {
 		return false
 	}
 }
+
+func IsRoot(domainId string) bool {
+	if domainId == "vertex_root" {
+		return true
+	}
+	return false
+}

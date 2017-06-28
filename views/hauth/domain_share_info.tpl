@@ -3,7 +3,6 @@
         <span style="font-size: 14px;">域信息共享配置管理</span>
     </div>
 </div>
-
 <div class="row subsystem-toolbar">
     <div class="pull-left" style="height: 44px; line-height: 44px; width: 260px;">
         <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
@@ -212,21 +211,22 @@
 
     $(document).ready(function(){
         var hwindow = document.documentElement.clientHeight;
-        $("#h-domain-info-shareid").height(hwindow-139)
-        $("#h-domain-share-info-details").height(hwindow-130)
+        $("#h-domain-info-shareid").height(hwindow-139);
+        $("#h-domain-share-info-details").height(hwindow-130);
 
         /*
          * 初始化左边工具栏中，域选择框
          * */
         $.getJSON("/v1/auth/domain/owner",function(data){
-            var arr = new Array()
+            var arr = new Array();
             $(data).each(function(index,element){
-                var ijs = {}
-                ijs.id=element.domain_id
-                ijs.text=element.domain_desc
-                ijs.upId="####hzwy23###"
+                var ijs = {};
+                ijs.id=element.domain_id;
+                ijs.text=element.domain_desc;
+                ijs.upId="####hzwy23###";
                 arr.push(ijs)
             });
+
             $("#h-domain-share-domain-list").Hselect({
                 data:arr,
                 height:"24px",
@@ -237,6 +237,7 @@
                     if (domain_id==null){
                         return
                     }
+
                     //刷新左侧公告栏信息
                     $.getJSON("/v1/auth/domain/row/details",{domain_id:domain_id},function(data){
                         $(data).each(function(index,element){

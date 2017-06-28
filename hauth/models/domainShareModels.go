@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 
+	"github.com/hzwy23/asofdate/hauth/hrpc"
 	"github.com/hzwy23/dbobj"
 	"github.com/hzwy23/utils/logs"
 	"github.com/hzwy23/utils/validator"
@@ -147,6 +148,11 @@ func (this DomainShareModel) GetList(domain_id string) ([]DomainMmodel, error) {
 		logs.Error(err)
 		return nil, err
 	}
+	var dslice []DomainMmodel
+
+	if hrpc.IsRoot(domain_id) {
+		return rst, nil
+	}
 
 	// 获取指定域能够访问到的域信息
 	ret, err := this.get(domain_id)
@@ -161,7 +167,6 @@ func (this DomainShareModel) GetList(domain_id string) ([]DomainMmodel, error) {
 		dmap[val.Project_id] = true
 	}
 
-	var dslice []DomainMmodel
 	for _, val := range rst {
 		if _, ok := dmap[val.Project_id]; ok && val.Domain_status_cd == "0" {
 			dslice = append(dslice, val)
