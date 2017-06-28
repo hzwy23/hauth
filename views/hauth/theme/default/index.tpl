@@ -302,5 +302,6 @@
 <script type="text/javascript" src="/static/laydate/laydate.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-notify.min.js"></script>
 <script src="/static/js/download.js"></script>
+<script type="text/javascript" src="/static/js/spin.min.js"></script>
 </body>
 </html>

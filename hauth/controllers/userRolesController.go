@@ -238,22 +238,31 @@ func (this userRolesController) Revoke(ctx *context.Context) {
 		return
 	}
 
-	user_id := ctx.Request.FormValue("user_id")
-	role_id := ctx.Request.FormValue("role_id")
+	form := ctx.Request.FormValue("JSON")
+	var rst []models.UserRolesModel
 
-	domain_id, err := hrpc.GetDomainId(user_id)
+	err := json.Unmarshal([]byte(form), &rst)
 	if err != nil {
-		logs.Error(err)
-		hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_role_no_auth"))
+		logs.Error("解析json格式数据失败，请联系管理员")
+		hret.Error(ctx.ResponseWriter, 421, i18n.Get(ctx.Request, "error_unmarsh_json"))
 		return
 	}
 
-	if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
-		hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, domain_id))
-		return
+	for _, val := range rst {
+		domain_id, err := hrpc.GetDomainId(val.User_id)
+		if err != nil {
+			logs.Error(err)
+			hret.Error(ctx.ResponseWriter, 403, i18n.Get(ctx.Request, "error_user_role_no_auth"))
+			return
+		}
+
+		if !hrpc.DomainAuth(ctx.Request, domain_id, "w") {
+			hret.Error(ctx.ResponseWriter, 403, i18n.WriteDomain(ctx.Request, domain_id))
+			return
+		}
 	}
 
-	msg, err := this.models.Revoke(user_id, role_id)
+	msg, err := this.models.Revoke(rst)
 	if err != nil {
 		logs.Error(err)
 		hret.Error(ctx.ResponseWriter, 419, i18n.Get(ctx.Request, msg), err)

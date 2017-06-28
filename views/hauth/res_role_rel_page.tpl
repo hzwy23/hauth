@@ -1,96 +1,106 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">角色资源信息</span>
+        <span style="font-size: 14px;">角色资源信息</span>
     </div>
 </div>
-
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-5 col-lg-3" >
-        <div class="pull-left">
-            <span>角色信息</span>
+    <div style="height: 44px; line-height: 44px;display: inline;">
+        <span id="h-role-resource-rel-role-id" style="display: none;">{{.Role_id}}</span>
+        <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+              class="pull-left">&nbsp;角色编码 = {{.Code_number}}</span>
+        <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+              class="pull-left">&nbsp;&nbsp;&nbsp;<i style="border: #0b4059 dotted 0.5px; height: 44px;"></i>&nbsp;&nbsp;&nbsp;角色名称 = {{.Role_name}}</span>
+        <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+              class="pull-left">&nbsp;&nbsp;&nbsp;<i style="border: #0b4059 dotted 0.5px;height: 44px;"></i>&nbsp;&nbsp;&nbsp;域编码 = <span id="h-resource-role-rel-domain-id">{{.Domain_id}}</span></span>
+        <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+              class="pull-left">&nbsp;&nbsp;&nbsp;<i style="border: #0b4059 dotted 0.5px;height: 44px;"></i>&nbsp;&nbsp;&nbsp;域描述 = {{.Domain_desc}}</span>
+    </div>
+    <div class="pull-right">
+        <button onclick="RoleResObj.auth()" class="btn btn btn-info btn-sm"><i class="icon-plus-sign"></i>&nbsp;授权
+        </button>
+        <button onclick="RoleResObj.revoke()" class="btn btn btn-danger btn-sm"><i class="icon-remove-circle"></i>&nbsp;撤销
+        </button>
+    </div>
+</div>
+<div class="row" style="background-image: url('/static/images/hauth/pure_book.png');filter:'progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')';-moz-background-size:100% 100%;background-size:100% 100%;">
+    <div id="h-domain-share-info-details">
+        <div class="col-sm-6 col-md-6 col-lg-6" style="padding-left: 10%; padding-right: 2%;">
+            <div class="col-ms-12 col-md-12 col-lg-12" style="margin-top: 3%">
+                <div style="border-bottom: #598f56 solid 1px;height: 44px; line-height: 44px;">
+                    <div class="pull-left">
+                        <span><i class="icon-sitemap"> </i>已经被授权获取菜单资源:</span>
+                    </div>
+                    <div class="pull-right">
+                        <span>
+                            <i class=" icon-search" style="margin-top: 15px;"></i>&nbsp;
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="h-role-res-owner-resource" class="col-sm-12" style="overflow: auto">
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6" style="padding-left: 2%;padding-right: 10%;">
+            <div class="col-ms-12 col-md-12 col-lg-12" style="margin-top: 3%;">
+                <div style="border-bottom: #8f1121 solid 1px;height: 44px; line-height: 44px;">
+                    <div class="pull-left">
+                        <span><i class="icon-sitemap"> </i>尚未被授权菜单资源:</span>
+                    </div>
+                    <div class="pull-right">
+                        <span>
+                            <i class=" icon-search" style="margin-top: 15px;"></i>&nbsp;
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="h-role-res-other-resource" class="col-sm-12" style="overflow: auto;">
+            </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">
-        <div class="pull-left">
-            角色分配资源情况
-        </div>
-        <!--<div class="pull-right" style="height: 44px; line-height: 44px; width: 240px;">-->
-            <!--<span style="width:60px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">角色：</span>-->
-            <!--<select class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px 8px;">-->
-                <!--<option>演示环境</option>-->
-                <!--<option>生产环境</option>-->
-            <!--</select>-->
+</div>
+
+<!--<div class="row">-->
+    <!--<div class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">-->
+        <!--<div id="h-domain-share-info-details" style="border: #598f56 solid 1px;">-->
+            <!--<div class="col-sm-6 col-md-6 col-lg-6">-->
+                <!--<div id="h-role-getted-resource-info" style="border: #598f56 solid 1px;margin-top: 15px;">-->
+                    <!--<div class="col-ms-12 col-md-12 col-lg-12">-->
+                        <!--<div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">-->
+                            <!--<div class="pull-left">-->
+                                <!--<span><i class="icon-sitemap"> </i>已经获取资源信息</span>-->
+                            <!--</div>-->
+                            <!--<div class="pull-right">-->
+                                <!--<button onclick="RoleResObj.revoke()" class="btn btn btn-danger btn-sm" style="margin-top: 8px;"><i class="icon-remove-circle"></i>&nbsp撤销-->
+                                <!--</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div id="h-role-res-owner-resource" class="col-sm-12 col-md-12 col-lg-12"-->
+                            <!--style="overflow: auto;padding: 0px 15px;">-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-sm-6 col-md-6 col-lg-6">-->
+                <!--<div id="h-role-ungetted-resource-info" style="border: #598f56 solid 1px;margin-top: 15px;">-->
+                    <!--<div class="col-ms-12 col-md-12 col-lg-12">-->
+                        <!--<div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">-->
+                            <!--<div class="pull-left">-->
+                                <!--<span><i class="icon-sitemap"> </i>未获取资源信息</span>-->
+                            <!--</div>-->
+                            <!--<div class="pull-right">-->
+                                <!--<button onclick="RoleResObj.auth()" class="btn btn btn-success btn-sm" style="margin-top: 8px;"><i class="icon-plus-sign"></i>&nbsp授权-->
+                                <!--</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div id="h-role-res-other-resource" class="col-sm-12 col-md-12 col-lg-12"-->
+                         <!--style="overflow: auto;padding: 0px 15px;">-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         <!--</div>-->
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12 col-md-5 col-md-3">
-        <div id="h-domain-info-shareid" style="border: #598f56 solid 1px;">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <table class="table table-bordered table-condensed" style="margin-top: 30px;">
-                    <tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">角色编码</td>
-                        <td id="h-role-resource-rel-role-id" class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_id}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">角色描述</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_name}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">状态</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_status_desc}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">所属域</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Domain_desc}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">创建日期</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_create_date}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">创建人</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_owner}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">修改日期</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_maintance_date}}</td></tr>
-                    <tr><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;height: 36px; line-height: 36px;vertical-align: middle;">修改人</td>
-                        <td class="col-sm-8 col-md-8 col-lg-8" style="height: 36px; line-height: 36px;vertical-align: middle;">{{.Role_maintance_user}}</td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">
-        <div id="h-domain-share-info-details" style="border: #598f56 solid 1px;">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <div id="h-role-getted-resource-info" style="border: #598f56 solid 1px;margin-top: 15px;">
-                    <div class="col-ms-12 col-md-12 col-lg-12">
-                        <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">
-                            <div class="pull-left">
-                                <span><i class="icon-sitemap"> </i>已经获取资源信息</span>
-                            </div>
-                            <div class="pull-right">
-                                <button onclick="RoleResObj.revoke()" class="btn btn btn-danger btn-sm" style="margin-top: 8px;"><i class="icon-remove-circle"></i>&nbsp撤销
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="h-role-res-owner-resource" class="col-sm-12 col-md-12 col-lg-12"
-                            style="overflow: auto;padding: 0px 15px;">
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <div id="h-role-ungetted-resource-info" style="border: #598f56 solid 1px;margin-top: 15px;">
-                    <div class="col-ms-12 col-md-12 col-lg-12">
-                        <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">
-                            <div class="pull-left">
-                                <span><i class="icon-sitemap"> </i>未获取资源信息</span>
-                            </div>
-                            <div class="pull-right">
-                                <button onclick="RoleResObj.auth()" class="btn btn btn-success btn-sm" style="margin-top: 8px;"><i class="icon-plus-sign"></i>&nbsp授权
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="h-role-res-other-resource" class="col-sm-12 col-md-12 col-lg-12"
-                         style="overflow: auto;padding: 0px 15px;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!--</div>-->
+<!--</div>-->
 <script>
     var RoleResObj = {
         resource_self:function () {

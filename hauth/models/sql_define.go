@@ -72,7 +72,7 @@ var (
 	sys_rdbms_093 = `delete from sys_role_resource_relat where role_id = ? and res_id = ?`
 	sys_rdbms_094 = `select r.user_id, t.role_id, t.code_number,t.role_name,t.role_status_id from sys_role_info t inner join sys_role_user_relation r on t.role_id = r.role_id where r.user_id = ? and t.role_status_id = '0'`
 	sys_rdbms_095 = `select '', t.role_id,t.code_number,t.role_name from sys_user_info i inner join sys_org_info o on i.org_unit_id = o.org_unit_id inner join sys_role_info t on o.domain_id = t.domain_id where i.user_id = ? and t.role_status_id = '0' and  not exists ( select 1 from sys_role_user_relation r where i.user_id = r.user_id and r.role_id = t.role_id )`
-	sys_rdbms_096 = `insert into sys_role_user_relation(uuid,role_id,user_id,maintance_date,maintance_user) values(uuid(),?,?,now(),?)`
+	sys_rdbms_096 = `insert into sys_role_user_relation(uuid,role_id,user_id,maintance_date,maintance_user) values(?,?,?,now(),?)`
 	sys_rdbms_097 = `delete from sys_role_user_relation where user_id = ? and role_id = ?`
 	sys_rdbms_098 = `update sys_sec_user set continue_error_cnt = ? where user_id = ?`
 	sys_rdbms_099 = `update sys_sec_user set status_id = 1 where user_id = ?`

@@ -1,39 +1,28 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">系统资源管理</span>
+        <span style="font-size: 14px;">系统资源管理</span>
     </div>
 </div>
-
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-6 col-lg-4" >
-        <div class="pull-left">
-            <button onclick="ResObj.add()" class="btn btn-success btn-sm">
-                <i class="icon-plus"> 新增</i>
-            </button>
-            <button onclick="ResObj.delete()" class="btn btn-danger btn-sm" title="删除机构信息">
-                <span class="icon-trash"> 删除</span>
-            </button>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">
-        <div class="pull-left">
-            <button style="margin-top: 9px;" onclick="ResObj.edit()" class="btn btn-success btn-sm" title="删除机构信息">
-                <span class="icon-trash"> 编辑</span>
-            </button>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">
-        <div class="pull-left">
-            <button style="margin-top: 9px;" onclick="ResObj.configTheme()" class="btn btn-success btn-sm" title="编辑机构信息">
-                <span class="icon-edit"> 配置</span>
-            </button>
-        </div>
+    <div class="pull-right">
+        <button onclick="ResObj.add()" class="btn btn-info btn-sm">
+            <i class="icon-plus"> 新增</i>
+        </button>
+        <button onclick="ResObj.edit()" class="btn btn-info btn-sm" title="编辑菜单信息">
+            <span class="icon-trash"> 编辑菜单</span>
+        </button>
+        <button onclick="ResObj.configTheme()" class="btn btn-info btn-sm"
+                title="配置菜单主题信息">
+            <span class="icon-edit"> 配置主题</span>
+        </button>
+        <button onclick="ResObj.delete()" class="btn btn-danger btn-sm" title="删除菜单信息">
+            <span class="icon-trash"> 删除</span>
+        </button>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-12 col-md-6 col-lg-4">
-        <div id="h-resource-tree-info" style="border: #598f56 solid 1px;height: 300px;">
+<div class="row" style="padding-top: 6px;">
+    <div class="col-sm-12 col-md-6 col-lg-5">
+        <div class="thumbnail" id="h-resource-tree-info">
             <div class="col-ms-12 col-md-12 col-lg-12">
                 <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">
                     <div class="pull-left">
@@ -51,10 +40,10 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">
-        <div id="h-resource-details-info" style="border: #598f56 solid 1px;height: 300px;">
+    <div class="col-sm-12 col-md-6 col-lg-3" style="padding-left: 0px;">
+        <div class="thumbnail" id="h-resource-details-info">
             <div class="col-ms-12 col-md-12 col-lg-12">
-                <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">
+                <div style="border-bottom: #006c8f solid 2px;height: 44px; line-height: 44px;">
                     <div class="pull-left">
                         <span>资源详细信息</span>
                     </div>
@@ -62,32 +51,65 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <table class="table table-bordered table-condensed" style="margin-top: 20px;">
-                    <tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>
-                    <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源编码</td>
-                        <td id="h-resource-show-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源描述</td>
-                        <td id="h-resource-show-name" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">上级资源编码</td>
-                        <td id="h-resource-show-up-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源属性</td>
-                        <td id="h-resource-show-attr-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源类别</td>
-                        <td id="h-resource-show-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td>
-                        <td id="h-resource-show-type-id" style="display: none;"></td></tr>
+                    <tr style="background-color: #009966;color: white;">
+                        <th style="text-align: center">字段</th>
+                        <th style="text-align: center">值</th>
+                    </tr>
+                    <tr style="height: 36px; line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源编码
+                        </td>
+                        <td id="h-resource-show-id" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px; line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源描述
+                        </td>
+                        <td id="h-resource-show-name" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px; line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">上级编码
+                        </td>
+                        <td id="h-resource-show-up-id" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px; line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源属性
+                        </td>
+                        <td id="h-resource-show-attr-desc" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px; line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源类别
+                        </td>
+                        <td id="h-resource-show-type-desc" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                        <td id="h-resource-show-type-id" style="display: none;"></td>
+                    </tr>
                 </table>
             </div>
         </div>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">
-        <div id="h-resource-theme-info" style="border: #598f56 solid 1px;height: 300px;">
+        <div class="thumbnail" id="h-resource-theme-info">
             <div class="col-ms-12 col-md-12 col-lg-12">
-                <div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">
-                    <div class="pull-left">
-                        <span>主题风格信息</span>
-                    </div>
-                    <div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">
-                        <span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;主题风格：</span>
-                        <select onchange="ResObj.updateTheme()" id="h-resource-theme-style-code" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
+                <div style="border-bottom: #8f2a07 solid 2px;height: 44px; line-height: 44px;">
+                    <div class="pull-left" style="height: 44px; line-height: 44px; width: 260px;">
+                        <span style="height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+                              class="pull-left">主题风格：</span>
+                        <select onchange="ResObj.updateTheme()" id="h-resource-theme-style-code"
+                                class="form-control pull-right"
+                                style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
                             <option value="1001">绿色主题</option>
                             <option value="1002">蓝色主题</option>
                             <option value="1003">粉丝主题</option>
@@ -98,32 +120,187 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <table class="table table-bordered table-condensed" style="margin-top: 20px;">
-                    <tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题编码</td>
-                        <td id="h-resource-show-theme-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题名称</td>
-                        <td id="h-resource-show-theme-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px; display: none;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>
-                        <td id="h-resource-show-res-res-type" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>
-                        <td id="h-resource-show-res-res-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源色彩</td>
-                        <td id="h-resource-show-res-bg-color" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源样式</td>
-                        <td id="h-resource-show-res-class" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">图标</td>
-                        <td id="h-resource-show-res-img" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">路由</td>
-                        <td id="h-resource-show-res-url" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">分组号</td>
-                        <td id="h-resource-show-res-group-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
-                    <tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">组内排序号</td>
-                        <td id="h-resource-show-res-sort-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>
+                    <tr style="background-color: #009966;color: white;">
+                        <th style="text-align: center">字段</th>
+                        <th style="text-align: center">值</th>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">主题编码
+                        </td>
+                        <td id="h-resource-show-theme-id" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">主题名称
+                        </td>
+                        <td id="h-resource-show-theme-desc" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px; display: none;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式
+                        </td>
+                        <td id="h-resource-show-res-res-type" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;"></td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式
+                        </td>
+                        <td id="h-resource-show-res-res-type-desc" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源色彩
+                        </td>
+                        <td id="h-resource-show-res-bg-color" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">资源样式
+                        </td>
+                        <td id="h-resource-show-res-class" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">图标
+                        </td>
+                        <td id="h-resource-show-res-img" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">路由
+                        </td>
+                        <td id="h-resource-show-res-url" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">分组号
+                        </td>
+                        <td id="h-resource-show-res-group-id" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
+                    <tr style="height: 36px;line-height: 36px;">
+                        <td class="col-sm-4 col-md-4 col-lg-4"
+                            style="text-align: right;padding-right: 15px;vertical-align: middle;">组内排序号
+                        </td>
+                        <td id="h-resource-show-res-sort-id" class="col-sm-8 col-md-8 col-lg-8"
+                            style="vertical-align: middle;padding-left: 15px;">-
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<!--<div class="row">-->
+    <!--<div class="col-sm-12 col-md-6 col-lg-4">-->
+        <!--<div id="h-resource-tree-info" style="border: #598f56 solid 1px;height: 300px;">-->
+            <!--<div class="col-ms-12 col-md-12 col-lg-12">-->
+                <!--<div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">-->
+                    <!--<div class="pull-left">-->
+                        <!--<span><i class="icon-sitemap"> </i>菜单资源信息</span>-->
+                    <!--</div>-->
+                    <!--<div class="pull-right">-->
+                    <!--<span>-->
+                        <!--<i class=" icon-search" style="margin-top: 15px;"></i>&nbsp;-->
+                    <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div id="h-resource-list-info" class="col-sm-12 col-md-12 col-lg-12"-->
+                 <!--style="padding:15px 5px;overflow: auto">-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">-->
+        <!--<div id="h-resource-details-info" style="border: #598f56 solid 1px;height: 300px;">-->
+            <!--<div class="col-ms-12 col-md-12 col-lg-12">-->
+                <!--<div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">-->
+                    <!--<div class="pull-left">-->
+                        <!--<span>资源详细信息</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-sm-12 col-md-12 col-lg-12">-->
+                <!--<table class="table table-bordered table-condensed" style="margin-top: 20px;">-->
+                    <!--<tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>-->
+                    <!--<tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源编码</td>-->
+                        <!--<td id="h-resource-show-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源描述</td>-->
+                        <!--<td id="h-resource-show-name" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">上级资源编码</td>-->
+                        <!--<td id="h-resource-show-up-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源属性</td>-->
+                        <!--<td id="h-resource-show-attr-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px; line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源类别</td>-->
+                        <!--<td id="h-resource-show-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td>-->
+                        <!--<td id="h-resource-show-type-id" style="display: none;"></td></tr>-->
+                <!--</table>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="col-sm-12 col-md-6 col-lg-4" style="padding-left: 0px;">-->
+        <!--<div id="h-resource-theme-info" style="border: #598f56 solid 1px;height: 300px;">-->
+            <!--<div class="col-ms-12 col-md-12 col-lg-12">-->
+                <!--<div style="border-bottom: #598f56 solid 2px;height: 44px; line-height: 44px;">-->
+                    <!--<div class="pull-left">-->
+                        <!--<span>主题风格信息</span>-->
+                    <!--</div>-->
+                    <!--<div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">-->
+                        <!--<span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;主题风格：</span>-->
+                        <!--<select onchange="ResObj.updateTheme()" id="h-resource-theme-style-code" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">-->
+                            <!--<option value="1001">绿色主题</option>-->
+                            <!--<option value="1002">蓝色主题</option>-->
+                            <!--<option value="1003">粉丝主题</option>-->
+                            <!--<option value="1004">青色主题</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-sm-12 col-md-12 col-lg-12">-->
+                <!--<table class="table table-bordered table-condensed" style="margin-top: 20px;">-->
+                    <!--<tr style="background-color: #009966;color: white;"><th style="text-align: center">字段</th><th style="text-align: center">值</th></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题编码</td>-->
+                        <!--<td id="h-resource-show-theme-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">主题名称</td>-->
+                        <!--<td id="h-resource-show-theme-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px; display: none;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>-->
+                        <!--<td id="h-resource-show-res-res-type" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;"></td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">打开方式</td>-->
+                        <!--<td id="h-resource-show-res-res-type-desc" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源色彩</td>-->
+                        <!--<td id="h-resource-show-res-bg-color" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">资源样式</td>-->
+                        <!--<td id="h-resource-show-res-class" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">图标</td>-->
+                        <!--<td id="h-resource-show-res-img" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">路由</td>-->
+                        <!--<td id="h-resource-show-res-url" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">分组号</td>-->
+                        <!--<td id="h-resource-show-res-group-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                    <!--<tr style="height: 36px;line-height: 36px;"><td class="col-sm-4 col-md-4 col-lg-4" style="text-align: right;padding-right: 15px;vertical-align: middle;">组内排序号</td>-->
+                        <!--<td id="h-resource-show-res-sort-id" class="col-sm-8 col-md-8 col-lg-8" style="vertical-align: middle;padding-left: 15px;">-</td></tr>-->
+                <!--</table>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 
 <script type="text/javascript">
 

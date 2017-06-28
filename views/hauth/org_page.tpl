@@ -1,49 +1,45 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">组织架构管理</span>
+        <span style="font-size: 14px;">组织架构管理</span>
     </div>
 </div>
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-5 col-lg-3">
-        <div class="pull-left">
-            <button onclick="OrgObj.add()" class="btn btn-success btn-sm" title="新增机构信息">
-                <i class="icon-plus"> 新增</i>
-            </button>
-            <button onclick="OrgObj.upload()" class="btn btn-success btn-sm" title="导入机构信息">
-                <span class="icon-edit"> 导入</span>
-            </button>
-            <button onclick="OrgObj.download()" class="btn btn-success btn-sm" title="导出机构信息">
-                <span class="icon-trash"> 导出</span>
-            </button>
-        </div>
+    <div class="pull-left" style="height: 44px; line-height: 44px; width: 260px;">
+        <span style="font-size: 10px;font-weight: 600;height: 30px; line-height: 30px; margin-top: 7px;display: inline"
+              class="pull-left">&nbsp;&nbsp;所属域：</span>
+        <select id="h-org-domain-list" class="form-control pull-left"
+                style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
+        </select>
     </div>
-    <div class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">
-        <div class="pull-left">
-            <button onclick="OrgObj.edit()" class="btn btn-success btn-sm" title="编辑机构信息">
-                <span class="icon-edit"> 编辑</span>
-            </button>
-            <button onclick="OrgObj.delete()" class="btn btn-danger btn-sm" title="删除机构信息">
-                <span class="icon-trash"> 删除</span>
-            </button>
-        </div>
-        <div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">
-            <span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;所属域：</span>
-            <select id="h-org-domain-list" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
-            </select>
-        </div>
+    <div class="pull-right">
+        <button onclick="OrgObj.add()" class="btn btn-info btn-sm" title="新增机构信息">
+            <i class="icon-plus"> 新增</i>
+        </button>
+        <button onclick="OrgObj.upload()" class="btn btn-info btn-sm" title="导入机构信息">
+        <span class="icon-edit"> 导入</span>
+        </button>
+        <button onclick="OrgObj.download()" class="btn btn-info btn-sm" title="导出机构信息">
+        <span class="icon-trash"> 导出</span>
+        </button>
+        <button onclick="OrgObj.edit()" class="btn btn-info btn-sm" title="编辑机构信息">
+            <span class="icon-edit"> 编辑</span>
+        </button>
+        <button onclick="OrgObj.delete()" class="btn btn-danger btn-sm" title="删除机构信息">
+            <span class="icon-trash"> 删除</span>
+        </button>
     </div>
 </div>
-<div class="row">
+<div class="row" style="padding-top: 6px;">
     <div class="col-sm-12 col-md-5 col-lg-3">
-        <div id="h-org-tree-info" style="border: #598f56 solid 1px;">
+        <div id="h-org-tree-info" class="thumbnail">
             <div class="col-ms-12 col-md-12 col-lg-12">
                 <div style="border-bottom: #598f56 solid 1px;height: 44px; line-height: 44px;">
                     <div class="pull-left">
                         <span><i class="icon-sitemap"> </i>组织架构树</span>
                     </div>
                     <div class="pull-right">
-                    <span>
-                        <i class=" icon-search" style="margin-top: 15px;"></i>&nbsp;
+                        <span>
+                            <i class=" icon-search" style="margin-top: 15px;"></i>&nbsp;
                     </span>
                     </div>
                 </div>
@@ -54,40 +50,32 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">
-        <div id="h-org-table-info" style="border: #598f56 solid 1px;">
-            <div id="h-org-toolbar-list" class="pull-left">
-                    <span>机构详细信息</span>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <table id="h-org-info-table-details"
-                       data-toggle="table"
-                       data-striped="true"
-                       data-unique-id="org_id"
-                       data-toolbar="#h-org-toolbar-list"
-                       data-url="/v1/auth/resource/org/get"
-                       data-side-pagination="client"
-                       data-pagination="true"
-                       data-page-list="[20, 50, 100, 200]"
-                       data-search="refresh">
-                    <thead>
-                    <tr>
-                        <th data-field="state" data-checkbox="true"></th>
-                        <th data-field="code_number">机构编码</th>
-                        <th data-field="org_desc">机构描述</th>
-                        <th data-field="up_org_id" data-formatter="OrgObj.upOrgId">上级机构编码</th>
-                        <th data-align="center" data-field="create_date">创建日期</th>
-                        <th data-align="center" data-field="create_user">创建人</th>
-                        <th data-align="center" data-field="modify_date">修改日期</th>
-                        <th data-align="center" data-field="modify_user">修改人</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+    <div id="h-org-table-info" class="col-sm-12 col-md-7 col-lg-9" style="padding-left: 0px;">
+        <table id="h-org-info-table-details"
+               data-toggle="table"
+               data-striped="true"
+               data-unique-id="org_id"
+               data-url="/v1/auth/resource/org/get"
+               data-side-pagination="client"
+               data-pagination="true"
+               data-page-size="20"
+               data-page-list="[20, 50, 100, 200]"
+               data-search="false">
+            <thead>
+            <tr>
+                <th data-field="state" data-checkbox="true"></th>
+                <th data-field="code_number">机构编码</th>
+                <th data-field="org_desc">机构描述</th>
+                <th data-field="up_org_id" data-formatter="OrgObj.upOrgId">上级机构编码</th>
+                <th data-align="center" data-field="create_date">创建日期</th>
+                <th data-align="center" data-field="create_user">创建人</th>
+                <th data-align="center" data-field="modify_date">修改日期</th>
+                <th data-align="center" data-field="modify_user">修改人</th>
+            </tr>
+            </thead>
+        </table>
     </div>
 </div>
-
 <script type="text/javascript">
 
     var OrgObj = {
@@ -389,9 +377,9 @@
 
     $(document).ready(function(){
         var hwindow = document.documentElement.clientHeight;
-        $("#h-org-tree-info").height(hwindow-130);
-        $("#h-org-table-info").height(hwindow-130);
-        $("#h-org-tree-info-list").height(hwindow-204);
+        $("#h-org-tree-info").height(hwindow-139);
+        $("#h-org-table-info").height(hwindow-139);
+        $("#h-org-tree-info-list").height(hwindow-213);
 
         $.getJSON("/v1/auth/domain/owner",function(data){
             var arr = new Array()

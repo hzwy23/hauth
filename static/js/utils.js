@@ -76,9 +76,13 @@ var Hutils = {
         }
         $.Hconfirm({
             callback:function(){
-                $.ajax({type:"Get",url:"/logout",cache:!1,async:!1,dataType:"text",
+                $.ajax({type:"Get",url:"/signout",cache:!1,async:!1,dataType:"text",
                     error:function(){window.location.href="/"},
                     success:function(a){
+                        $.Notify({
+                            message:"安全退出",
+                            type:"success",
+                        });
                         window.location.href="/"}
                 })
             },
@@ -138,14 +142,14 @@ var Hutils = {
         // 资源的id
         var data_id = $(e).attr("data-id");
 
+        // 资源的名称
+        var name = $(e).find("div:last").html();
+
         if ($(e).attr("data-openType") == "1") {
-            window.open(url,"API文档")
+            window.open(url,name)
             return
         }
         NProgress.start();
-
-        // 资源的名称
-        var name = $(e).find("div:last").html();
 
         // 遍历整个tab栏目，查找指定id的资源是否打开，
         // 如果该资源已经打开，则直接切换到该资源，无需从后台获取内容
@@ -168,6 +172,7 @@ var Hutils = {
                 async:true,
                 dataType:"text",
                 error:function (msg) {
+                    console.log(msg);
                     NProgress.done();
                     var m = JSON.parse(msg);
                     $.Notify({
@@ -224,24 +229,35 @@ var Hutils = {
         // 判断子元素会否已经被打开，默认设置为未打开
         var flag = false;
 
+        var __DEFAULT = {
+            id:"",
+            tile:"",
+            type: "GET",
+            url: "",
+            data: {},
+            dataType: "text",
+        };
+        $.extend(true,__DEFAULT,param);
+
         // 资源url地址
-        var url = param.url;
+        var url = __DEFAULT.url;
 
         // 资源id
-        var data_id = param.id;
+        var data_id = __DEFAULT.id;
 
         // 资源名称
-        var name = param.title;
+        var name = __DEFAULT.title;
 
         $(".H-tabs-index").find("span").each(function(index,element){
             if (data_id == $(element).attr("data-id")){
                 flag = true;
                 $.HAjaxRequest({
-                    type:"get",
+                    type:__DEFAULT.type,
                     url:url,
                     cache:false,
                     async:true,
-                    dataType:"text",
+                    data:__DEFAULT.data,
+                    dataType:__DEFAULT.dataType,
                     success: function(data){
                         Hutils.__changetab(element);
                         $(element).find("hzw").html(name);
@@ -260,13 +276,15 @@ var Hutils = {
 
         if (flag == false){
             $.HAjaxRequest({
-                type:"get",
+                type:__DEFAULT.type,
                 url:url,
                 cache:false,
                 async:true,
-                dataType:"text",
+                data:__DEFAULT.data,
+                dataType:__DEFAULT.dataType,
                 error:function (msg) {
                     var m = JSON.parse(msg.responseText);
+                    console.log(m);
                     $.Notify({
                         title:"温馨提示:",
                         message:m.error_msg,
@@ -517,6 +535,8 @@ var Hutils = {
             $(mspan).addClass("icon")
 
             var mimg = document.createElement("img")
+            mimg.style.height = "100%";
+            mimg.style.width = "100%";
             $(mimg).attr("src",res_img)
 
             var ccdiv = document.createElement("div");
@@ -640,18 +660,19 @@ var Hutils = {
             showLiHeight:"30px",
             showFontSize:"14px",
             iconColor:"#030202",
-
-            attr:false,
-
             showLevel:3,
 
             onChange:function (obj) {
                 console.log("没有注册点击函数")
             },
         };
+        var __autoAttr = false;
 
         $.extend(true,__DEFAULT,param);
 
+        if (__DEFAULT.data.length > 0 && __DEFAULT.data[0].attr == undefined) {
+            __autoAttr = true;
+        }
 
         var getEvent = function(){
 
@@ -717,7 +738,6 @@ var Hutils = {
                     return
                 }
                 for (var i = 0; i < arr.length; i++){
-
                     if (node == arr[i].upId){
                         arr[i].dept = INDEX
                         list.push(arr[i])
@@ -867,7 +887,7 @@ var Hutils = {
         /*
          * 如果这个节点没有下层信息，则将这个层级的伸缩按钮去掉。
          * */
-        if (__DEFAULT.attr == false){
+        if (__autoAttr){
             $this.find("ul li").each(function(index,element){
                 var curDept = parseInt($(element).attr("data-dept"));
                 var nextDept = parseInt($(element).next().attr("data-dept"));
@@ -917,498 +937,6 @@ var Hutils = {
     };
 
     $.fn.Hselect = function(param){
-        var sel = this;
-        var obj = document.createElement("div");
-
-        if ( $(sel).attr("hselect") == "true"){
-            // 重复初始化Hselect
-            var hselect = $(sel).next();
-            var displaycss = $(hselect).css("display");
-            $(obj).attr("style",$(sel).attr("style"));
-            $(obj).css("display",displaycss);
-
-            $(hselect).remove();
-            $(sel).html("");
-        } else {
-            // 第一次初始化Hselect
-            $(obj).attr("style",$(sel).attr("style"));
-        }
-        //init div css
-        //get parent class to it
-        //get parent css to it
-        $(obj).addClass($(sel).attr("class"));
-        $(obj).css({"padding":"0px","border":"none"});
-
-        $(sel).attr("hselect","true");
-        // default parameters
-        var __DEFAULT = {
-            data: "",
-            height:"26px",
-            width:"100%",
-            border:"#ccc solid 1px",
-            fontSize:"13px",
-            borderRadius:"5px",
-            bgColor:"white",
-            placeholder:"<i style='color: #959595;font-size: 12px;'>--请选择--</i>",
-
-            showLiHeight:"30px",
-            showHeight:"230px",
-            showBorder:"",
-            showFontSize:"14px",
-            iconColor:"#ff5763",
-
-            // 值改变触发事件
-            onChange:"",
-
-            // select中默认值
-            value:"",
-
-            // 是否禁止选择
-            disabled:"",
-        };
-
-        $.extend(true,__DEFAULT,param);
-
-
-        // set showBorder to border style
-        if (__DEFAULT.showBorder==""){
-            __DEFAULT.showBorder = __DEFAULT.border
-        }
-
-        var getEvent = function(){
-
-            if(window.event)    {
-                return window.event;
-            }
-            var func = getEvent.caller;
-
-            while( func != null ){
-                var arg0 = func.arguments[0];
-                if(arg0){
-                    if((arg0.constructor==Event || arg0.constructor ==MouseEvent
-                        || arg0.constructor==KeyboardEvent)
-                        ||(typeof(arg0)=="object" && arg0.preventDefault
-                        && arg0.stopPropagation)){
-                        return arg0;
-                    }
-                }
-                func = func.caller;
-            }
-            return null;
-        };
-        /*
-         * This function sort array.
-         * Accept One Array Variable.
-         * */
-        function sortTree(a){
-
-            // load result sorted
-            var list = [];
-
-            // get select's options
-            // append it to new select which simulate by ul li
-            if (Object.prototype.toString.call(a) == '[object Array]'){
-                $(sel).find("option").each(function(index,element){
-                    var ijs = {}
-                    ijs.id = $(element).val();
-                    ijs.text = $(element).text()
-                    a.push(ijs)
-                })
-            } else {
-                $(sel).find("option").each(function(index,element){
-                    var ijs = {}
-                    ijs.id = $(element).val();
-                    ijs.text = $(element).text()
-                    list.push(ijs)
-                })
-                return list
-            }
-
-            //set max dept val
-            var MAXDEPT = 8;
-
-            var INDEX = 1;
-
-            function getRoots(arr){
-                var Roots = [];
-                for(var i = 0; i < arr.length;i++){
-                    var rootFlag = true
-                    for ( var j = 0; j < arr.length;j++){
-                        if (arr[i].upId == arr[j].id){
-                            rootFlag = false
-                            break
-                        }
-                    }
-                    if (rootFlag == true){
-                        Roots.push(arr[i])
-                    }
-                }
-                return Roots
-            }
-
-            function traversed(node,arr){
-                if (++INDEX > MAXDEPT){
-                    console.log("递归超过8层,为保护计算机,退出递归");
-                    return
-                }
-                for (var i = 0; i < arr.length; i++){
-
-                    if (node == arr[i].upId){
-                        arr[i].dept = INDEX
-                        list.push(arr[i])
-                        traversed(arr[i].id,arr)
-                    }
-                }
-                INDEX--;
-            }
-
-            function listElem(roots,arr){
-                for (var i = 0; i < roots.length; i++){
-                    roots[i].dept = INDEX
-                    list.push(roots[i])
-                    traversed(roots[i].id,arr)
-                }
-            }
-
-            listElem(getRoots(a),a)
-
-            return list
-        }
-
-        function genTreeUI(a){
-            var odivStyle='cursor:pointer;background-color: '+__DEFAULT.bgColor+';padding:0px;text-align: left !important;width: '+__DEFAULT.width+'; border:'+__DEFAULT.border+'; height: '+__DEFAULT.height+'; line-height: '+__DEFAULT.height+';padding-left:10px; display:inline-block; border-radius:'+__DEFAULT.borderRadius+''
-            var odiv = '<div class="HshowSelectValue" style="'+odivStyle+'">' +
-                '<span style="height: '+__DEFAULT.height+'; font-size: '+__DEFAULT.fontSize+'">'+__DEFAULT.placeholder+'</span>' +
-                '<hzw style="position: relative;width: 20px; float: right;height: '+__DEFAULT.height+'; line-height: '+__DEFAULT.height+';">' +
-                '<i style="border-color:#888 transparent transparent transparent;border-style: solid;border-width: 5px 4px 0px 4px;height: 0;left: 50%;margin-left: -4px;margin-top:-3px ;position: absolute;top: 50%;width: 0;"></i>' +
-                '</hzw></div>'
-            odiv+='<div class="HselectShowAreaHuangZhanWei" style="white-space:nowrap;background-color: #fefefe;border: '+__DEFAULT.showBorder+';display: none; border-radius: 3px ;position: fixed;z-index:9999">' +
-                '<input style="border:#6699CC solid 1px; padding-left:5px;margin:5px 5px;height:'+__DEFAULT.showLiHeight+';"/>'
-            var opt = odiv+'<ul style="z-index: 9999;padding: 0px;list-style: none;margin:0px;' +
-                'max-height:'+__DEFAULT.showHeight+';' +
-                'overflow: auto;' +
-                '">'
-            for(var i = 0; i < a.length; i++){
-                var pd = parseInt(a[i].dept)*20 - 10
-                if (isNaN(pd)){
-                    pd = 10
-                }
-                var li = '<li data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                    '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                    '<i style="border-color:'+__DEFAULT.iconColor+' transparent transparent transparent;border-style: solid;border-width: 6px 5px 0px 5px;height: 0;margin-left: 1px;margin-top: -5px;position: absolute;top: 50%;width: 0;"></i>' +
-                    '</hzw>' +
-                    '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                opt+=li;
-            }
-            opt +='</ul></div>'
-            return opt;
-        }
-
-        function showUp(e){
-            var dept = $(e).attr("data-dept")
-            $(e).prevAll().each(function(index,element){
-                if (parseInt(dept)>parseInt($(element).attr("data-dept"))){
-                    $(element).show();
-                    dept = $(element).attr("data-dept")
-                }
-            })
-        }
-
-        function initSelect(selObj,arr){
-            var optHtml = "";
-            for (var i = 0; i < arr.length; i++){
-                optHtml+='<option value="'+arr[i].id+'">'+arr[i].text+'</option>'
-            }
-            $(selObj).append(optHtml);
-            $(selObj).hide();
-            $(selObj).val("");
-        }
-
-        function showOrHide(e){
-            var topBorderColor = __DEFAULT.iconColor+' transparent transparent transparent'
-            var leftBorderColor = 'transparent transparent transparent '+__DEFAULT.iconColor
-            var dept = $(e).attr("data-dept")
-            var nextObj = $(e).next()
-            var nextDept = $(nextObj).attr("data-dept")
-            var nextDisplay = $(nextObj).css("display")
-            if (nextDisplay == "none" && parseInt(nextDept)>parseInt(dept)){
-                $(e).find("i").css({
-                    "border-color":topBorderColor,
-                    "border-width":"6px 5px 0px 5px"
-                })
-
-                $(e).nextAll().each(function(index,element){
-                    if (parseInt(dept)+1==parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        });
-
-                        $(element).show();
-                    }else if (parseInt(dept)+1 < parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        })
-
-                        $(element).hide();
-                    }else{
-                        return false
-                    }
-                })
-            }else if (nextDisplay == "none" && parseInt(nextDept)<=parseInt(dept)){
-                return
-            }else if (nextDisplay != "none" && parseInt(nextDept)>parseInt(dept)){
-
-                $(e).find("i").css({
-                    "border-color":leftBorderColor,
-                    "border-width":"5px 0px 5px 6px",
-                })
-
-                $(e).nextAll().each(function(index,element){
-                    if (parseInt(dept)<parseInt($(element).attr("data-dept"))){
-                        $(element).find("i").css({
-                            "border-color":leftBorderColor,
-                            "border-width":"5px 0px 5px 6px",
-                        })
-
-                        $(element).hide();
-                    }else if (parseInt(dept)>=parseInt($(element).attr("data-dept"))){
-                        return false
-                    }
-                })
-            }else {
-                return
-            }
-        }
-
-        function initDefaultValue() {
-            $(sel).val(__DEFAULT.value);
-            if (__DEFAULT.value != ""){
-                var text = $(sel).find("option:selected").text()
-                $(obj).find(".HshowSelectValue span").html(text)
-            } else {
-                $(sel).val("");
-            }
-        }
-
-        var ui = genTreeUI(sortTree(__DEFAULT.data))
-        initSelect(sel,__DEFAULT.data)
-
-        $(obj).html(ui)
-        $(sel).after(obj)
-        $(obj).find("input").focus();
-        // 清除select的默认选中状态，确保select初始化后，没有任何值被选中
-        // 如果在初始化Hselect时，指定了初始值，则使用初始值
-        initDefaultValue()
-
-        $(obj).find("ul li").each(function(index,element){
-            var curDept = parseInt($(element).attr("data-dept"))
-            var nextDept = parseInt($(element).next().attr("data-dept"))
-            if (curDept>=nextDept || isNaN(nextDept)){
-                $(element).find("hzw").remove()
-            }
-        });
-
-        if (__DEFAULT.disabled=="disabled"){
-            // 如果select禁止选择,
-            // 不需要绑定触发事件
-            return
-        }
-
-        // input 框中输入事件，当用户在Hselect的下拉框中搜索时，触发这个事件
-        $(obj).find("input").on('input',function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-
-            var inpText = $(this).val();
-            if (inpText == ""){
-                $(obj).find("ul li").show();
-                return
-            }
-            $(obj).find("ul li").each(function(index,element){
-                if ($(element).find("span").html().indexOf(inpText)>=0){
-                    $(element).show()
-                    showUp(element)
-                }else{
-                    $(element).hide()
-                }
-            })
-        })
-
-        // 当用户在搜索框中点击鼠标左键时，触发这个事件。
-        $(obj).find("input").on('click',function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            $(this).focus();
-        })
-
-        $(obj).find(".HshowOrHideIconHzw").on("click",function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            showOrHide($(this).parent())
-        })
-
-        $(obj).find("li").on('mouseover',function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-
-            var ul = $(this).closest("ul")
-
-            $(ul).find("li").css({
-                "background-color":"",
-                "color":""
-            })
-
-            $(this).css({
-                "background-color":"#6699CC",
-                "color":"white"
-            })
-        })
-
-        $(obj).find("li").on('click',function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-
-            var text = $(this).find("span").html();
-            var id = $(this).attr("data-id");
-            $(sel).val(id);
-            $(this).closest("div").prev().find("span").html(text);
-            $(this).closest("div").hide();
-            $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                $(this).remove()
-            });
-
-            $(obj).find(".HshowSelectValue i").css({
-                "border-color":"#888 transparent transparent transparent",
-                "border-width":"5px 4px 0px 4px"
-            });
-
-            if (typeof __DEFAULT.onChange == "function"){
-                __DEFAULT.onChange();
-            };
-        })
-
-        $(obj).find("ul").on('mousewheel',function(){
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-        });
-
-        $(obj).find(".HshowSelectValue").on('click',function(){
-            var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-            // 取消后续事件
-            if (window.event != undefined){
-                window.event.cancelBubble = true;
-            } else {
-                var event = getEvent()
-                event.stopPropagation()
-            }
-            if (showUiStatus == "none"){
-                $(".HselectShowAreaHuangZhanWei").hide()
-                $(".HshowSelectValue i").css({
-                    "border-color":"#888 transparent transparent transparent",
-                    "border-width":"5px 4px 0px 4px",
-                })
-                $(obj).find("ul li").show();
-                var w = $(obj).width()
-                $(obj).find(".HselectShowAreaHuangZhanWei").css("min-width",w)
-                $(obj).find(".HselectShowAreaHuangZhanWei input").css("min-width",w-12)
-
-                var nextObj = $(this).next()
-                $(nextObj).find("input").val("")
-                $(nextObj).show();
-                $(nextObj).find("input").focus();
-                $(nextObj).find("ul").scrollTop(0);
-                $(nextObj).find("ul").scrollLeft(0);
-                $(obj).find(".HshowSelectValue i").css({
-                    "border-color":"transparent transparent #888 transparent",
-                    "border-width":"0px 4px 5px 4px"
-                })
-
-                // var ptop = $(obj).offset().top
-                // var pleft = $(obj).offset().left;
-                // var tp = ptop+$(this).height()
-                // var ulHeight = $(nextObj).height()
-                // if (tp+ulHeight > document.body.scrollHeight){
-                //     var addHeight = tp+ulHeight+30 - document.body.scrollHeight
-                //     var appdiv = document.createElement("div")
-                //     $(appdiv).css("height",addHeight).addClass("Hzwy23FillBodyForSelectItems")
-                //     $("body").append(appdiv)
-                //     var st = $("body").scrollTop();
-                //     $("body").animate({scrollTop:st+addHeight},500)
-                // }
-                // $(obj).find(".HselectShowAreaHuangZhanWei").offset({
-                //     top:tp,
-                //     left:pleft
-                // })
-
-            }else{
-                $(obj).find("ul").closest("div").hide();
-                $(obj).find(".HshowSelectValue i").css({
-                    "border-color":"#888 transparent transparent transparent",
-                    "border-width":"5px 4px 0px 4px"
-                })
-
-                $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                    $(this).remove()
-                })
-            }
-        })
-
-        $(document).on('click',function(){
-            $(obj).find("ul").closest("div").hide();
-            $(obj).find(".HshowSelectValue i").css({
-                "border-color":"#888 transparent transparent transparent",
-                "border-width":"5px 4px 0px 4px"
-            })
-            $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                $(this).remove()
-            })
-        });
-
-
-        //when select was change
-        //change show values
-        $(sel).on('change',function(){
-            var text = $(this).find("option:selected").text()
-            $(obj).find(".HshowSelectValue span").html(text)
-            if (typeof __DEFAULT.onChange == "function"){
-                __DEFAULT.onChange();
-            }
-        });
-    };
-
-    $.fn.HtreeSelect = function(param){
         var sel = this
         var obj = document.createElement("div")
 
@@ -1450,24 +978,40 @@ var Hutils = {
             iconColor:"#ff5763",
 
             // 值改变触发事件
-            onChange:"",
+            onclick:"",
 
             // select中默认值
             value:"hselectdefault",
 
             // 是否禁止选择
-            disabled:"",
+            disabled:false,
 
-            selectBox: false,
+            // checkbox选择框,
+            // 默认禁用选择框,如果设置成true,则显示考勤选怎狂
+            checkbox:false,
 
-            attr: false,
+            // 是否启动自动化节点/叶子处理
+            // 如果开启,则将会把末级节点全部处理成叶子
+            autoAttr: true,
 
+            // 默认开启节点可以选中
+            // 如果设置成false, 则不允许选择节点,在单击节点时,将会显示或隐藏子节点
             nodeSelect: true,
+
+            dashed:true,
 
         };
 
+        // 记录是否为层级结构
+        // true表示是层级结构
+        // false表示非层级结构
+        var level_flag = false;
+
         $.extend(true,__DEFAULT,param);
 
+        if (__DEFAULT.data.length > 0 && __DEFAULT.data[0].attr != undefined) {
+            __DEFAULT.autoAttr = false;
+        }
 
         // set showBorder to border style
         if (__DEFAULT.showBorder==""){
@@ -1574,76 +1118,343 @@ var Hutils = {
             return list
         };
 
-        function genTreeUI(a){
-            var odivStyle='cursor:pointer;background-color: '+__DEFAULT.bgColor+';padding:0px;text-align: left !important;width: '+__DEFAULT.width+'; border:'+__DEFAULT.border+'; height: '+__DEFAULT.height+'; line-height: '+__DEFAULT.height+';padding-left:10px; display:inline-block; border-radius:'+__DEFAULT.borderRadius+''
-            var odiv = '<div class="HshowSelectValue" style="'+odivStyle+'">' +
-                '<span style="height: '+__DEFAULT.height+'; font-size: '+__DEFAULT.fontSize+'">'+__DEFAULT.placeholder+'</span>' +
-                '<hzw style="position: relative;width: 20px; float: right;height: '+__DEFAULT.height+'; line-height: '+__DEFAULT.height+';">' +
-                '<i style="border-color:#888 transparent transparent transparent;border-style: solid;border-width: 5px 4px 0px 4px;height: 0;left: 50%;margin-left: -4px;margin-top:-3px ;position: absolute;top: 50%;width: 0;"></i>' +
-                '</hzw></div>'
-            odiv+='<div class="HselectShowAreaHuangZhanWei" style="white-space:nowrap;background-color: #fefefe;border: '+__DEFAULT.showBorder+';display: none; border-radius: 3px ;position: fixed;z-index:9999">' +
-                '<input style="border:#6699CC solid 1px; padding-left:5px;margin:5px 5px;height:'+__DEFAULT.showLiHeight+';"/>'
-            var opt = odiv+'<ul style="z-index: 9999;padding: 0px;list-style: none;margin:0px;' +
-                'max-height:'+__DEFAULT.showHeight+';' +
-                'overflow: auto;">'
-            for(var i = 0; i < a.length; i++){
-                var pd = parseInt(a[i].dept)*20 - 10
-                if (isNaN(pd)){
-                    pd = 10
+        // 生成树形线
+        // 辅助查看
+        function genImgLine(dept,attr) {
+            var i = 0;
+            var img_src = document.createElement("yph")
+
+            if (dept == 0 || dept == undefined){
+                var img = document.createElement("img")
+                img.style.height = __DEFAULT.showLiHeight;
+                img.style.width = "20px";
+                img.style.lineHeight = __DEFAULT.showLiHeight;
+                if (__DEFAULT.dashed) {
+                    img.setAttribute("src","/images/icon_select/line.gif");
+                    img_src.appendChild(img);
+                } else {
+                    img.setAttribute("src","/images/icon_select/empty.gif");
+                    img.style.width = "8px";
+                    img_src.appendChild(img);
                 }
-                if (__DEFAULT.selectBox == true) {
-                    if (__DEFAULT.attr == true && a[i].attr == "0") {
-                        // 叶子
-                        opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                            '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px; display: inline-block">' +
-                            '<i class="icon-leaf" style="color: green;"></i>' +
-                            '</hzw><input name="select_check" type="checkbox" style="width:20px; margin-top: 0px;">' +
-                            '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                    } else {
-                        // 节点
-                        if ( __DEFAULT.attr==true ) {
-                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                                '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
-                                '</hzw><input name="select_check" type="checkbox" style="width:20px; margin-top: 0px;">' +
-                                '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                        } else {
-                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                                '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
-                                '</hzw><input name="select_check" type="checkbox" style="width:20px; margin-top: 0px;">' +
-                                '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                return img
+            }
+
+            for (;i<dept-1;i++) {
+                var img = document.createElement("img")
+                img.style.height = __DEFAULT.showLiHeight;
+                img.style.width = "20px";
+                img.style.lineHeight = __DEFAULT.showLiHeight;
+                if (__DEFAULT.dashed) {
+                    img.setAttribute("src","/images/icon_select/line.gif");
+                    img_src.appendChild(img);
+                } else {
+                    if (i == 0) {
+                        img.style.width = "8px";
+                    }
+                    img.setAttribute("src","/images/icon_select/empty.gif");
+                    img_src.appendChild(img);
+                }
+            }
+
+            if (attr == "1") {
+                // 节点
+                var img = document.createElement("img")
+                img.style.height = __DEFAULT.showLiHeight;
+                img.style.width = "20px";
+                img.style.lineHeight = __DEFAULT.showLiHeight;
+                if (__DEFAULT.dashed) {
+                    img.setAttribute("src","/images/icon_select/minus.gif");
+                    img_src.appendChild(img);
+                } else {
+                    if (i == 0) {
+                        img.style.width = "8px";
+                    }
+                    img.setAttribute("src","/images/icon_select/empty.gif");
+                    img_src.appendChild(img);
+                }
+            } else if (attr == "0") {
+                // 叶子
+                var img = document.createElement("img")
+                img.style.height = __DEFAULT.showLiHeight;
+                img.style.width = "20px";
+                img.style.lineHeight = __DEFAULT.showLiHeight;
+                if (__DEFAULT.dashed) {
+                    img.setAttribute("src","/images/icon_select/join.gif");
+                    img_src.appendChild(img);
+                } else {
+                    if (i == 0) {
+                        img.style.width = "8px";
+                    }
+                    img.setAttribute("src","/images/icon_select/empty.gif");
+                    img_src.appendChild(img);
+                }
+            } else {
+                // 没有指定叶子,节点标识
+                // 节点
+                var img = document.createElement("img")
+                img.style.height = __DEFAULT.showLiHeight;
+                img.style.width = "20px";
+                img.style.lineHeight = __DEFAULT.showLiHeight;
+                if (__DEFAULT.dashed) {
+                    img.setAttribute("src","/images/icon_select/minus.gif");
+                    img_src.appendChild(img);
+                } else {
+                    if (i == 0) {
+                        img.style.width = "8px";
+                    }
+                    img.setAttribute("src","/images/icon_select/empty.gif");
+                    img_src.appendChild(img);
+                }
+            }
+            return img_src
+        }
+
+        // 产生一行li
+        function genULli(attr,id,dept,text) {
+            var li = document.createElement("li")
+            li.setAttribute("data-attr",attr);
+            li.setAttribute("data-id",id);
+            li.setAttribute("data-dept",dept);
+            li.style.margin = "0px";
+            li.style.textAlign = "left";
+            li.style.fontSize = "500";
+            li.style.height = __DEFAULT.showLiHeight;
+            li.style.lineHeight = __DEFAULT.showLiHeight;
+            li.style.fontSize = __DEFAULT.showFontSize;
+            li.style.cursor = "pointer";
+            li.style.position = "relative";
+
+            var hzw = document.createElement("hzw")
+            hzw.setAttribute("class","HshowOrHideIconHzw");
+            hzw.style.height = __DEFAULT.showLiHeight;
+            hzw.style.lineHeight = __DEFAULT.showLiHeight;
+            hzw.style.width = "20px";
+            hzw.style.display = "inline-block";
+            var i = document.createElement("i")
+            if (attr == "0") {
+                i.setAttribute("class","icon-leaf")
+                i.style.color = "green";
+            } else {
+                i.setAttribute("class","icon-folder-open");
+                i.style.color = "#ccb008";
+            }
+            hzw.appendChild(i)
+
+            var span = document.createElement("span");
+            span.style.height = __DEFAULT.showLiHeight;
+            span.style.lineHeight = __DEFAULT.showLiHeight;
+            span.style.position = "absolute";
+            span.innerHTML = text;
+
+
+            var img_src = genImgLine(dept,attr)
+            li.appendChild(img_src)
+
+
+            // 如果selectBox开启多选,则显示勾选框
+            if (__DEFAULT.checkbox) {
+                var input = document.createElement("input")
+                input.setAttribute("name","select_check")
+                input.setAttribute("type","checkbox")
+                input.style.width = "20px";
+                input.style.marginTop = "0px";
+                li.appendChild(input);
+            }
+
+            li.appendChild(hzw);
+            li.appendChild(span)
+            return li
+        }
+
+        // 替换select显示区域.
+        // 重新构建选择框
+        function genDiv() {
+            var div = document.createElement("div")
+            div.style.cursor = "pointer";
+            div.style.backgroundColor = __DEFAULT.bgColor;
+            div.style.textAlign = "left !important";
+            div.style.width = __DEFAULT.width;
+            div.style.height = __DEFAULT.height;
+            div.style.lineHeight = __DEFAULT.height;
+            div.style.paddingLeft = "10px";
+            div.style.display = "inline-block"
+            div.style.border = "#ccc solid 1px";
+            div.style.borderRadius = __DEFAULT.borderRadius;
+            div.setAttribute("class","HshowSelectValue")
+            div.style.position = "relative";
+
+            var span = document.createElement("span")
+            span.style.height = __DEFAULT.height;
+            span.style.fontSize = __DEFAULT.fontSize;
+            span.style.overflow = "hidden";
+            span.style.wordBreak = "keep-all";
+            span.style.whitespace = "nowrap";
+            span.style.textOverflow = "ellipsis";
+            span.style.display = "inline-block";
+            span.innerHTML = __DEFAULT.placeholder;
+
+            var hzw = document.createElement("hzw")
+            hzw.style.position = "absolute";
+            hzw.style.width = "20px";
+            hzw.style.right = "0px";
+            // hzw.style.float = "right";
+            hzw.style.height = __DEFAULT.height;
+            hzw.style.lineHeight = __DEFAULT.height;
+
+            var i = document.createElement("i")
+            i.style.borderColor = "#888 transparent transparent transparent";
+            i.style.borderWidth = "5px 4px 0px 4px"
+            i.style.height = "0";
+            i.style.left = "50%";
+            i.style.marginLeft = "-4px";
+            i.style.marginTop = "-3px";
+            i.style.position = "absolute"
+            i.style.top = "50%";
+            i.style.width = "0px";
+            i.style.borderStyle = "solid";
+            hzw.appendChild(i)
+
+            div.appendChild(span)
+            div.appendChild(hzw)
+            return div;
+        }
+
+        // 根据数据,
+        // 生成需要展示的数据
+        function genTreeUI(a){
+
+            var div = document.createElement("div")
+            div.setAttribute("class","HselectShowAreaHuangZhanWei");
+            div.style.whitespace = "nowrap";
+            div.style.backgroundColor = "#fefefe";
+            div.style.border = __DEFAULT.showBorder
+            div.style.borderRadius = " 3px";
+            div.style.display = "none";
+            div.style.position = "fixed";
+            div.style.zIndex  = 9999;
+
+            var input = document.createElement("input")
+            input.style.border = "#6699CC solid 1px";
+            input.style.paddingLeft = "5px";
+            input.style.margin = "5px 5px";
+            input.style.height = __DEFAULT.showLiHeight;
+            div.appendChild(input)
+
+            var opt = document.createElement("ul")
+            opt.style.zIndex = 9999;
+            opt.style.padding = "0px";
+            opt.style.listStyle = "none";
+            opt.style.margin = "0px";
+            opt.style.maxHeight = __DEFAULT.showHeight;
+            opt.style.overflow = "auto";
+
+            for(var i = 0; i < a.length; i++){
+                var pd = parseInt(a[i].dept)
+                if (pd > 1) {
+                    level_flag = true;
+                }
+                if (isNaN(pd)){
+                    pd = 1
+                }
+                opt.appendChild(genULli(a[i].attr,a[i].id,a[i].dept,a[i].text));
+            }
+            div.appendChild(opt)
+            return div
+        };
+
+        function adjustImg() {
+            if (__DEFAULT.dashed && level_flag) {
+                var ul = ui.getElementsByTagName("ul")
+                if (ul.length > 0) {
+                    var yph = ul[0].firstElementChild.getElementsByTagName("yph");
+                    if (yph.length > 0) {
+                        if (yph[0].firstElementChild.getAttribute("src") == "/images/icon_select/minus.gif"){
+                            yph[0].firstElementChild.setAttribute("src","/images/icon_select/minusbottom.gif")
+                        }
+                        if (yph[0].firstElementChild.getAttribute("src") == "/images/icon_select/join.gif"){
+                            yph[0].firstElementChild.setAttribute("src","/images/icon_select/upjoinbutton.gif")
                         }
                     }
-                } else {
-                    if (__DEFAULT.attr == true && a[i].attr == "0") {
-                        //叶子
-                        opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                            '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px; display: inline-block">' +
-                            '<i class="icon-leaf" style="color: green;"></i>' +
-                            '</hzw>' +
-                            '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                    } else {
-                        //节点
-                        if (__DEFAULT.attr == true) {
-                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                                '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
-                                '</hzw>' +
-                                '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
-                        } else {
-                            opt+='<li data-attr="'+a[i].attr+'" data-id="'+a[i].id+'" data-dept="'+a[i].dept+'" style="margin:0px; text-align: left;font-weight:500;padding-left:'+pd+'px; height:'+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; font-size: '+__DEFAULT.showFontSize+'; cursor: pointer;position: relative;">' +
-                                '<hzw class="HshowOrHideIconHzw" style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; width: 20px;cursor: cell;display: inline-block">' +
-                                '<i class="icon-folder-open" style="color: #ccb008;"></i>' +
-                                '</hzw>' +
-                                '<span style="height: '+__DEFAULT.showLiHeight+'; line-height: '+__DEFAULT.showLiHeight+'; position: absolute;">'+a[i].text+'</span></li>'
+                }
+                var children = ul[0].childNodes;
+                var length = children.length;
+                var img_index = children[length-1].getAttribute("data-dept");
+                for (var i = 1; i < length; i++){
+                    var curli = children[i]
+                    var nextli = children[i+1]
+                    if (nextli == undefined) {
+                        var curdept = curli.getAttribute("data-dept")
+                        var curNode = curli.getAttribute("data-attr")
+                        if (curNode == "0") {
+                            var yph = curli.getElementsByTagName("yph")
+                            if (yph.length >= 0 && !isNaN(curdept)){
+                                yph[0].childNodes[parseInt(curdept)-1].setAttribute("src","/images/icon_select/joinbottom.gif");
+                            }
                         }
+                    } else {
+                        var curdept = curli.getAttribute("data-dept")
+                        var nextdept = nextli.getAttribute("data-dept")
+
+                        var curNode = curli.getAttribute("data-attr")
+                        var nextNode = nextli.getAttribute("data-attr")
+                        if (parseInt(curdept) > parseInt(nextdept)){
+                            // 下级节点是节点，当前选中想层级大于下级接节点
+                            if (curNode == "0") {
+                                var yph = curli.getElementsByTagName("yph")
+                                if (yph.length >= 0 && !isNaN(curdept)){
+                                    yph[0].childNodes[parseInt(curdept)-1].setAttribute("src","/images/icon_select/joinbottom.gif");
+                                }
+                            }
+                        }
+                    }
+
+                    var yph = children[length-i].getElementsByTagName("yph")
+                    if (img_index > 0) {
+                        if (children[length-i].getAttribute("data-attr") == "1") {
+                            var dept = children[length-i].getAttribute("data-dept");
+                            if (parseInt(dept) < img_index) {
+                                img_index = parseInt(dept);
+                                yph[0].lastElementChild.setAttribute("src","/images/icon_select/minustop.gif")
+                            }
+                        }
+                        for (var j = 0; j < img_index - 1; j++){
+                            yph[0].childNodes[j].setAttribute("src","/images/icon_select/empty.gif")
+                        }
+                    }
+
+                    if (children[length-i].getAttribute("data-attr") == "1") {
+                        var imgs = children[length-i].getElementsByTagName("img")
+                        if (imgs.length > 0) {
+                            imgs[imgs.length-1].setAttribute("class","hzwy23-images-click")
+                        }
+                    }
+                }
+
+
+                // 处理第一个
+                var yph = children[0].getElementsByTagName("yph")
+                if (img_index > 0) {
+                    if (children[0].getAttribute("data-attr") == "1") {
+                        var dept = children[0].getAttribute("data-dept");
+                        if (parseInt(dept) < img_index) {
+                            img_index = parseInt(dept);
+                            yph[0].lastElementChild.setAttribute("src","/images/icon_select/minusright.gif")
+                        }
+                    }
+                    for (var j = 0; j < img_index - 1; j++){
+                        yph[0].childNodes[j].setAttribute("src","/images/icon_select/empty.gif")
+                    }
+                }
+
+                if (children[0].getAttribute("data-attr") == "1") {
+                    var imgs = children[0].getElementsByTagName("img")
+                    if (imgs.length > 0) {
+                        imgs[imgs.length-1].setAttribute("class","hzwy23-images-click")
                     }
                 }
             }
-            opt +='</ul></div>'
-            return opt;
-        };
+        }
 
         function showUp(e){
             var dept = $(e).attr("data-dept")
@@ -1655,65 +1466,135 @@ var Hutils = {
             })
         };
 
+        // 初始化select框
+        // 然后隐藏select框
         function initSelect(selObj,arr){
-            var optHtml = ""
             for (var i = 0; i < arr.length; i++){
-                optHtml+='<option value="'+arr[i].id+'">'+arr[i].text+'</option>'
+                var opt = document.createElement("option")
+                opt.setAttribute("value",arr[i].id)
+                opt.innerHTML = arr[i].text;
+                selObj.append(opt)
             }
-            $(selObj).append(optHtml)
-            $(selObj).hide()
+            $(selObj).hide();
         };
 
-        function showOrHide(e){
 
-            var dept = $(e).attr("data-dept")
-            var nextObj = $(e).next()
-            var nextDept = $(nextObj).attr("data-dept")
-            var nextDisplay = $(nextObj).css("display")
-            if (nextDisplay == "none" && parseInt(nextDept)>parseInt(dept)){
-
-                if ($(e).find("i").addClass("icon-folder-close")) {
+        function modifyIcon(e,showOrHide) {
+            if (showOrHide) {
+                // 显示
+                if ($(e).find("i").hasClass("icon-folder-close")) {
                     $(e).find("i").addClass("icon-folder-open").css({"color":"#ccb008"}).removeClass("icon-folder-close");
                 }
+            } else {
+                // 隐藏
+                if ($(e).find("i").hasClass("icon-folder-open")) {
+                    $(e).find("i").addClass("icon-folder-close").removeClass("icon-folder-open");
+                }
+            }
+        }
+
+        function modifyImgLine(e,showOrHide) {
+            if (showOrHide && __DEFAULT.dashed && $(e).find("img").last() != undefined) {
+                // 显示
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/plus.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/minus.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/plusbottom.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/minusbottom.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/plustop.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/minustop.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/plusright.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/minusright.gif")
+                    return
+                }
+            } else if ( __DEFAULT.dashed && $(e).find("img").last() != undefined) {
+                // 隐藏
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/minus.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/plus.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/minusbottom.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/plusbottom.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/minustop.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/plustop.gif")
+                    return
+                }
+                if ($(e).find("img").last().attr("src") == "/images/icon_select/minusright.gif") {
+                    $(e).find("img").last().attr("src","/images/icon_select/plusright.gif")
+                    return
+                }
+            }
+        }
+
+        // 隐藏过现实下级信息
+        function showOrHide(e){
+            // 参数是被点击的哪一行
+
+            // 获取当前被点击的哪一行的层级
+            var dept = $(e).attr("data-dept")
+
+            // 获取下一行对象
+            var nextObj = $(e).next()
+
+            // 获取下一行层级
+            var nextDept = $(nextObj).attr("data-dept")
+
+            // 获取下一行状态
+            var nextDisplay = $(nextObj).css("display")
+
+            // 如果下一行是隐藏状态, 则修改成现实
+            // 如果下一行是显示状态,则修改为隐藏
+            if (nextDisplay == "none" && parseInt(nextDept) > parseInt(dept)){
+
+                // 如果检查到图标是关闭状态状态
+                // 则修改为打开状态
+                modifyIcon(e,true)
+
+                //修改线条
+                //如果展开,则替换成 减号
+                //如果隐藏,则替换成 加号
+                modifyImgLine(e,true)
 
                 $(e).nextAll().each(function(index,element) {
                     if (parseInt(dept)+1==parseInt($(element).attr("data-dept"))){
-                        // 切换成打开状态
-                        if (__DEFAULT.attr == true) {
-                            if ($(element).attr("data-attr") == "0") {
-                                $(element).show();
-                            } else {
-                                $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open");
-                                $(element).show();
-                            }
-                        } else if ($(element).find("i").hasClass("icon-folder-open")) {
-                            $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open");
-                            $(element).show();
-                        } else {
-                            $(element).show();
-                        }
+
+                        $(element).show();
+                        modifyIcon(element,false)
+                        modifyImgLine(element,false)
+
                     } else if (parseInt(dept)+1 < parseInt($(element).attr("data-dept"))) {
                         // 切换成关闭状态
-                        if ($(element).find("i").hasClass("icon-folder-open")) {
-                            $(element).find("i").addClass("icon-folder-close").removeClass("icon-folder-open");
-                        }
+                        modifyIcon(element,false)
+
                         $(element).hide();
+
+                        modifyImgLine(element,false)
                     } else {
+                        // 如果遇到下一层级的高度小于被选中的层级高度
+                        // 则退出执行过程
                         return false
                     }
                 })
             }else if (nextDisplay == "none" && parseInt(nextDept)<=parseInt(dept)){
+                // 如果下一行被隐藏
+                // 且下一行的层级下雨当前层级
+                // 则表示没有下一层极,直接退出
                 return
             }else if (nextDisplay != "none" && parseInt(nextDept)>parseInt(dept)){
-                if ($(e).find("i").hasClass("icon-folder-open")) {
-                    $(e).find("i").removeClass("icon-folder-open").addClass("icon-folder-close")
-                }
+                modifyImgLine(e,false);
+                modifyIcon(e,false);
 
                 $(e).nextAll().each(function(index,element){
                     if (parseInt(dept)<parseInt($(element).attr("data-dept"))){
-                        if ($(element).find("i").hasClass("icon-folder-open")) {
-                            $(element).find("i").removeClass("icon-folder-open").addClass("icon-folder-close")
-                        }
+                        modifyImgLine(e,false)
+                        modifyIcon(e,false)
                         $(element).hide();
                     }else if (parseInt(dept)>=parseInt($(element).attr("data-dept"))){
                         return false
@@ -1724,19 +1605,35 @@ var Hutils = {
             }
         };
 
+        // 如果非层级结构
+        // 则删除虚线和图标
         function adjustnormaltree() {
-            // 如果没有树形层级,则取消叶子
-            var leve_flag = false;
-            $(obj).find("ul li").each(function (index, element) {
-                if (parseInt($(element).attr("data-dept")) > 1) {
-                    leve_flag = true;
-                    return false
-                }
-            });
-            if (!leve_flag) {
-                $(obj).find("ul li").each(function (index, element) {
-                    $(element).find("hzw").remove()
+            if (!level_flag) {
+                $(ui).find("li").each(function (index, element) {
+                    $(element).find("hzw").remove();
+                    $(element).find("img").remove();
+                    $(element).css("padding-left","8px");
                 })
+            }
+        };
+
+        function adjustAttr() {
+            // 修正叶子节点
+            // 如果设置了成员属性 attr == false, 则执行这个操作
+            if (__DEFAULT.autoAttr) {
+                $(ui).find("ul li").each(function(index,element){
+                    var curDept = parseInt($(element).attr("data-dept"))
+                    var nextDept = parseInt($(element).next().attr("data-dept"))
+                    if (curDept>=nextDept || isNaN(nextDept)){
+                        $(element).attr("data-attr","0");
+                        $(element).find("hzw i").removeClass("icon-folder-open icon-folder-close").addClass("icon-leaf").css("color","green");
+                        if (__DEFAULT.dashed && level_flag) {
+                            $(element).find("img").last().attr("src","/images/icon_select/join.gif");
+                        }
+                    } else {
+                        $(element).attr("data-attr","1")
+                    }
+                });
             }
         }
 
@@ -1752,36 +1649,42 @@ var Hutils = {
                 $(sel).val(__DEFAULT.value);
                 var text = $(sel).find("option:selected").text()
                 $(obj).find(".HshowSelectValue span").html(text)
+            } else {
+                $(sel).val("");
             }
         };
 
         var ui = genTreeUI(sortTree(__DEFAULT.data));
-        initSelect(sel,__DEFAULT.data);
+        // 如果没有层级,则清除第一层级的叶子
+        adjustnormaltree();
+        // 调整li属性,
+        // 如果没有设置attr这个字段,则自动匹配
+        adjustAttr();
 
-        $(obj).html(ui);
+        // 设置虚线
+        adjustImg()
+
+        var pdiv = genDiv();
+
+        initSelect(sel,__DEFAULT.data);
+        obj.appendChild(pdiv)
+        obj.appendChild(ui);
+
         $(sel).after(obj);
-        $(obj).find("input:eq(0)").focus();
+
         // 清除select的默认选中状态，确保select初始化后，没有任何值被选中
         // 如果在初始化Hselect时，指定了初始值，则使用初始值
         initDefaultValue();
 
-        // 修正叶子节点
-        // 如果设置了成员属性 attr == false, 则执行这个操作
-        if (__DEFAULT.attr == false) {
-            $(obj).find("ul li").each(function(index,element){
-                var curDept = parseInt($(element).attr("data-dept"))
-                var nextDept = parseInt($(element).next().attr("data-dept"))
-                if (curDept>=nextDept || isNaN(nextDept)){
-                    $(element).find("hzw i").removeClass("icon-folder-close").addClass("icon-leaf").css("color","green");
-                }
-            });
-        }
-
-        if (__DEFAULT.disabled=="disabled"){
+        if (__DEFAULT.disabled){
             // 如果select禁止选择,
             // 不需要绑定触发事件
+            $(obj).find(".HshowSelectValue").css("background-color","#f5f5f5");
             return
         }
+
+        // 让搜索框获取焦点
+        $(obj).find("input:eq(0)").focus();
 
         // input 框中输入事件，当用户在Hselect的下拉框中搜索时，触发这个事件
         $(obj).find("input:eq(0)").on('input',function(){
@@ -1820,6 +1723,8 @@ var Hutils = {
             $(this).focus();
         });
 
+
+        // checkbox选择框,绑定事件
         $(obj).find("input[name='select_check']").on("click",function () {
             // 取消后续事件
             if (window.event != undefined){
@@ -1828,9 +1733,18 @@ var Hutils = {
                 var event = getEvent()
                 event.stopPropagation()
             }
+
+            // 获取当前层级的li对象
             var curli = $(this).parent();
+
+            // 判断当前li的层级
             var dept = $(curli).attr("data-dept");
+
+            // 获取下一个li对象层级
             var nextDept = $(curli).next().attr("data-dept");
+
+            // 如果下一个层级的高度大于当前层级高度,
+            // 则选中所有的下级
             if (parseInt(dept) < parseInt(nextDept)){
                 if ($(this).is(":checked")) {
                     $(curli).nextAll().each(function (index, element) {
@@ -1861,9 +1775,12 @@ var Hutils = {
                 var event = getEvent()
                 event.stopPropagation()
             }
+
+            // 当选中的是叶子的时候,不触发事件
             if ($(this).find("i").hasClass("icon-leaf")) {
                 return
             }
+
             showOrHide($(this).parent())
         });
 
@@ -1889,6 +1806,18 @@ var Hutils = {
             })
         });
 
+        // 绑定虚线点击事件
+        $(obj).find(".hzwy23-images-click").on('click',function(){
+            // 取消后续事件
+            if (window.event != undefined){
+                window.event.cancelBubble = true;
+            } else {
+                var event = getEvent()
+                event.stopPropagation()
+            }
+            showOrHide($(this).closest("li"))
+        });
+
         $(obj).find("li").on('click',function(){
             // 取消后续事件
             if (window.event != undefined){
@@ -1898,34 +1827,43 @@ var Hutils = {
                 event.stopPropagation()
             }
 
-            if ( __DEFAULT.attr == true && __DEFAULT.nodeSelect == false && $(this).attr("data-attr") != "0"){
+            if (__DEFAULT.nodeSelect == false && $(this).attr("data-attr") == "1"){
                 showOrHide($(this))
                 return
             }
 
-            if (__DEFAULT.attr == true && __DEFAULT.selectBox == true && $(this).attr("data-attr") == "0") {
-                if ($(this).find("input").is(":checked")) {
-                    $(this).find("input").prop("checked",false)
-                } else {
-                    $(this).find("input").prop("checked",true)
+            if (__DEFAULT.checkbox == true) {
+                if ($(this).attr("data-attr") == "0"){
+                    // 如果开启了checkbox, 则表示seledct不允填写值
+                    // 则提供多选,如果这个叶子节点已经被选中
+                    // 则取消选中状态
+                    // 否则选中这个叶子
+                    if ($(this).find("input").is(":checked")) {
+                        $(this).find("input").prop("checked",false)
+                    } else {
+                        $(this).find("input").prop("checked",true)
+                    }
+                } else if ($(this).attr("data-attr") == "1") {
+                    showOrHide($(this))
+                    return
                 }
             } else {
+                // 如果是节点
+                // 则不管是否开启checkbox
+                // 都一样的处理方式
                 var text = $(this).find("span").html();
                 var id = $(this).attr("data-id");
                 $(sel).val(id);
                 $(this).closest("div").prev().find("span").html(text);
                 $(this).closest("div").hide();
-                $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                    $(this).remove()
-                });
 
                 $(obj).find(".HshowSelectValue i").css({
                     "border-color":"#888 transparent transparent transparent",
                     "border-width":"5px 4px 0px 4px"
                 });
 
-                if (typeof __DEFAULT.onChange == "function"){
-                    __DEFAULT.onChange();
+                if (typeof __DEFAULT.onclick == "function"){
+                    __DEFAULT.onclick();
                 };
             }
         });
@@ -1939,9 +1877,6 @@ var Hutils = {
                 event.stopPropagation()
             }
         });
-
-        // 如果没有层级,则清除第一层级的叶子
-        adjustnormaltree()
 
         $(obj).find(".HshowSelectValue").on('click',function(){
             var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
@@ -1972,24 +1907,6 @@ var Hutils = {
                     "border-width":"0px 4px 5px 4px"
                 });
 
-                // var ptop = $(obj).offset().top
-                // var pleft = $(obj).offset().left;
-                // var tp = ptop+$(this).height();
-                // var ulHeight = $(nextObj).height();
-                //
-                // if (tp+ulHeight > document.body.scrollHeight){
-                //     var addHeight = tp+ulHeight+30 - document.body.scrollHeight
-                //     var appdiv = document.createElement("div")
-                //     $(appdiv).css("height",addHeight).addClass("Hzwy23FillBodyForSelectItems")
-                //     $("body").append(appdiv)
-                //     var st = $("body").scrollTop();
-                //     $("body").animate({scrollTop:st+addHeight},500)
-                // }
-
-                // $(obj).find(".HselectShowAreaHuangZhanWei").offset({
-                //     top:tp,
-                //     left:pleft
-                // })
             }else{
                 $(obj).find(".HshowSelectValue i").css({
                     "border-color":"#888 transparent transparent transparent",
@@ -1997,9 +1914,6 @@ var Hutils = {
                 });
 
                 $(obj).find("ul").closest("div").hide();
-                $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                    $(this).remove()
-                })
             }
         });
 
@@ -2009,10 +1923,6 @@ var Hutils = {
                 "border-color":"#888 transparent transparent transparent",
                 "border-width":"5px 4px 0px 4px"
             });
-
-            $("body").find(".Hzwy23FillBodyForSelectItems").animate({height:'0px'},500,function(){
-                $(this).remove()
-            });
         });
 
         //when select was change
@@ -2020,64 +1930,11 @@ var Hutils = {
         $(sel).on('change',function(){
             var text = $(this).find("option:selected").text()
             $(obj).find(".HshowSelectValue span").html(text)
-            if (typeof __DEFAULT.onChange == "function"){
-                __DEFAULT.onChange();
+            if (typeof __DEFAULT.onclick == "function"){
+                __DEFAULT.onclick();
             }
         });
 
-        // $("body").scroll(function() {
-        //     // 取消后续事件
-        //     alert("hello world")
-        //     if (window.event != undefined){
-        //         window.event.cancelBubble = true;
-        //     } else {
-        //         var event = getEvent()
-        //         event.stopPropagation()
-        //     }
-        //     var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-        //     if (showUiStatus != "none"){
-        //         var ptop = $(obj).offset().top
-        //         var pleft = $(obj).offset().left;
-        //         var tp = ptop+$(obj).find(".HshowSelectValue").height()
-        //         $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-        //     }
-        // });
-
-        //
-        // $(document).scroll(function() {
-        //     // 取消后续事件
-        //     alert("hello")
-        //     if (window.event != undefined){
-        //         window.event.cancelBubble = true;
-        //     } else {
-        //         var event = getEvent()
-        //         event.stopPropagation()
-        //     }
-        //     var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-        //     if (showUiStatus != "none"){
-        //         var ptop = $(obj).offset().top
-        //         var pleft = $(obj).offset().left;
-        //         var tp = ptop+$(obj).find(".HshowSelectValue").height()
-        //         $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-        //     }
-        // });
-
-        // $("div").scroll(function() {
-        //     // 取消后续事件
-        //     if (window.event != undefined){
-        //         window.event.cancelBubble = true;
-        //     } else {
-        //         var event = getEvent()
-        //         event.stopPropagation()
-        //     }
-        //     var showUiStatus = $(obj).find(".HselectShowAreaHuangZhanWei").css("display")
-        //     if (showUiStatus != "none"){
-        //         var ptop = $(obj).offset().top
-        //         var pleft = $(obj).offset().left;
-        //         var tp = ptop+$(obj).find(".HshowSelectValue").height()
-        //         $(obj).find(".HselectShowAreaHuangZhanWei").offset({top:tp,left:pleft})
-        //     }
-        // });
     };
 }(jQuery));
 
@@ -2088,7 +1945,6 @@ var Hutils = {
 
     $.extend({
         Notify:function(param){
-
             var DEFAULT = {
                 icon:"icon-ok",
                 caption:"",
@@ -2156,6 +2012,12 @@ var Hutils = {
                 cache:false,
                 async:false,
                 dataType:"json",
+                beforeSend:function () {
+
+                },
+                complete:function () {
+
+                },
                 error:function(m) {
                     var msg = JSON.parse(m.responseText);
                     jQuery.Notify({
@@ -2171,7 +2033,9 @@ var Hutils = {
                 success:function(b){
                 }
             };
+
             $.extend(!0,b,a);
+
             "delete"==b.type.toLowerCase()?(
                 b.data._method="DELETE",
                     $.ajax({
@@ -2182,6 +2046,8 @@ var Hutils = {
                         data:b.data,
                         dataType:b.dataType,
                         error:b.error,
+                        beforeSend:b.beforeSend,
+                        complete:b.complete,
                         success:function(a){
                             b.success(a)}
                     })
@@ -2192,6 +2058,8 @@ var Hutils = {
                 async:b.async,
                 data:b.data,
                 dataType:b.dataType,
+                beforeSend:b.beforeSend,
+                complete:b.complete,
                 error:b.error,
                 success: function(da) {
                     b.success(da)
@@ -2243,7 +2111,7 @@ var Hutils = {
                     uploader = WebUploader.create({
 
                         // swf文件路径
-                        swf: '/static/webuploader/dist/Uploader.swf',
+                        swf: '/webuploader/dist/Uploader.swf',
 
                         // 文件接收服务端。
                         server: __DEFAULT.url,
@@ -2351,8 +2219,12 @@ var Hutils = {
 
                 footerBtnStatus:true,
 
+                submitBtn:true,
+                submitIcon:"icon-ok",
                 submitDesc:"提交",
 
+                cancelBtn:true,
+                cancelIcon:"icon-remove",
                 cancelDesc:"取消",
             }
             $.extend(true,__DEFAULT,param)
@@ -2367,8 +2239,8 @@ var Hutils = {
                     '</div>'+
                     '<div class="modal-body" style="width: '+__DEFAULT.width+'; overflow-y: auto">'+__DEFAULT.body+'</div>'+
                     '<div class="modal-footer btn-group-sm">'+
-                    '<button type="button" class="btn btn-danger cancel" data-dismiss="modal"><i class="icon-remove"></i>&nbsp;'+__DEFAULT.cancelDesc+'</button>'+
-                    '<button type="button" class="btn btn-primary submit"><i class="icon-ok"></i>&nbsp;'+__DEFAULT.submitDesc+'</button>'+
+                    '<button type="button" class="btn btn-danger cancel" data-dismiss="modal"><i class="'+__DEFAULT.cancelIcon+'"></i>&nbsp;'+__DEFAULT.cancelDesc+'</button>'+
+                    '<button type="button" class="btn btn-primary submit"><i class="'+__DEFAULT.submitIcon+'"></i>&nbsp;'+__DEFAULT.submitDesc+'</button>'+
                     '</div>' +
                     '</div>' +
                     '</div>';
@@ -2429,6 +2301,15 @@ var Hutils = {
                 })
             }
 
+            function initfooter(mode){
+                if (!__DEFAULT.cancelBtn){
+                    $(getObj(mode,"cancel","button")).remove();
+                }
+                if (!__DEFAULT.submitBtn){
+                    $(getObj(mode,"submit","button")).remove();
+                }
+            }
+
             //
             var mframe =  init()
             var hmode = showModal(mframe)
@@ -2467,11 +2348,11 @@ var Hutils = {
                         })
                     } else if (typeof __DEFAULT.callback == "function"){
                         $(getObj(getObj(hmode,"modal-footer"),"cancel","button")).on("click",function(){
-                            console.log("defined callback, cancel")
+                            console.log("defined callback, cancel");
                             $(hmode).remove()
                         })
                         $(getObj(getObj(hmode,"modal-footer"),"submit","button")).on("click",function(){
-                            console.log("defined callback, submit")
+                            console.log("defined callback, submit");
                             __DEFAULT.callback(hmode)
                         })
                     }
@@ -2482,6 +2363,7 @@ var Hutils = {
                 $(getObj(hmode,"modal-body")).height(h+57);
             }
 
+            initfooter(hmode);
 
             // preprocess function
             if (typeof  __DEFAULT.preprocess == "function"){
@@ -2676,7 +2558,7 @@ var Hutils = {
                     })
                 }
             }
-            initfooter(hmode)
+            initfooter(hmode);
             // preprocess function
             if (typeof  __DEFAULT.preprocess == "function"){
                 __DEFAULT.preprocess()

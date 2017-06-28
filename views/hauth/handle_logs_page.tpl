@@ -1,21 +1,16 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">操作记录</span>
+        <span style="font-size: 14px;">操作记录</span>
     </div>
 </div>
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <div id="hUserLogsTableTools" class="pull-left">
-            <button onclick="LogsHandle.search()" class="btn btn-success btn-sm">
-                <i class="icon-search"> 搜索</i>
-            </button>
-            <button onclick="LogsHandle.download()" class="btn btn-success btn-sm" title="下载操作记录">
-                <span class="icon-wrench"> 下载</span>
-            </button>
-        </div>
-        <div class="pull-right" style="height: 44px; line-height: 44px; width: 180px;">
-            <input type="text" class="form-control" placeholder="页面内容搜索框" style="height: 30px; line-height: 30px; margin-top: 7px;">
-        </div>
+    <div id="hUserLogsTableTools" class="pull-right">
+        <button onclick="LogsHandle.search()" class="btn btn-info btn-sm">
+            <i class="icon-search"> 搜索</i>
+        </button>
+        <button onclick="LogsHandle.download()" class="btn btn-info btn-sm" title="下载操作记录">
+            <span class="icon-wrench"> 下载</span>
+        </button>
     </div>
 </div>
 
@@ -56,6 +51,7 @@
                 header:"客户端发送到服务器的参数信息",
                 body:optHtml,
                 height:"360px",
+                submitBtn:false,
             })
         },
         search:function(){

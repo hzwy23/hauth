@@ -1,20 +1,21 @@
 <div class="row subsystem-header">
-    <span style="font-size: 16px;">域信息管理</span>
+    <span style="font-size: 14px;">域信息管理</span>
 </div>
-
+<div class="row subsystem-toolbar">
+    <div class="pull-right">
+        <button onclick="DomainObj.domainInsertRow()" class="btn btn btn-info btn-sm">
+            <i class="icon-plus"> 新增</i>
+        </button>
+        <button onclick="DomainObj.domainEditRow()" class="btn btn btn-info btn-sm">
+            <i class="icon-edit"> 编辑</i>
+        </button>
+        <button  onclick="DomainObj.domainDeleteRow()" class="btn btn btn-danger btn-sm">
+            <i class="icon-trash"> 删除</i>
+        </button>
+    </div>
+</div>
 <div class="row">
     <div id="h-domain-info" class="col-sm-12 col-md-12 col-lg-12">
-        <div id="h-domain-toolbar-list" class="pull-left">
-            <button onclick="DomainObj.domainInsertRow()" class="btn btn btn-success btn-sm">
-                <i class="icon-plus"> 新增</i>
-            </button>
-            <button onclick="DomainObj.domainEditRow()" class="btn btn btn-success btn-sm">
-                <i class="icon-edit"> 编辑</i>
-            </button>
-            <button  onclick="DomainObj.domainDeleteRow()" class="btn btn btn-danger btn-sm">
-                <i class="icon-trash"> 删除</i>
-            </button>
-        </div>
         <table id="HdomainInfoTable"></table>
     </div>
 </div>
@@ -40,18 +41,17 @@
         getDomainInfo:function(){
             $("#HdomainInfoTable").bootstrapTable({
                 url:'/v1/auth/domain/get',
-                height:document.documentElement.clientHeight-76,
+                height:document.documentElement.clientHeight-118,
                 uniqueId:'domain_id',
-                toolbar:"#h-domain-toolbar-list",
                 striped: true,
                 pagination: true,
                 pageList:[80,160,400,800,3000,"All"],
                 showRefresh:true,
                 pageSize: 40,
                 showExport:false,
-                search:true,
+                search:false,
                 sidePagination: "client",
-                showColumns: true,
+                showColumns: false,
                 columns:[{
                     checkbox:true,
                 }, {
@@ -149,7 +149,7 @@
 
                     formatter:function(value,rows,index){
 
-                        return '<span class="h-td-btn btn-primary btn-xs" onclick="DomainObj.getSharePage(\''+rows.domain_id+'\',\''+ rows.domain_desc+'\')">共享管理</span>'
+                        return '<span class="h-td-btn btn-success btn-xs" onclick="DomainObj.getSharePage(\''+rows.domain_id+'\',\''+ rows.domain_desc+'\')">共享管理</span>'
 
                     }
                 }]

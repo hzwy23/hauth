@@ -1,38 +1,43 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">用户管理</span>
+        <span style="font-size: 14px;">用户管理</span>
     </div>
 </div>
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <div class="pull-left">
-            <button onclick="UserObj.add()" class="btn btn-success btn-sm">
-                <i class="icon-plus"> 新增</i>
-            </button>
-            <button onclick="UserObj.edit()" class="btn btn-success btn-sm" title="下载操作记录">
-                <span class="icon-edit"> 编辑</span>
-            </button>
-            <!--<button onclick="" class="btn btn-success btn-sm" title="下载操作记录">-->
-                <!--<span class="icon-upload-alt"> 导入</span>-->
-            <!--</button>-->
-            <!--<button onclick="" class="btn btn-success btn-sm" title="下载操作记录">-->
-                <!--<span class="icon-download-alt"> 导出</span>-->
-            <!--</button>-->
-            <button onclick="UserObj.delete()" class="btn btn-danger btn-sm" title="下载操作记录">
-                <span class="icon-trash"> 删除</span>
-            </button>
-        </div>
-
-        <div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">
-            <span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;所属域：</span>
-            <select id="h-user-domain-list" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
-            </select>
-        </div>
+    <div style="height: 44px; line-height: 44px;display: inline;">
+        <span style="font-size: 10px; font-weight: 600; height: 30px; line-height: 30px; margin-top: 7px;display: inline;"
+              class="pull-left">&nbsp;&nbsp;所属域：</span>
+        <select id="h-user-domain-list" class="form-control pull-left"
+                style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
+        </select>
+        <span style="font-size: 10px;font-weight: 600;" class="pull-left">&nbsp;&nbsp;机构:</span>
+        <select id="h-user-org-list" class="form-control pull-left"
+                style="width: 280px;height: 24px; line-height: 24px; margin-top: 10px; padding: 0px;">
+        </select>
+        <span style="font-size: 10px;font-weight: 600;" class="pull-left">&nbsp;&nbsp;状态:</span>
+        <select id="h-user-status-list" class="form-control pull-left"
+                style="width: 120px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
+            <option value="0">正常</option>
+            <option value="1">失效</option>
+        </select>
+        <button onclick="UserObj.search()" class="btn btn-default btn-xs pull-left" style="margin-left: 8px; margin-top: 11px;">查询
+        </button>
+    </div>
+    <div class="pull-right">
+        <button onclick="UserObj.add()" class="btn btn-info btn-sm">
+            <i class="icon-plus"> 新增</i>
+        </button>
+        <button onclick="UserObj.edit()" class="btn btn-info btn-sm" title="下载操作记录">
+            <span class="icon-edit"> 编辑</span>
+        </button>
+        <button onclick="UserObj.delete()" class="btn btn-danger btn-sm" title="下载操作记录">
+            <span class="icon-trash"> 删除</span>
+        </button>
     </div>
 </div>
 
-<div id="h-user-show-box" class="row" style="margin: 0px 0px; border: #598f56 solid 1px;">
-    <div class="col-sm-12 col-md-12 col-lg-12">
+<div id="h-user-show-box">
+
         <table id="h-user-info-table-details"
                class="table"
                data-toggle="table"
@@ -41,8 +46,9 @@
                data-side-pagination="client"
                data-pagination="true"
                data-striped="true"
+               data-show-refresh="false"
                data-page-list="[20, 50, 100, 200]"
-               data-search="true">
+               data-search="false">
             <thead>
             <tr>
                 <th data-field="state" data-checkbox="true"></th>
@@ -60,19 +66,9 @@
             </tr>
             </thead>
         </table>
-    </div>
+
 </div>
-<div id="h-user-toolbar-list" style="height: 24px; line-height: 24px;">
-    <span style="font-size: 10px;font-weight: 600;" class="pull-left">机构:</span>
-    <select id="h-user-org-list" class="form-control pull-left" style="width: 240px;height: 24px; line-height: 24px;padding: 0px;">
-    </select>
-    <span style="font-size: 10px;font-weight: 600;margin-left: 12px;" class="pull-left">&nbsp;状态:</span>
-    <select id="h-user-status-list" class="form-control pull-left" style="width: 120px;height: 24px; line-height: 24px;padding: 0px;">
-        <option value="0">正常</option>
-        <option value="1">失效</option>
-    </select>
-    <button onclick="UserObj.search()" class="btn btn-success btn-xs pull-left" style="margin-left: 8px;"><i class="icon-search"> </i>查询</button>
-</div>
+
 <script>
     NProgress.start();
     $(document).ready(function(e){
@@ -123,7 +119,7 @@
                 $("#h-user-org-list").Hselect({
                     data:arr,
                     height:"24px",
-                    width:"240px",
+                    width:"280px",
                 });
             });
 
@@ -154,7 +150,7 @@
                         $("#h-user-org-list").Hselect({
                             data:arr,
                             height:"24px",
-                            width:"240px",
+                            width:"280px",
                         });
                     });
                 }

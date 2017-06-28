@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/hzwy23/dbobj"
+	"github.com/hzwy23/utils"
 	"github.com/hzwy23/utils/logs"
 )
 
@@ -47,11 +48,10 @@ func (UserRolesModel) Auth(data []UserRolesModel, user_id string) (string, error
 	}
 
 	for _, val := range data {
-		_, err = tx.Exec(sys_rdbms_096, val.Role_id, val.User_id, user_id)
+		uuid := utils.JoinCode(val.User_id, val.Role_id)
+		_, err = tx.Exec(sys_rdbms_096, uuid, val.Role_id, val.User_id, user_id)
 		if err != nil {
-			logs.Error(err)
-			tx.Rollback()
-			return "error_user_role", err
+			logs.Info("用户【", val.User_id, "】已经拥有了角色【", val.Role_id, "】，无需重复授权。")
 		}
 	}
 	err = tx.Commit()
@@ -63,12 +63,25 @@ func (UserRolesModel) Auth(data []UserRolesModel, user_id string) (string, error
 }
 
 // 移除这个用户拥有的角色信息
-func (UserRolesModel) Revoke(user_id string, role_id string) (string, error) {
+func (UserRolesModel) Revoke(rst []UserRolesModel) (string, error) {
+	tx, err := dbobj.Begin()
+	if err != nil {
+		return "error_sql_begin", err
+	}
 
-	_, err := dbobj.Exec(sys_rdbms_097, user_id, role_id)
+	for _, val := range rst {
+		_, err := dbobj.Exec(sys_rdbms_097, val.User_id, val.Role_id)
+		if err != nil {
+			logs.Error(err)
+			tx.Rollback()
+			return "error_user_role_commit", err
+		}
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		logs.Error(err)
-		return "error_user_role_commit", err
+		return "error_user_role", err
 	}
 	return "success", nil
 }

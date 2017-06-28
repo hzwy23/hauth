@@ -1,42 +1,37 @@
 <div class="row subsystem-header">
     <div class="pull-left">
-        <span style="font-size: 16px;">角色管理</span>
+        <span style="font-size: 14px;">角色管理</span>
     </div>
 </div>
 <div class="row subsystem-toolbar">
-    <div class="col-sm-12 col-md-12 col-lg-12">
-        <div class="pull-left">
-            <button onclick="RoleObj.add()" class="btn btn btn-success btn-sm">
-                <i class="icon-plus"> 新增</i>
-            </button>
-            <button onclick="RoleObj.edit()" class="btn btn btn-success btn-sm">
-                <i class="icon-edit"> 编辑</i>
-            </button>
-            <button  onclick="RoleObj.delete()" class="btn btn btn-danger btn-sm">
-                <i class="icon-trash"> 删除</i>
-            </button>
-        </div>
-        <div class="pull-right" style="height: 44px; line-height: 44px; width: 260px;">
-            <span style="text-align:right;width:80px;height: 30px; line-height: 30px; margin-top: 7px;display: inline" class="pull-left">&nbsp;&nbsp;所属域：</span>
-            <select id="h-role-domain-list" class="form-control pull-right" style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
-            </select>
-        </div>
+    <div class="pull-left" style="height: 44px; line-height: 44px; width: 260px;">
+        <span style="font-size: 10px; font-weight: 600; height: 30px; line-height: 30px; margin-top: 7px;display: inline;"
+              class="pull-left">&nbsp;&nbsp;所属域：</span>
+        <select id="h-role-domain-list" class="form-control pull-left"
+                style="width: 180px;height: 24px; line-height: 24px; margin-top: 10px;padding: 0px;">
+        </select>
+    </div>
+    <div class="pull-right">
+        <button onclick="RoleObj.add()" class="btn btn btn-info btn-sm">
+            <i class="icon-plus"> 新增</i>
+        </button>
+        <button onclick="RoleObj.edit()" class="btn btn btn-info btn-sm">
+            <i class="icon-edit"> 编辑</i>
+        </button>
+        <button onclick="RoleObj.delete()" class="btn btn btn-danger btn-sm">
+            <i class="icon-trash"> 删除</i>
+        </button>
     </div>
 </div>
-
-<div id="h-role-info" class="row" class="row" style="margin: 0px 0px; border: #598f56 solid 1px;">
-    <div id="h-role-details-toolbar" class="pull-left" style="height: 24px; line-height: 24px;">
-        <span>角色信息列表</span>
-    </div>
-    <div id="h-role-table-info" class="col-sm-12 col-md-12 col-lg-12">
+<div class="row">
+    <div id="h-role-info" class="col-sm-12 col-md-12 col-lg-12">
         <table id="h-role-info-table-details"
                data-toggle="table"
                data-striped="true"
-               data-toolbar="#h-role-details-toolbar"
                data-side-pagination="client"
                data-pagination="true"
                data-page-list="[20, 50, 100, 200]"
-               data-search="true">
+               data-search="false">
             <thead>
             <tr>
                 <th data-field="state" data-checkbox="true"></th>
