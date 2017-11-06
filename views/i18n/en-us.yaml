@@ -1,0 +1,234 @@
+- id: as_of_date_no_auth
+  translation: "You do not have authorized to use this feature"
+- id: page_not_found
+  translation: "The page you visit does not exist"
+- id: read_domain_insufficient
+  translation: "You do not have permission to access this domain [{{.Domain_id}}]"
+- id: write_domain_insufficient
+  translation: "You have no authorized to modify any information in the domain [{{.Domain_id}}]"
+- id: error_sql_begin
+  translation: "Start transaction failure"
+- id: error_unmarsh_json
+  translation: "Parsing the json format data failed, please contact your administrator"
+- id: as_of_date_domain_permission_denied
+  translation: "You do not have permission to access this domain"
+- id: as_of_date_domain_permission_denied_modify
+  translation: "You have no authorized to modify the domain information"
+- id: as_of_date_domain_query
+  translation: "Query domain information failure"
+- id: as_of_date_domain_get_info_failed
+  translation: "Failed to get domain sharing information, please contact your administrator"
+- id: success
+  translation: "Execute successfully"
+- id: as_of_date_disconnect
+  translation: "Connection has been disconnected by the user"
+- id: as_of_date_domain_isempty
+  translation: "Domain information can't be empty"
+- id: as_of_date_page_not_exist
+  translation: "Page does not exist"
+- id: as_of_date_domain_id_check
+  translation: "Domain code must be from 1 to 30 letters, digits and into"
+- id: as_of_date_domain_status_check
+  translation: "Please select a domain status"
+- id: as_of_date_domain_add_failed
+  translation: "Add domain information failure"
+- id: as_of_date_domain_delete
+  translation: "Delete the domain information of failure"
+- id: as_of_date_domain_update
+  translation: "Update the domain information failure"
+- id: as_of_date_domain_getowner
+  translation: "Failed to get the user belongs to domain"
+- id: as_of_date_domains_of_user
+  translation: "Get the user authorized domain information failure"
+- id: as_of_date_domain_details
+  translation: "Failed to get the domain details"
+- id: as_of_date_check_unshare
+  translation: "Query unauthorized sharing domain information failure"
+- id: as_of_date_domain_target
+  translation: "Please select a Shared target domain"
+- id: as_of_date_domain_mode
+  translation: "Please select a Shared schema"
+- id: as_of_date_up_org_equal_org_id
+  translation: "当前机构上上级机构编码一致,禁止导入"
+- id: as_of_date_domain_share_failed
+  translation: "Authorization domain sharing failure"
+- id: as_of_date_domain_share_delete
+  translation: "Delete Shared domain information failure"
+- id: as_of_date_domain_share_update
+  translation: "Update the domain sharing information failure"
+- id: error_user_role_query
+  translation: "Users have the role of the information failure"
+- id: error_user_role_no_user
+  translation: "Please select a need to query the user account information"
+- id: error_user_role_un_auth
+  translation: "Query unauthorized role failure "
+- id: error_handle_logs_query_failed
+  translation: "Search log failure"
+- id: error_handle_logs_get_failed
+  translation: "Query log failure"
+- id: error_handle_logs_open_error
+  translation: "Failed to open the excel template"
+- id: error_handle_logs_sheet_error
+  translation: "Failed to get sheet page, without looking for playing for handle_logs sheet name."
+- id: error_system
+  translation: "Server internal error, please try again later"
+- id: error_get_login_page
+  translation: "Failed to get the homepage information"
+- id: error_resource_query
+  translation: "Query the menu resource information failure, please try again"
+- id: error_resource_query_theme
+  translation: "Query subject information failure, please try again"
+- id: error_resource_exec
+  translation: "Failed to execute SQL, submit new customer information, please contact your administrator"
+- id: error_resource_type
+  translation: "The resource type is not in conformity with the requirements"
+- id: error_resource_update
+  translation: "Update the menu resource name failed"
+- id: error_resource_open_type
+  translation: "The resource open type can not empty"
+- id: error_theme_virtual_forbid
+  translation: "Virtual menu can not add theme information"
+- id : error_user_no_auth
+  translation: "No permission to access this domain information"
+- id : error_user_query
+  translation: "After the user information query domain failed, please choose the domain to query"
+- id : error_user_id_check
+  translation: "User accounts, there must be 1 to 30 letters, Numbers"
+- id : error_user_name_check
+  translation: "Username must be from 1 to 30 characters, letters and Numbers"
+- id : error_user_passwd_check
+  translation: "Password length cannot be Spaces, cutting length can not less than six"
+- id : error_user_passwd_encrypt
+  translation: "The password is encrypted to fail"
+- id : error_user_email_check
+  translation: "Email address format is not correct"
+- id : error_user_phone_check
+  translation: "Phone number format is not correct"
+- id : error_user_post
+  translation: "Add new user information failure"
+- id : error_user_modify_passwd
+  translation: "You do not have permission to modify the domain user information"
+- id : error_user_no_domain
+  translation: "Query domain user belong to fail"
+- id: error_user_no_org
+  translation: "Query the user affiliation to fail"
+- id : error_querydb
+  translation: "The user does not exist."
+- id : error_maxerror
+  translation: "Error log in more than six times, the user has been banned"
+- id : error_password
+  translation: "The password is incorrect"
+- id : logout
+  translation: "log out safely"
+- id : error_query_menu
+  translation: "Information query menu fails, please contact your administrator"
+- id : error_query_org_info
+  translation: "Query information about failure, please contact your administrator"
+- id : error_delete_org_info
+  translation: "Delete organization information failure"
+- id : error_get_domain_by_orgid
+  translation: "According to the organization number query its domain failed"
+- id : error_org_id_desc_empty
+  translation: "Organization cannot be empty"
+- id : error_org_status_empty
+  translation: "Please select organization state"
+- id : error_org_id_format
+  translation: "Institution code format is not correct, there must be 1 to 30 letters, Numbers"
+- id: error_org_up_id_empty
+  translation: "Please select the superior institutions"
+- id: error_org_sub_query
+  translation: "Query subordinate institutions fail"
+- id: error_org_up_id_complex
+  translation: "The subordinate companies of the supervising authority number can't be yourself"
+- id: error_org_modify
+  translation: "Modify the organization information failure"
+- id: error_org_add
+  translation: "Add organization information failure"
+- id: error_org_sheet
+  translation: "To find a sheet also name as '机构信息' "
+- id: error_org_upload_wait
+  translation: "Already is the import duty, please wait a moment"
+- id: error_org_read_upload_file
+  translation: "Failed to read the upload file"
+- id: error_passwd_empty
+  translation: "Password cannot be empty"
+- id: error_passwd_same
+  translation: "The new password in accordance with the original password"
+- id: error_passwd_confirm_failed
+  translation: "Two input do not match the new password, please check and input again"
+- id: error_passwd_blank
+  translation: "New password cannot be the beginning or end with a space"
+- id: error_password_encrpty
+  translation: "Password encryption failed, please contact your administrator"
+- id: error_old_passwd
+  translation: "The original password is not correct, unable to change the password"
+- id: error_passwd_modify
+  translation: "Failed to change the password, please contact your administrator"
+- id: error_passwd_short
+  translation: "New password length can not less than six, and cannot be greater than 30"
+- id: error_resource_res_id
+  translation: "Resource coding must consists of 1 to 30 letters or Numbers"
+- id: error_resource_desc_empty
+  translation: "The menu name cannot be empty"
+- id: error_resource_type
+  translation: "Menu category cannot be empty"
+- id: error_resource_route_uri
+  translation: "Menu routing address cannot be empty"
+- id: error_resource_class_style
+  translation: "Menu style types cannot be empty"
+- id: error_resource_icon
+  translation: "Menu icon cannot be empty"
+- id: error_resource_group
+  translation: "Menus group information must be a number"
+- id: error_resource_sort
+  translation: "Menu order number must be Numbers"
+- id: error_resource_up_id
+  translation: "Menu superior code cannot be empty"
+- id: error_role_query
+  translation: "Query information failure role"
+- id: error_role_id_format
+  translation: "Please enter from 1 to 30 letters and Numbers set character encoding"
+- id: error_role_desc_empty
+  translation: "Character name must be the Chinese characters, letters, or the underscore combination, and length of not less than 30"
+- id: error_role_status
+  translation: "Please select role state"
+- id: error_role_add_failed
+  translation: "Add role information failed."
+- id: error_role_json_failed
+  translation: "Json parse failed, please choose again you need to remove the role of information"
+- id: error_role_delete_failed
+  translation: "Delete role information failure"
+- id: error_role_get_domain
+  translation: "Query role information failure"
+- id: error_role_update_failed
+  translation: "Update role information failure"
+- id: error_role_resource_query
+  translation: "Query resources information of the role failure"
+- id: error_role_get_resource
+  translation: "Query resources information of the role failure"
+- id: error_role_unget_resource
+  translation: "Query without access to resources information of the role failure"
+- id: error_role_delete_failed
+  translation: "Delete resource information of the role failure"
+- id: error_theme_update
+  translation: "Update resource information of the role failure"
+- id: error_user_role_org
+  translation: "Please select organization of the user"
+- id: error_user_query
+  translation: "Query user information failure"
+- id: error_user_get_domain
+  translation: "Query domain of the user failure"
+- id: error_user_id_empty
+  translation: "Query domain user belong to fail"
+- id: error_user_desc_empty
+  translation: "User name can not be empty"
+- id: error_user_email_format
+  translation: "Email address format is not correct"
+- id: error_user_phone_format
+  translation: "Mobile phone number format is not correct"
+- id: error_user_modify_status
+  translation: "Update user status error"
+- id: error_user_modify_yourself
+  translation: "Modify the user status failed"
+- id: error_user_status_empty
+  translation: "Please select user state"

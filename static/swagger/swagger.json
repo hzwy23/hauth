@@ -1,0 +1,2144 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/": {
+      "get": {
+        "description": "API将会返回系统首页页面给客户端",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "系统首页页面",
+        "operationId": "IndexPage",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/HomePage": {
+      "get": {
+        "description": "用户登录成功后,将会根据用户主题,返回用户的主菜单页面.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "返回用户登录后的主菜单页面",
+        "operationId": "IndexPage",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "客户端发起登录请求到这个API,系统对用户和密码进行校验,成功返回true,如果用户和密码对应不上,返回false",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "LoginSystem"
+        ],
+        "summary": "系统登录处理服务",
+        "operationId": "LoginSystem",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "username",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "password",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "description": "API处理用户退出系统请求,退出系统后,系统将修改客户端的cookie信息,使其连接过时.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "LoginSystem"
+        ],
+        "summary": "安全退出系统",
+        "operationId": "LoginSystem",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "username",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "password",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/HandleLogsPage": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "操作日志页面",
+        "operationId": "handleLogsController",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "page not found"
+          }
+        }
+      }
+    },
+    "/v1/auth/batch/page": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nIf the user is authorized to visit, the return authorization information page",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "If the request is successful,\nwill return authorization page information to the client",
+        "operationId": "domainShareControll",
+        "responses": {
+          "200": {
+            "description": "request success."
+          },
+          "404": {
+            "description": "page not found."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/delete": {
+      "post": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "Delete domain information.",
+        "operationId": "deleteDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "DELETE",
+            "name": "_method",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain info, for example is ,[{Project_id\\:value}]",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/get": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nYou must pass in two arguments, first is offset ,second is limit.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "If the request is successful, will return domain information that the user be able to access.",
+        "operationId": "getDomainInfo",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "start row number",
+            "name": "offset",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "maximum number of results to return",
+            "name": "limit",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "get domain information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/id": {
+      "get": {
+        "description": "查询用户登录信息, 根据用户信息,返回用户所属域.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "返回用户所属域ID号",
+        "operationId": "getDomainId",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/owner": {
+      "get": {
+        "description": "当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "获取用户能够访问到的域信息.",
+        "operationId": "postomainShareControll",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "get domain that user is able to access failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/page": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "If the request is successful, will be return domain information page,",
+        "operationId": "AuthorityController",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect or not access."
+          },
+          "404": {
+            "description": "page not found"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/post": {
+      "post": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "Add domain information",
+        "operationId": "postDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domainId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain name",
+            "name": "domainDesc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "domain status, 0 is enable, 1 is disable",
+            "name": "domainStatus",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/row/details": {
+      "get": {
+        "description": "根据客户端请求参数domain_id,返回这个域的详细信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "返回指定域的详细信息.",
+        "operationId": "getDomainDetailsInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "419": {
+            "description": "get domain detailes failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/self/owner": {
+      "get": {
+        "description": "当一个域A被共享给域B,则B将可以访问到A中的信息,这个API,将会放回某个指定域所有能够被访问到的对象.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "获取用户能够访问到的域信息.",
+        "operationId": "postomainShareControll",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/delete": {
+      "post": {
+        "description": "在用户请求时,需要传入用户账号",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "删除某个域指定域的共享对象",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "DELETE",
+            "name": "_method",
+            "in": "body",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "json格式信息,例如[{Uuid\\:value}]",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/get": {
+      "get": {
+        "description": "客户端在请求中传入域,系统将会查询这个域的共享独享列表.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "返回某个域的共享对象",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "419": {
+            "description": "get domain share information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/page": {
+      "get": {
+        "description": "用户需要首先登录系统, 系统会对用户权限进行校验,校验成功,将会返回共享域管理页面.\n\n用户需要在request中传入domain_id, 系统将会返回这个域的详细信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "返回共享域管理页面",
+        "operationId": "DomainShareController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "404": {
+            "description": "page not found"
+          },
+          "419": {
+            "description": "get domain information failed"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/post": {
+      "post": {
+        "description": "首先,系统会校验用户的权限信息,如果用户被授权,则进行字段校验,如果新增的域字段信息格式正确,将会写入数据库.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "新增共享域信息",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/put": {
+      "put": {
+        "description": "在请求更新时,需要传入域id,域的共享对象id,共享模式",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "更新指定域的共享对象",
+        "operationId": "postomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "target_domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "auth_level",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/share/unauth": {
+      "get": {
+        "description": "根据传入的domain_id, 查询这个域还没有共享的域信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainShareController"
+        ],
+        "summary": "返回某个指定的域没有共享的对象",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/domain/update": {
+      "put": {
+        "description": "update domain info , you neet input three arguments, domainId,domainDesc,domainStatus. column domain_id can't update.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "domainController"
+        ],
+        "summary": "update domain describe and domain status",
+        "operationId": "putDomainInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domainId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain name",
+            "name": "domainDesc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "domain status, 0 is enable, 1 is disable",
+            "name": "domainStatus",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "Post domain information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/handle/logs": {
+      "get": {
+        "description": "API只能查询用户所属域的操作日志信息, 数据处理中,采用了分页查询,所以,必须传入2个参数,分别是:\n\noffset: 起始行数\n\nlimit : 最大行数",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "查询用户所属域中的操作日志信息",
+        "operationId": "handleLogsController",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "起始行数,必须是数字.",
+            "name": "offset",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "最大行数,必须是数字.",
+            "name": "limit",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/handle/logs/download": {
+      "get": {
+        "description": "API将会返回用户所属域中的所有操作记录信息.所以,在使用这个API时,必须登录系统.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html",
+          "application/vnd.ms-excel"
+        ],
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "下载日志记录,返回excel格式数据",
+        "operationId": "handleLogsController",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/handle/logs/search": {
+      "get": {
+        "description": "API中会校验用户的权限,如果用户没有登录,将返回权限不足的提示信息\n\n这个API需要提供3个参数,分别是:\n\nUserId    : 用户账号\n\nStartDate : 日志操作开始日期\n\nEndDate   : 日志操作结束日期",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "handleLogsController"
+        ],
+        "summary": "返回满足用户搜索条件的日志信息",
+        "operationId": "handleLogsController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "UserId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "StartDate",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "EndDate",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "421": {
+            "description": "query logs information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/index/entry": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "According to the ID number, return subsystem information page",
+        "operationId": "SubSystemEntry",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subsystem id number.",
+            "name": "Id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect, please login."
+          },
+          "404": {
+            "description": "page not found"
+          }
+        }
+      }
+    },
+    "/v1/auth/main/menu": {
+      "get": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "HomePageMenus"
+        ],
+        "summary": "If the request is successful, will return the user to be able to access the menu information",
+        "operationId": "HomePageMenus",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The menu type, 1 means home page ,2 means subsystem page",
+            "name": "TypeId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "This up menu id , the response will return the lower menu information of the up menu id",
+            "name": "Id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "disconnect"
+          },
+          "421": {
+            "description": "get menu information failed."
+          }
+        }
+      }
+    },
+    "/v1/auth/passwd/update": {
+      "post": {
+        "description": "API提供了修改用户自己密码的服务,这个服务,不能删除其他用户的密码",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "passwdController"
+        ],
+        "summary": "修改用户自己的密码信息",
+        "operationId": "passwdController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "orapasswd",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "newpasswd",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "surepasswd",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/relation/domain/org": {
+      "get": {
+        "description": "根据客户端请求时指定的机构id,获取这个id所有的下属机构信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "返回某个机构的所有下级机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "org_unit_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/config/theme": {
+      "put": {
+        "description": "更新菜单资源的主题信息,如果这个资源没有主题信息,则新增,否则更新.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "themeController"
+        ],
+        "summary": "更新某个资源的主题信息",
+        "operationId": "themeController",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/delete": {
+      "post": {
+        "description": "删除系统中的菜单资源信息,系统会对用户的权限进行校验,只有校验通过,才能删除菜单资源信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "删除菜单信息",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "resource code number",
+            "name": "res_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/get": {
+      "get": {
+        "description": "系统会对用户权限进行校验,校验通过,将会返回菜单资源信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "返回系统中所有的菜单资源信息",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/delete": {
+      "post": {
+        "description": "首先系统会校验用户的权限,如果用户拥有删除机构的权限,系统将会根据用户请求的参数,删除响应的机构信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "删除机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "json format",
+            "name": "JSON",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/download": {
+      "get": {
+        "description": "下载某个指定域的所有机构信息. 只能下载用户有权限访问的域中的机构",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "下载机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/get": {
+      "get": {
+        "description": "API将会返回指定域中的机构信息,用户在请求这个API时,需要传入domain_id这个字段值",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "查询机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/page": {
+      "get": {
+        "description": "首先系统会检查用户的连接信息,如果用户被授权访问这个页面,将会返回机构配置管理页面内容,否则返回响应的错误住状态.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "机构信息配置管理页面",
+        "operationId": "orgController",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/post": {
+      "post": {
+        "description": "想指定域中新增机构信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "新增机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "Org_unit_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "org desc",
+            "name": "Org_unit_desc",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "up org id",
+            "name": "Up_org_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/update": {
+      "put": {
+        "description": "系统将会更具用户传入的参数,修改指定机构信息.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "更新机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/org/upload": {
+      "get": {
+        "description": "根据客户端导入的excel格式的数据,将机构信息写入到数据库中.\n\n这个上传过程是:增量删除, 一旦出现重复的机构,将会中断上传过程,且数据库会立刻回滚.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "orgController"
+        ],
+        "summary": "上传机构信息",
+        "operationId": "orgController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/page": {
+      "get": {
+        "description": "系统会对请求用户权限进行校验,校验通过,将会返回菜单管理配置页面.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "返回菜单资源管理页面",
+        "operationId": "domainShareControll",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/post": {
+      "post": {
+        "description": "向系统中新增菜单资源信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "新增菜单信息",
+        "operationId": "getdomainShareControll",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/query": {
+      "get": {
+        "description": "查询某个指定资源的详细信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "查询指定菜单的详细信息",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "resource code number",
+            "name": "res_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/queryTheme": {
+      "get": {
+        "description": "查询某个菜单资源,某个主题的详细信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "themeController"
+        ],
+        "summary": "查询主题信息",
+        "operationId": "themeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/resource/update": {
+      "put": {
+        "description": "API只支持修改菜单的名称",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "resourceController"
+        ],
+        "summary": "更新菜单信息",
+        "operationId": "getdomainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "resource code number",
+            "name": "res_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "resource describe",
+            "name": "res_name",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/delete": {
+      "post": {
+        "description": "删除某个指定域中的角色信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "删除角色信息",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/get": {
+      "get": {
+        "description": "查询指定域中的角色信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "查询角色信息",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/page": {
+      "get": {
+        "description": "如果用户被授权访问角色管理页面,则系统返回角色管理页面内容,否则返回404错误",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "角色管理页面",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/post": {
+      "post": {
+        "description": "在某个指定的域中,新增角色信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "新增角色信息",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/put": {
+      "put": {
+        "description": "更新某个域中的角色信息,角色编码不能更新",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleController"
+        ],
+        "summary": "更新角色信息",
+        "operationId": "roleController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/details": {
+      "get": {
+        "description": "如果用户被授权,将会返回指定角色资源管理页面.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "角色菜单资源配置管理页面",
+        "operationId": "domainShareControll",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/get": {
+      "get": {
+        "description": "type_id = 0 表示查询角色拥有的菜单资源, type_id = 1 表示查询角色没有获取的菜单资源",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleAndResourceController"
+        ],
+        "summary": "查询角色指定的拥有的菜单资源和没有拥有的菜单资源",
+        "operationId": "roleAndResourceController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/role/resource/rights": {
+      "post": {
+        "description": "type_id = 0 表示移除某个指定角色的菜单资源.\n\ntype_id = 1 表示给某个指定角色增加菜单资源.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "roleAndResourceController"
+        ],
+        "summary": "授予角色菜单资源或删除角色菜单资源",
+        "operationId": "roleAndResourceController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/swagger/page": {
+      "get": {
+        "description": "返回API信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "API文档页面",
+        "operationId": "swaggerController",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/theme/update": {
+      "post": {
+        "description": "更新用户主题信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "themeController"
+        ],
+        "summary": "更新用户主题信息",
+        "operationId": "themeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "theme code number",
+            "name": "theme_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/delete": {
+      "post": {
+        "description": "删除某个域中的用户信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "删除用户信息",
+        "operationId": "userController",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/get": {
+      "get": {
+        "description": "返回指定域中的用户信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "获取指定域中用户信息",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/modify/passwd": {
+      "put": {
+        "description": "修改用户密码",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "修改用户密码",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/modify/status": {
+      "put": {
+        "description": "修改用户锁状态",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "修改用户锁状态",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/page": {
+      "get": {
+        "description": "返回用户管理页面",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "获取用户管理子页面",
+        "operationId": "userController",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/post": {
+      "post": {
+        "description": "在某个域中新增用户信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "新增用户信息",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/put": {
+      "put": {
+        "description": "修改用户信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "修改用户信息",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/query": {
+      "get": {
+        "description": "查询用户自身信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "查询用户自身信息",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/auth": {
+      "post": {
+        "description": "给指定的用户授予角色",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "给指定的用户授予角色",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/get": {
+      "get": {
+        "description": "查询角色信息",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "通过user_id用户账号，来查询这个用户拥有的角色信息",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/other": {
+      "get": {
+        "description": "查询用户没有获取的角色",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "通过user_id账号，查询这个用户能够访问，但是又没有获取到的角色信息",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/roles/revoke": {
+      "post": {
+        "description": "The system will check user permissions.\nSo,you must first login system,and then you can send the request.\n\nIf the user is authorized to visit, the system will delete the roles that client request specified.",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userRolesController"
+        ],
+        "summary": "Delete user has been granted the roles",
+        "operationId": "userRolesController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Removed the role of the user",
+            "name": "user_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The role of ready to delete",
+            "name": "role_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/auth/user/search": {
+      "get": {
+        "description": "客户端发起请求时,必须带如下几个参数;\n\norg_id 机构编码\nstatus_id 机构状态\ndomain_id 所属域",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "userController"
+        ],
+        "summary": "搜索用户信息",
+        "operationId": "userController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "domain code number",
+            "name": "domain_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "org code number",
+            "name": "org_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "status code number",
+            "name": "status_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/v1/help/system/help": {
+      "get": {
+        "description": "将会返回系统帮助首页,其中包含了系统管理操作文档,API文档",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "tags": [
+          "StaticFiles"
+        ],
+        "summary": "系统帮助页面",
+        "operationId": "helpController",
+        "responses": {
+          "200": {
+            "description": "all domain information"
+          }
+        }
+      }
+    }
+  }
+}

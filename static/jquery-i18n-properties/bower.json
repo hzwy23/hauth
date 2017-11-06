@@ -1,0 +1,31 @@
+{
+  "name": "jquery-i18n-properties",
+  "version": "1.2.4",
+  "homepage": "https://github.com/jquery-i18n-properties/jquery-i18n-properties",
+  "authors": [
+    "Nuno Grilo <nfgrilo@gmail.com>",
+    "Daniel Pocock <daniel@pocock.pro>",
+    "Adrian Fish <adrian.r.fish@gmail.com>"
+  ],
+  "description": "Library for internationalising JS apps",
+  "main": "jquery.i18n.properties.js",
+  "moduleType": [],
+  "keywords": [
+    "jquery",
+    "i18n"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests",
+    "bundle",
+    "index.html",
+    "css",
+    "compress.py"
+  ],
+  "dependencies": {
+    "jquery": ">=1.9.0"
+  }
+}

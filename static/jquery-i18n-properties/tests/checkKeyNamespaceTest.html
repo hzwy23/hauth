@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <title>jQuery.i18n.properties: Tests</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="content-script-type" content="text/javascript" />
+      
+      	<!-- JS -->
+      	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+      	<script type="text/javascript" src="../jquery.i18n.properties.js"></script>
+      	
+      	<!-- CSS -->
+        <link rel="stylesheet" href="../css/blueprint/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="../css/blueprint/print.css" type="text/css" media="print">	
+		<!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+      	<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen, projection">
+		
+      
+      <script type="text/javascript">
+      	// load I18N bundles
+		jQuery(document).ready(function() {
+			jQuery.i18n.properties({
+			    name:'Messages', 
+			    path:'./', 
+			    mode:'both', 
+			    callback: function() {
+			        // callback
+			        test('one.two.three');
+			        test('one.two.four');
+			        test('one.three.three');
+			        test('one.four.three');
+			        test('one.five.three');
+			        
+			        var output = '<p/>';
+			        output += 'one.two.three = ' + one.two.three + '<br/>';
+			        output += 'one.two.four = ' + one.two.four + '<br/>';
+			        output += 'one.three.three = ' + one.three.three + '<br/>';
+			        output += 'one.four.three = ' + one.four.three + '<br/>';
+			        output += 'one.five.three = ' + one.five.three + '<br/>';
+			        jQuery('.files').append(output);
+			    }
+			});
+		});
+		
+		function test(str) {
+			var regexp = /\./;
+			jQuery('.files').append(
+				'Expected: 0/true, result: ' +
+				regexp.lastIndex + '/' +
+				regexp.test(str) + '<br/>');
+		}
+
+      </script>
+   </HEAD>
+   
+   <BODY>
+      <h2>jQuery.i18n.properties :: Tests</h2>
+      
+      <h4>checkKeyNamespace Test</h4>
+	  <code class="files" style="display:block !important"></code><br/>
+      
+   </BODY>
+</HTML>

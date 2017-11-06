@@ -1,0 +1,168 @@
+.hzwy23-theme-background {
+    /*background-color: #025e99;*/
+    background-image: url('/static/theme/blue/bg_image.jpg');
+    filter:'progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')';
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+}
+
+.theme-tab-color {
+    background-color: #025e99;
+}
+
+/*
+* 弹框样式
+*/
+.h-modal-header {
+    padding: 0px;
+    margin: 0px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #f3f3f4;
+    position: relative;
+    z-index: 999;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none
+}
+
+.h-modal-content {
+    background-color: #fafafa;
+    border-color: #efefef;
+}
+
+.h-modal-title {
+    text-overflow: ellipsis;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.h-modal-footer {
+    position: absolute;
+    height: 40px;
+    line-height: 40px;
+    right: 15px;
+    left: 15px;
+    background-color: inherit;
+}
+
+/*
+* logo部分的样式
+*/
+.H-logo-area {
+    text-align: left;
+    height: 60px;
+    line-height: 60px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #FFFFFF;
+}
+
+/*开始tab样式编辑*/
+.H-content-tab {
+    height: 36px;
+    line-height: 36px;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    z-index: 1024;
+}
+
+/*
+* tab上图标
+*/
+.H-tab-bar {
+    height: 35px;
+    line-height: 35px;
+    padding: 0px;
+    margin: 0px;
+}
+
+/*
+* 新增的tab页面
+*/
+.H-tabs-index {
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    overflow: hidden;
+}
+
+/*
+* 靠左现实的tab页面
+*/
+.H-left-tab {
+    float: left;
+    padding: 0px 12px;
+    cursor: pointer;
+    border: none;
+    height: 36px;
+    line-height: 36px;
+    outline: none;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.H-left-tab:hover {
+    background-color: #cccccd;
+}
+
+/*
+* 靠右显示的tab页面
+*/
+.H-right-tab {
+    float: right;
+    padding: 0px 12px;
+    cursor: pointer;
+    border: none;
+    height: 36px;
+    line-height: 36px;
+    outline: none;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.H-right-tab:hover {
+    background-color: #cccccd;
+}
+
+.H-gray-close {
+    margin-left: 8px;
+    height: 36px;
+    line-height: 36px;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.H-gray-close:hover {
+    color: firebrick;
+}
+
+.active-tab {
+    background-color: #009999;
+    color: #e1e4e9;
+}
+
+.active-tab:hover {
+    background-color: #009999;
+    color: #ffffff;
+}
+
+/*结束tab标签样式*/
+
+.subsystem-header {
+    height: 40px;
+    line-height: 40px;
+    border-bottom: solid #e6e6e6 1px;
+    vertical-align: middle;
+    margin: auto 0px;
+}
+
+.subsystem-toolbar {
+    min-height: 44px;
+    line-height: 44px;
+    vertical-align: middle;
+    /*border-bottom: solid #e6e6e6 1px;*/
+    margin: auto 0px;
+    background-color: #fcfcfc;
+}
