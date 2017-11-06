@@ -1,4 +1,4 @@
-[Asofdate Hauth Project Release](https://github.com/hzwy23/asofdate/releases)
+[Asofdate Hauth Project Release](https://github.com/hzwy23/hauth/releases)
 
 #### golang版本建议:
 ```
@@ -11,7 +11,7 @@ go sdk >= 1.8
 ## 获取项目源代码方法. **请确保设置了GOPATH环境变量**
 ```golang
 go get github.com/hzwy23/hauth
-#上边命令,将会在GOPATH/bin目录中生成asofate可执行文件,由于系统运行需要配置文件和静态页面
+#上边命令,将会在GOPATH/bin目录中生成hauth可执行文件,由于系统运行需要配置文件和静态页面
 #所系请将GOPATH/bin的hauth可执行文件,复制到$GOPATH/src/github.com/hzwy23/hauth目录中
 #或者使用项目中提供的build.sh脚本编译,再次生成可执行文件.
 #请按照下边的操作,导入数据库.
@@ -49,7 +49,7 @@ go get github.com/hzwy23/hauth
 ```shell
 mysql -uroot -p 数据库名 < ./init_hauth.sql
 ```
-提示：init_hauth.sql在src/github.com/hzwy23/hauth/core/script目录中
+提示：init_hauth.sql在src/github.com/hzwy23/hauth/db目录中
 
 **2. 编译hauth代码，生成可执行文件**
 
@@ -59,7 +59,7 @@ mysql -uroot -p 数据库名 < ./init_hauth.sql
 执行下边命令，在执行命令前，请确保您已经安装了go sdk
 
 ```shell
-## cd 到hauth的解压目录，然后执行下边命令
+## cd切换到hauth的解压目录，然后执行下边命令
 ./build.sh
 ## 上边这种模式编译会生成一个可执行文件hauth，
 ```
@@ -110,8 +110,6 @@ sudo ./hauth
 ```
 
 打开浏览器,访问:https://localhost:8090
-
-登录系统用户名是：demo，密码是：123456, 
 
 管理员用户: admin, 密码: hzwy23
 
