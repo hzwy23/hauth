@@ -49,7 +49,7 @@ go get github.com/hzwy23/hauth
 ```shell
 mysql -uroot -p 数据库名 < ./init_hauth.sql
 ```
-提示：init_hauth.sql在src/github.com/osofdate/hauth/core/script目录中
+提示：init_hauth.sql在src/github.com/hzwy23/hauth/core/script目录中
 
 **2. 编译hauth代码，生成可执行文件**
 
@@ -78,9 +78,9 @@ go build -i main.go
 
 **3 修改配置文件**
 
-配置文件在conf目录中，app.conf是beego的配置文件，主要涉及到服务端口号等等，另外一个是asofdate.conf配置文件，这个里边主要是是=数据库连接信息与日志管理信息配置。
+配置文件在conf目录中，app.conf是beego的配置文件，主要涉及到服务端口号等等，另外一个是dbobj.conf配置文件，这个里边主要是是=数据库连接信息与日志管理信息配置。
 
-beeog的配置方法，请在beego项目中查阅，请移步：beego.me。下边来讲讲asofdate.conf中数据库的配置方法。
+beeog的配置方法，请在beego项目中查阅，请移步：beego.me。下边来讲讲dbobj.conf中数据库的配置方法。
 
 ```
 DB.type=mysql
@@ -122,7 +122,7 @@ sudo ./hauth
 
 E-mail： hzwy23@163.com
 
-demo演示地址：https://www.asofdate.com:8090
+demo演示地址：http://www.asofdate.com/cms
 
 用户名: demo
 
