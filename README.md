@@ -78,7 +78,7 @@ go build -i main.go
 
 **3 修改配置文件**
 
-配置文件在conf目录中，app.conf是beego的配置文件，主要涉及到服务端口号等等，另外一个是dbobj.conf配置文件，这个里边主要是是=数据库连接信息与日志管理信息配置。
+配置文件在conf目录中，app.conf是beego的配置文件，主要涉及到服务端口号等等，另外一个是app.conf配置文件，这个里边主要是是=数据库连接信息与日志管理信息配置。
 
 beeog的配置方法，请在beego项目中查阅，请移步：beego.me。下边来讲讲dbobj.conf中数据库的配置方法。
 
