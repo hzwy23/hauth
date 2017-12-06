@@ -79,7 +79,7 @@ func init() {
 	//GetDetails log dir from environment
 	logpath := os.Getenv("HBIGDATA_HOME")
 
-	conf, err := config.GetConfig(path.Join(logpath, "conf", "asofdate.conf"))
+	conf, err := config.GetConfig(path.Join(logpath, "conf", "app.conf"))
 	if err != nil {
 		fmt.Errorf("%v", err)
 		log = back_emc
