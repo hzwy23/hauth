@@ -1,6 +1,7 @@
 package groupcache
 
 import (
+	"context"
 	"errors"
 	"io/ioutil"
 	"sync"
@@ -16,7 +17,7 @@ import (
 // groupcache.RegisterStaticFile(key,value)
 // 每一个key只能注册一次,否则会panic.
 
-var groupctx groupcache.Context
+var groupctx context.Context
 var lock = new(sync.RWMutex)
 
 // 存储所有的静态文件
@@ -49,7 +50,7 @@ func GetStaticFile(key string) ([]byte, error) {
 
 	gp := groupcache.GetGroup("ASOFDATEHAUTH")
 	if gp == nil {
-		gp = groupcache.NewGroup("ASOFDATEHAUTH", 1<<28, groupcache.GetterFunc(func(ctx groupcache.Context, key string, dest groupcache.Sink) error {
+		gp = groupcache.NewGroup("ASOFDATEHAUTH", 1<<28, groupcache.GetterFunc(func(ctx context.Context, key string, dest groupcache.Sink) error {
 			if filepath, ok := staticFile[key]; ok {
 				logs.Debug("get html data from disk.")
 				rst, _ := ioutil.ReadFile(filepath)
