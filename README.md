@@ -120,7 +120,7 @@ sudo ./hauth
 
 E-mail： hzwy23@163.com
 
-demo演示地址：http://www.asofdate.com/cms
+demo演示地址：https://139.9.34.174:8090
 
 演示demo属于是hauth项目的演化版本：github.com/hzwy23/appsugar
 
