@@ -463,40 +463,28 @@ func (this orgController) Download(ctx *context.Context) {
 		row := sheet.AddRow()
 		cell1 := row.AddCell()
 		cell1.Value = v.Code_number
-		cell1.SetStyle(sheet.Rows[1].Cells[0].GetStyle())
 
 		cell2 := row.AddCell()
 		cell2.Value = v.Org_unit_desc
-		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
 
 		cell3 := row.AddCell()
 		cell3.Value, _ = utils.SplitCode(v.Up_org_id)
-		cell3.SetStyle(sheet.Rows[1].Cells[2].GetStyle())
 
 		cell9 := row.AddCell()
 		cell9.Value = v.Domain_id
-		cell9.SetStyle(sheet.Rows[1].Cells[3].GetStyle())
 
 		cell5 := row.AddCell()
 		cell5.Value = v.Create_date
-		cell5.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
 
 		cell6 := row.AddCell()
 		cell6.Value = v.Create_user
-		cell6.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
 
 		cell7 := row.AddCell()
 		cell7.Value = v.Maintance_date
-		cell7.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
 
 		cell8 := row.AddCell()
 		cell8.Value = v.Maintance_user
-		cell8.SetStyle(sheet.Rows[1].Cells[7].GetStyle())
 
-	}
-
-	if len(sheet.Rows) >= 3 {
-		sheet.Rows = append(sheet.Rows[0:1], sheet.Rows[2:]...)
 	}
 
 	file.Write(ctx.ResponseWriter)
@@ -571,14 +559,16 @@ func (this orgController) Upload(ctx *context.Context) {
 	}
 
 	var data []models.SysOrgInfo
-	for index, val := range sheet.Rows {
+	var index = 0
+	for index  < sheet.MaxRow {
+		val, _ := sheet.Row(index)
 		if index > 0 {
 			var one models.SysOrgInfo
-			one.Code_number = val.Cells[0].Value
-			one.Org_unit_desc = val.Cells[1].Value
-			one.Domain_id = val.Cells[3].Value
+			one.Code_number = val.GetCell(0).String()
+			one.Org_unit_desc = val.GetCell(1).String()
+			one.Domain_id = val.GetCell(3).String()
 			one.Org_unit_id = utils.JoinCode(one.Domain_id, one.Code_number)
-			one.Up_org_id = utils.JoinCode(one.Domain_id, val.Cells[2].Value)
+			one.Up_org_id = utils.JoinCode(one.Domain_id, val.GetCell(2).String())
 			one.Create_user = jclaim.UserId
 
 			if one.Org_unit_id == one.Up_org_id {
@@ -592,6 +582,8 @@ func (this orgController) Upload(ctx *context.Context) {
 			}
 			data = append(data, one)
 		}
+
+		index++
 	}
 
 	msg, err := this.models.Upload(data)

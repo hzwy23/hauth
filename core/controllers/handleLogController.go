@@ -114,35 +114,24 @@ func (this handleLogsController) Download(ctx *context.Context) {
 		row := sheet.AddRow()
 		cell1 := row.AddCell()
 		cell1.Value = v.User_id
-		cell1.SetStyle(sheet.Rows[1].Cells[0].GetStyle())
 
 		cell2 := row.AddCell()
 		cell2.Value = v.Handle_time
-		cell2.SetStyle(sheet.Rows[1].Cells[1].GetStyle())
 
 		cell3 := row.AddCell()
 		cell3.Value = v.Client_ip
-		cell3.SetStyle(sheet.Rows[1].Cells[2].GetStyle())
 
 		cell4 := row.AddCell()
 		cell4.Value = v.Method
-		cell4.SetStyle(sheet.Rows[1].Cells[3].GetStyle())
 
 		cell5 := row.AddCell()
 		cell5.Value = v.Url
-		cell5.SetStyle(sheet.Rows[1].Cells[4].GetStyle())
 
 		cell6 := row.AddCell()
 		cell6.Value = v.Status_code
-		cell6.SetStyle(sheet.Rows[1].Cells[5].GetStyle())
 
 		cell7 := row.AddCell()
 		cell7.Value = v.Data
-		cell7.SetStyle(sheet.Rows[1].Cells[6].GetStyle())
-	}
-
-	if len(sheet.Rows) >= 3 {
-		sheet.Rows = append(sheet.Rows[0:1], sheet.Rows[2:]...)
 	}
 
 	file.Write(ctx.ResponseWriter)
