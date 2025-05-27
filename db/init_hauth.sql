@@ -500,7 +500,7 @@ CREATE TABLE `sys_user_info` (
 
 LOCK TABLES `sys_user_info` WRITE;
 /*!40000 ALTER TABLE `sys_user_info` DISABLE KEYS */;
-INSERT INTO `sys_user_info` VALUES ('431243','2143214','2017-06-28 10:51:09','admin','hzwy23@163.com',18986110550,'vertex_root_join_vertex_root','2017-06-28 10:51:09','admin'),('admin','超级管理员','2016-01-01 00:00:00','sys','hzwy23@163.com',18986110550,'vertex_root_join_vertex_root','2017-06-28 10:54:54','admin'),('caadmin','CA业务管理员','2017-03-18 14:32:22','admin','hzwy23@163.com',18986110550,'mas_join_34124','2017-03-18 14:32:22','admin'),('demo','演示账号','2017-03-01 21:21:38','admin','hzwy23@sina.com',18986110551,'mas_join_4542346','2017-04-24 20:53:42','admin');
+INSERT INTO `sys_user_info` VALUES ('431243','2143214','2017-06-28 10:51:09','admin','hzwy23@sina.com',15684857895,'vertex_root_join_vertex_root','2017-06-28 10:51:09','admin'),('admin','超级管理员','2016-01-01 00:00:00','sys','hzwy23@sina.com',15684857895,'vertex_root_join_vertex_root','2017-06-28 10:54:54','admin'),('caadmin','CA业务管理员','2017-03-18 14:32:22','admin','hzwy23@sina.com',15684857895,'mas_join_34124','2017-03-18 14:32:22','admin'),('demo','演示账号','2017-03-01 21:21:38','admin','hzwy23@sina.com',18986110551,'mas_join_4542346','2017-04-24 20:53:42','admin');
 /*!40000 ALTER TABLE `sys_user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
